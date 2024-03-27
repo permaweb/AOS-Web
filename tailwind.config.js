@@ -7,6 +7,12 @@ export default {
         "roboto-mono": ["Roboto Mono", "monospace"],
         "dm-sans": ["DM Sans", "sans-serif"],
       },
+      colors: {
+        "primary-dark-color": "#222326",
+        "gray-text-color": "#8B8B8B",
+        "dark-gray-color": "#5A5B5D",
+        "light-gray-color": "#DEDEDE",
+      },
     },
   },
   plugins: [],
