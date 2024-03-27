@@ -36,7 +36,7 @@ function HomePage() {
       <div className="grid grid-cols-[auto,1fr] flex-grow">
         <div
           className="flex flex-col relative gap-5 py-5 border-r-1 border-light-gray-color"
-          style={{ width: sideBarWidth }}
+          style={{ width: Math.max(sideBarWidth, 180) }}
         >
           <div
             ref={resizeElement}
