@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 function HomePage() {
   return (
-    <div>
+    <div className="font-roboto-mono">
       Welcome to the Permaweb!
       <Link to={"/about/"}>
         <div>About</div>
