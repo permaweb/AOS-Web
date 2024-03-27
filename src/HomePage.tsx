@@ -4,6 +4,8 @@ import SmallButton from "./components/SmallButton";
 import SmallPlus from "./components/icons/SmallPlus";
 import EmptyBoxIcon from "./components/icons/EmptyBoxIcon";
 import { useEffect, useRef, useState } from "react";
+import TerminalIcon from "./components/icons/TerminalIcon";
+import FeedIcon from "./components/icons/FeedIcon";
 
 function HomePage() {
   const resizeElement = useRef<HTMLDivElement>(null);
@@ -75,7 +77,33 @@ function HomePage() {
             </span>
           </div>
         </div>
-        <div></div>
+        <div className="flex flex-col p-5 gap-5">
+          <div className="text-xs uppercase">
+            <span>My Processes</span>
+          </div>
+          <div className="grid grid-cols-[auto,auto] gap-5 flex-grow">
+            <div className="flex flex-col">
+              <div className="text-xs uppercase flex gap-1.5 items-center">
+                <TerminalIcon />
+                <span>Terminal</span>
+              </div>
+            </div>
+            <div className="flex flex-col ronuded-smd border-1 border-light-gray-color rounded-smd">
+              <div className="text-xs uppercase flex gap-1.5 items-center border-b-1 border-light-gray-color px-5 py-2.5">
+                <FeedIcon />
+                <span>Feed</span>
+              </div>
+              <div className="flex items-center justify-center flex-grow">
+                <div className="flex flex-col gap-1 max-w-52">
+                  <span className="uppercase font-bold">This is your feed</span>
+                  <div className="font-dm-sans">
+                    Outputs from your commands will show up here.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
