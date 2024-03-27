@@ -1,6 +1,8 @@
-import AOSLogo from "./components/AOSLogo";
-import SearchIcon from "./components/SearchIcon";
-import SmallPlus from "./components/SmallPlus";
+import AOSLogo from "./components/icons/AOSLogo";
+import SearchIcon from "./components/icons/SearchIcon";
+import SmallButton from "./components/SmallButton";
+import SmallPlus from "./components/icons/SmallPlus";
+import EmptyBoxIcon from "./components/icons/EmptyBoxIcon";
 
 function HomePage() {
   return (
@@ -27,11 +29,20 @@ function HomePage() {
                 ></input>
                 <SearchIcon className="absolute left-2.5 top-0 bottom-0 m-auto transition-colors text-gray-text-color peer-focus:text-primary-dark-color" />
               </label>
-              <button className="flex justify-center items-center gap-1.5 bg-primary-dark-color text-bg-color uppercase py-2 px-3.5 rounded-smd">
-                <SmallPlus />
-                <span>Add Process</span>
-              </button>
+              <SmallButton
+                text="Add Process"
+                handleClick={() => {}}
+                IconComponent={SmallPlus}
+              />
             </div>
+          </div>
+
+          <div className="p-5 flex flex-col gap-3 font-dm-sans">
+            <EmptyBoxIcon />
+            <span>
+              Nothing’s here yet. You’ll see processes here when you connect or
+              create them.
+            </span>
           </div>
         </div>
         <div></div>
