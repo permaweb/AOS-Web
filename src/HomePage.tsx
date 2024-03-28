@@ -2,7 +2,6 @@ import AOSLogo from "./components/icons/AOSLogo";
 import SearchIcon from "./components/icons/SearchIcon";
 import SmallButton from "./components/SmallButton";
 import SmallPlus from "./components/icons/SmallPlus";
-import EmptyBoxIcon from "./components/icons/EmptyBoxIcon";
 import { useEffect, useRef, useState } from "react";
 import TerminalIcon from "./components/icons/TerminalIcon";
 import FeedIcon from "./components/icons/FeedIcon";
@@ -15,14 +14,28 @@ function HomePage() {
   const terminalResizeElement = useRef<HTMLDivElement>(null);
   const terminalRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [sideBarWidth, setSideBarWidth] = useState<number>(250);
-  const [terminalWidth, setTerminalWidth] = useState<number>(600);
+  const [sideBarWidth, setSideBarWidth] = useState<number>(() => {
+    const localStorageWidth: string | null =
+      localStorage.getItem("sideBarWidth");
+    if (typeof localStorageWidth === "string")
+      return parseFloat(localStorageWidth);
+    return 250;
+  });
+  const [terminalWidth, setTerminalWidth] = useState<number>(() => {
+    const localStorageWidth: string | null =
+      localStorage.getItem("terminalWidth");
+    if (typeof localStorageWidth === "string")
+      return parseFloat(localStorageWidth);
+    return 600;
+  });
 
   useEffect(() => {
     if (resizeElement.current) {
       const resizeSidebar = (e: MouseEvent) => {
         if (resizeElement.current) {
-          setSideBarWidth(e.clientX);
+          const newWidth = e.clientX;
+          setSideBarWidth(newWidth);
+          localStorage.setItem("sideBarWidth", `${newWidth}`);
         }
       };
       const stopResize = () => {
@@ -50,12 +63,13 @@ function HomePage() {
   useEffect(() => {
     if (terminalResizeElement.current && terminalRef.current) {
       const resizeTerminal = (e: MouseEvent) => {
-        const offsetLeft = terminalRef.current?.offsetLeft || 0; // Get the offset left of the terminal
+        const offsetLeft = terminalRef.current?.offsetLeft || 0;
         const resizeOffsetLeft =
           terminalResizeElement.current?.getBoundingClientRect().width || 0;
         if (terminalResizeElement.current) {
-          const newWidth = e.clientX - offsetLeft - resizeOffsetLeft / 2; // Calculate the new width based on the cursor's position and offset left
-          setTerminalWidth(Math.max(newWidth, 180)); // Update the state, ensuring a minimum width
+          const newWidth = e.clientX - offsetLeft - resizeOffsetLeft / 2;
+          setTerminalWidth(newWidth);
+          localStorage.setItem("terminalWidth", `${newWidth}`);
         }
       };
 
