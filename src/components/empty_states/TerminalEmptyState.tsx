@@ -55,7 +55,7 @@ export default function TerminalEmptyState() {
 
             <div className="flex flex-col">
               <span className="uppercase text-base font-bold">
-                Create a new process
+                Connect to a process
               </span>
               <span className="font-dm-sans">You’ll need a process id.</span>
             </div>

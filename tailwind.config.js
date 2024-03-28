@@ -27,6 +27,16 @@ export default {
         "bg-color": "#F2F2F2",
         "light-blue": "#B9C3DD",
       },
+      keyframes: {
+        slideInLeft: {
+          "0%": { transform: "translateX(-1rem)" },
+          "100%": { transform: "translateX(0)" },
+        },
+      },
+      animation: {
+        "slide-in-left":
+          "slideInLeft 0.5s cubic-bezier(.02,.88,.24,1) forwards",
+      },
     },
   },
   plugins: [],

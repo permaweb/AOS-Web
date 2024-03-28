@@ -1,7 +1,9 @@
+import { MouseEvent } from "react";
+
 type SmallButtonProps = {
   text: string;
   state?: "black" | "white";
-  handleClick: () => void;
+  handleClick: (e: MouseEvent) => void;
   IconComponent?: () => JSX.Element;
 };
 
@@ -19,7 +21,9 @@ export default function SmallButton({
           ? "bg-primary-dark-color text-bg-color "
           : "border-[#D6D7DC] border-1 bg-[#ECEFEF] text-primary-dark-color")
       }
-      onClick={handleClick}
+      onClick={(e) => {
+        handleClick(e);
+      }}
     >
       {IconComponent && <IconComponent />}
       <span>{text}</span>

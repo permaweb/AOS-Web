@@ -1,7 +1,6 @@
 import AOSLogo from "./components/icons/AOSLogo";
 import SearchIcon from "./components/icons/SearchIcon";
 import SmallButton from "./components/SmallButton";
-import SmallPlus from "./components/icons/SmallPlus";
 import { useEffect, useRef, useState } from "react";
 import TerminalIcon from "./components/icons/TerminalIcon";
 import FeedIcon from "./components/icons/FeedIcon";
@@ -9,6 +8,7 @@ import FeedEmptyState from "./components/empty_states/FeedEmptyState";
 import TerminalEmptyState from "./components/empty_states/TerminalEmptyState";
 import ProcessesBarEmptyState from "./components/empty_states/ProcessesBarEmptyState";
 import { useParams } from "react-router-dom";
+import AddProcessButton from "./components/AddProcessButton";
 
 function BaseLayout() {
   const { processId } = useParams();
@@ -161,12 +161,7 @@ function BaseLayout() {
                   ></input>
                   <SearchIcon className="absolute left-2.5 top-0 bottom-0 m-auto transition-colors text-gray-text-color peer-focus:text-primary-dark-color" />
                 </label>
-                <SmallButton
-                  text="Add Process"
-                  state="white"
-                  handleClick={() => {}}
-                  IconComponent={SmallPlus}
-                />
+                <AddProcessButton />
               </div>
             </div>
             <ProcessesBarEmptyState />

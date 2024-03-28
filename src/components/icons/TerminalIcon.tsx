@@ -5,7 +5,6 @@ export default function TerminalIcon() {
       height="13"
       viewBox="0 0 14 13"
       fill="none"
-      className="text-gray-text-color"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
