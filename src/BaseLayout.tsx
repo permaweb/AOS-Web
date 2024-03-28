@@ -8,8 +8,13 @@ import FeedIcon from "./components/icons/FeedIcon";
 import FeedEmptyState from "./components/empty_states/FeedEmptyState";
 import TerminalEmptyState from "./components/empty_states/TerminalEmptyState";
 import ProcessesBarEmptyState from "./components/empty_states/ProcessesBarEmptyState";
+import { useParams } from "react-router-dom";
 
-function HomePage() {
+function BaseLayout() {
+  const { processId } = useParams();
+
+  const mode = processId ? "process" : "starter";
+
   const resizeElement = useRef<HTMLDivElement>(null);
   const terminalResizeElement = useRef<HTMLDivElement>(null);
   const terminalRef = useRef<HTMLDivElement>(null);
@@ -130,7 +135,7 @@ function HomePage() {
         <div className="flex justify-between items-center p-5 border-b-1 border-light-gray-color ">
           <AOSLogo />
           <button className="px-4 py-2.5 font-dm-sans text-base border-1 transition leading-none rounded-smd border-light-gray-color hover:border-primary-dark-color active:opacity-50">
-            Connect Wallet
+            Connect Wallet: {mode}
           </button>
         </div>
         <div className="grid grid-cols-[auto,1fr] min-h-0">
@@ -158,12 +163,12 @@ function HomePage() {
                 </label>
                 <SmallButton
                   text="Add Process"
+                  state="white"
                   handleClick={() => {}}
                   IconComponent={SmallPlus}
                 />
               </div>
             </div>
-
             <ProcessesBarEmptyState />
           </div>
           <div className="flex flex-col p-5 gap-5 min-h-0">
@@ -185,7 +190,7 @@ function HomePage() {
                   <span>Terminal</span>
                 </div>
                 <div className="flex flex-col flex-grow overflow-y-auto overflow-x-hidden min-h-0">
-                  <TerminalEmptyState />
+                  {mode === "starter" && <TerminalEmptyState />}
                 </div>
                 <div className="flex gap-2 border-1 transition-colors border-gray-text-color rounded-lg  focus-within:border-primary-dark-color ">
                   <label
@@ -211,7 +216,7 @@ function HomePage() {
                   <span>Feed</span>
                 </div>
                 <div className="flex flex-grow overflow-y-auto overflow-x-hidden min-h-0">
-                  <FeedEmptyState />
+                  {mode === "starter" && <FeedEmptyState />}
                 </div>
               </div>
             </div>
@@ -222,4 +227,4 @@ function HomePage() {
   );
 }
 
-export default HomePage;
+export default BaseLayout;
