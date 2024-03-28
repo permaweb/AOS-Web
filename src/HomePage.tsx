@@ -112,9 +112,12 @@ function HomePage() {
 
   return (
     <div className="fixed left-0 top-0 right-0 bottom-0 font-roboto-mono text-primary-dark-color bg-bg-color text-sm">
-      <div className="grid grid-rows-[5.25rem,auto] h-full w-full">
+      <div className="grid grid-rows-[auto,1fr] h-full w-full">
         <div className="flex justify-between items-center p-5 border-b-1 border-light-gray-color ">
           <AOSLogo />
+          <button className="px-4 py-2.5 font-dm-sans text-base border-1 transition leading-none rounded-smd border-light-gray-color hover:border-primary-dark-color active:opacity-50">
+            Connect Wallet
+          </button>
         </div>
         <div className="grid grid-cols-[auto,1fr] min-h-0">
           <div
