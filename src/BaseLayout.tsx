@@ -1,5 +1,4 @@
 import AOSLogo from "./components/icons/AOSLogo";
-import SearchIcon from "./components/icons/SearchIcon";
 import SmallButton from "./components/SmallButton";
 import { useEffect, useRef, useState } from "react";
 import TerminalIcon from "./components/icons/TerminalIcon";
@@ -7,10 +6,9 @@ import FeedIcon from "./components/icons/FeedIcon";
 import FeedEmptyState from "./components/empty_states/FeedEmptyState";
 import TerminalEmptyState from "./components/empty_states/TerminalEmptyState";
 import { Link, useParams } from "react-router-dom";
-import AddProcessButton from "./components/AddProcessButton";
 import ProcessModal from "./components/modals/ProcessModal";
-import ProcessList from "./components/data_component/ProcessList";
 import BreadcrumbChevron from "./components/icons/BreadcrumbChevron";
+import SidebarProcessPanel from "./components/data_component/SidebarProcessPanel";
 
 function BaseLayout() {
   const { processId } = useParams();
@@ -177,27 +175,11 @@ function BaseLayout() {
                 ref={resizeElement}
                 className="absolute -right-2 top-0 bottom-0 w-4 hover:cursor-col-resize select-none"
               />
-              <div className="flex flex-col gap-2.5 px-5">
-                <span className="uppercase">MY PROCESSES</span>
-                <div className="flex flex-col gap-1.5">
-                  <label className="relative" htmlFor="searchProcesses">
-                    <input
-                      type="text"
-                      name="searchProcesses"
-                      placeholder="Search"
-                      className="w-full pr-3 pl-8 py-2  outline outline-light-gray-color bg-bg-color outline-1 rounded-smd leading-none font-dm-sans 
-                        placeholder:text-gray-text-color focus:outline-primary-dark-color peer transition-colors"
-                      spellCheck="false"
-                    ></input>
-                    <SearchIcon className="absolute left-2.5 top-0 bottom-0 m-auto transition-colors text-gray-text-color peer-focus:text-primary-dark-color" />
-                  </label>
-                  <AddProcessButton
-                    handleCreateProcess={showCreateModal}
-                    handleConnectProcess={showConnectModal}
-                  />
-                </div>
-              </div>
-              <ProcessList currentId={processId || ""} />
+              <SidebarProcessPanel
+                processId={processId}
+                showConnectModal={showConnectModal}
+                showCreateModal={showCreateModal}
+              />
             </div>
             <div className="flex flex-col p-5 gap-5 min-h-0">
               {processId && (

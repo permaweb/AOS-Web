@@ -14,6 +14,7 @@ type ProcessListItemProps = ProcessProps & {
 };
 
 type ProcessListProps = {
+  searchParam: string | null;
   currentId: string;
 };
 
@@ -54,7 +55,10 @@ function ProcessListItem({ id, isGlobal, active }: ProcessListItemProps) {
   );
 }
 
-export default function ProcessList({ currentId }: ProcessListProps) {
+export default function ProcessList({
+  currentId,
+  searchParam,
+}: ProcessListProps) {
   const { myProcesses } = useContext(MyProcessesContext);
   const [processDisplaySettings, setProcessDisplaySettings] = useState<{
     showGlobalProcesses: boolean;
@@ -78,10 +82,12 @@ export default function ProcessList({ currentId }: ProcessListProps) {
       <div className="flex flex-col flex-grow min-h-0">
         <div className="flex flex-col flex-grow min-h-0">
           {myProcesses
-            .filter((process) =>
-              process.isGlobal
-                ? processDisplaySettings.showGlobalProcesses
-                : processDisplaySettings.showMyProcesses
+            .filter(
+              (process) =>
+                (process.isGlobal
+                  ? processDisplaySettings.showGlobalProcesses
+                  : processDisplaySettings.showMyProcesses) &&
+                (searchParam ? process.id.includes(searchParam) : true)
             )
             .map((process) => (
               <ProcessListItem
