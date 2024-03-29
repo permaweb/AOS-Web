@@ -2,7 +2,7 @@ import { MouseEvent } from "react";
 
 type SmallButtonProps = {
   text: string;
-  state?: "black" | "white";
+  state?: "black" | "white" | "larger";
   handleClick: (e: MouseEvent) => void;
   IconComponent?: () => JSX.Element;
 };
@@ -16,8 +16,11 @@ export default function SmallButton({
   return (
     <button
       className={
-        "flex justify-center items-center transition gap-1.5 uppercase py-2 px-3.5 rounded-smd hover:scale-[1.0125] active:opacity-50 active:scale-[.975] " +
-        (state === "black"
+        (state === "larger"
+          ? "uppercase py-3 px-4 rounded-lg"
+          : "uppercase py-2 px-3.5 rounded-smd") +
+        " flex justify-center items-center base-transition gap-1.5  " +
+        (state !== "white"
           ? "bg-primary-dark-color text-bg-color "
           : "border-[#D6D7DC] border-1 bg-[#ECEFEF] text-primary-dark-color")
       }

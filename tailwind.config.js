@@ -32,10 +32,15 @@ export default {
           "0%": { transform: "translateX(-1rem)" },
           "100%": { transform: "translateX(0)" },
         },
+        scaleIn: {
+          "0%": { transform: "scale(1.1)" },
+          "100%": { transform: "scale(1)" },
+        },
       },
       animation: {
         "slide-in-left":
           "slideInLeft 0.5s cubic-bezier(.02,.88,.24,1) forwards",
+        "scale-in": "scaleIn 0.5s cubic-bezier(.02,.88,.24,1) forwards",
       },
     },
   },

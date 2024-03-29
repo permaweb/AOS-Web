@@ -6,7 +6,15 @@ import SmallPlus from "./icons/SmallPlus";
 import TerminalIcon from "./icons/TerminalIcon";
 import ConnectIcon from "./icons/ConnectIcon";
 
-export default function AddProcessButton() {
+export type AddProcessButtonProps = {
+  handleCreateProcess: () => void;
+  handleConnectProcess: () => void;
+};
+
+export default function AddProcessButton({
+  handleCreateProcess,
+  handleConnectProcess,
+}: AddProcessButtonProps) {
   const [showOptions, setShowOptions] = useState<boolean>(false);
 
   const handleClick = (e: MouseEvent) => {
@@ -21,6 +29,15 @@ export default function AddProcessButton() {
     return () => window.removeEventListener("click", closeOptions);
   }, []);
 
+  const handleCreateProcessThenClose = () => {
+    handleCreateProcess();
+    setShowOptions(false);
+  };
+  const handleConnectProcessThenClose = () => {
+    handleConnectProcess();
+    setShowOptions(false);
+  };
+
   return (
     <div className="relative flex flex-col">
       <SmallButton
@@ -31,17 +48,23 @@ export default function AddProcessButton() {
       />
       {showOptions && (
         <div
-          className="animate-slide-in-left absolute min-w-max flex flex-col gap-3 leading-none left-full -top-1 ml-5 bg-primary-dark-color text-bg-color p-4 rounded-smd z-50"
+          className="animate-slide-in-left absolute min-w-max flex flex-col gap-3 leading-none left-full -top-1 ml-5 bg-primary-dark-color text-bg-color p-4 rounded-smd z-40"
           onClick={(e) => {
             e.stopPropagation();
           }}
         >
           <ArrowLeft />
-          <button className="flex items-center gap-3 uppercase transition hover:scale-[1.0125] active:scale-[0.975] active:opacity-50">
+          <button
+            className="flex items-center gap-3 uppercase transition base-transition"
+            onClick={handleCreateProcessThenClose}
+          >
             <TerminalIcon />
             <span>Create a new process</span>
           </button>
-          <button className="flex items-center gap-3 uppercase transition hover:scale-[1.0125] active:scale-[0.975] active:opacity-50">
+          <button
+            className="flex items-center gap-3 uppercase transition base-transition"
+            onClick={handleConnectProcessThenClose}
+          >
             <ConnectIcon />
             <span>Connect to a process</span>
           </button>

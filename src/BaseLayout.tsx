@@ -9,6 +9,8 @@ import TerminalEmptyState from "./components/empty_states/TerminalEmptyState";
 import ProcessesBarEmptyState from "./components/empty_states/ProcessesBarEmptyState";
 import { useParams } from "react-router-dom";
 import AddProcessButton from "./components/AddProcessButton";
+import CloseIcon from "./components/icons/CloseIcon";
+import ProcessModal from "./components/modals/ProcessModal";
 
 function BaseLayout() {
   const { processId } = useParams();
@@ -33,6 +35,13 @@ function BaseLayout() {
       return parseFloat(localStorageWidth);
     return 600;
   });
+  const [modalShown, setModalShown] = useState<"none" | "create" | "connect">(
+    "none"
+  );
+
+  const showConnectModal = () => setModalShown("connect");
+  const showCreateModal = () => setModalShown("create");
+  const closeModal = () => setModalShown("none");
 
   useEffect(() => {
     if (resizeElement.current) {
@@ -130,95 +139,121 @@ function BaseLayout() {
   }, []);
 
   return (
-    <div className="fixed left-0 top-0 right-0 bottom-0 font-roboto-mono text-primary-dark-color bg-bg-color text-sm">
-      <div className="grid grid-rows-[auto,1fr] h-full w-full">
-        <div className="flex justify-between items-center p-5 border-b-1 border-light-gray-color ">
-          <AOSLogo />
-          <button className="px-4 py-2.5 font-dm-sans text-base border-1 transition leading-none rounded-smd border-light-gray-color hover:border-primary-dark-color active:opacity-50">
-            Connect Wallet: {mode}
-          </button>
-        </div>
-        <div className="grid grid-cols-[auto,1fr] min-h-0">
-          <div
-            className="flex flex-col relative gap-5 py-5 border-r-1 border-light-gray-color "
-            style={{ width: Math.max(sideBarWidth, 180) }}
-          >
-            <div
-              ref={resizeElement}
-              className="absolute -right-2 top-0 bottom-0 w-4 hover:cursor-col-resize select-none"
-            />
-            <div className="flex flex-col gap-2.5 px-5">
-              <span className="uppercase">MY PROCESSES</span>
-              <div className="flex flex-col gap-1.5">
-                <label className="relative" htmlFor="searchProcesses">
-                  <input
-                    type="text"
-                    name="searchProcesses"
-                    placeholder="Search"
-                    className="w-full pr-3 pl-8 py-2  outline outline-light-gray-color bg-bg-color outline-1 rounded-smd leading-none font-dm-sans 
-                      placeholder:text-gray-text-color focus:outline-primary-dark-color peer transition-colors"
-                    spellCheck="false"
-                  ></input>
-                  <SearchIcon className="absolute left-2.5 top-0 bottom-0 m-auto transition-colors text-gray-text-color peer-focus:text-primary-dark-color" />
-                </label>
-                <AddProcessButton />
-              </div>
-            </div>
-            <ProcessesBarEmptyState />
+    <>
+      {modalShown === "connect" && (
+        <ProcessModal
+          closeModal={closeModal}
+          text="Connect to a process"
+          placeholder="Enter Process ID"
+          buttonText="Connect"
+        />
+      )}
+      {modalShown === "create" && (
+        <ProcessModal
+          closeModal={closeModal}
+          text="Create a new process"
+          placeholder="Type Name"
+          buttonText="Create"
+        />
+      )}
+      <div className="fixed left-0 top-0 right-0 bottom-0 font-roboto-mono text-primary-dark-color bg-bg-color text-sm">
+        <div className="grid grid-rows-[auto,1fr] h-full w-full">
+          <div className="flex justify-between items-center p-5 border-b-1 border-light-gray-color ">
+            <AOSLogo />
+            <button className="px-4 py-2.5 font-dm-sans text-base border-1 transition leading-none rounded-smd border-light-gray-color hover:border-primary-dark-color base-transition">
+              Connect Wallet: {mode}
+            </button>
           </div>
-          <div className="flex flex-col p-5 gap-5 min-h-0">
-            <div className="text-xs uppercase">
-              <span>My Processes</span>
-            </div>
-            <div className="grid grid-cols-[auto,1fr] gap-5 flex-grow min-h-0">
+          <div className="grid grid-cols-[auto,1fr] min-h-0">
+            <div
+              className="flex flex-col relative gap-5 py-5 border-r-1 border-light-gray-color "
+              style={{ width: Math.max(sideBarWidth, 180) }}
+            >
               <div
-                ref={terminalRef}
-                style={{ width: Math.max(terminalWidth, 180) }}
-                className="relative flex flex-col min-h-0"
-              >
-                <div
-                  ref={terminalResizeElement}
-                  className="absolute -right-6 top-0 bottom-0 w-6 hover:cursor-col-resize select-none"
-                />
-                <div className="text-xs uppercase flex gap-1.5 items-center  ">
-                  <TerminalIcon />
-                  <span>Terminal</span>
-                </div>
-                <div className="flex flex-col flex-grow overflow-y-auto overflow-x-hidden min-h-0">
-                  {mode === "starter" && <TerminalEmptyState />}
-                </div>
-                <div className="flex gap-2 border-1 transition-colors border-gray-text-color rounded-lg  focus-within:border-primary-dark-color ">
-                  <label
-                    htmlFor="runCommandInput"
-                    className="flex-grow h-full relative"
-                  >
-                    <span className="absolute left-3 top-3">{"aos>"}</span>
-                    <textarea
-                      ref={textareaRef}
-                      name="runCommandInput"
-                      className="py-3 pl-13 w-full bg-transparent h-full resize-none outline-none min-h-0 overflow-hidden "
+                ref={resizeElement}
+                className="absolute -right-2 top-0 bottom-0 w-4 hover:cursor-col-resize select-none"
+              />
+              <div className="flex flex-col gap-2.5 px-5">
+                <span className="uppercase">MY PROCESSES</span>
+                <div className="flex flex-col gap-1.5">
+                  <label className="relative" htmlFor="searchProcesses">
+                    <input
+                      type="text"
+                      name="searchProcesses"
+                      placeholder="Search"
+                      className="w-full pr-3 pl-8 py-2  outline outline-light-gray-color bg-bg-color outline-1 rounded-smd leading-none font-dm-sans 
+                        placeholder:text-gray-text-color focus:outline-primary-dark-color peer transition-colors"
                       spellCheck="false"
-                    ></textarea>
+                    ></input>
+                    <SearchIcon className="absolute left-2.5 top-0 bottom-0 m-auto transition-colors text-gray-text-color peer-focus:text-primary-dark-color" />
                   </label>
-                  <div className="p-1.5">
-                    <SmallButton handleClick={() => {}} text="run" />
+                  <AddProcessButton
+                    handleCreateProcess={showCreateModal}
+                    handleConnectProcess={showConnectModal}
+                  />
+                </div>
+              </div>
+              <ProcessesBarEmptyState />
+            </div>
+            <div className="flex flex-col p-5 gap-5 min-h-0">
+              <div className="text-xs uppercase">
+                <span>My Processes</span>
+              </div>
+              <div className="grid grid-cols-[auto,1fr] gap-5 flex-grow min-h-0">
+                <div
+                  ref={terminalRef}
+                  style={{ width: Math.max(terminalWidth, 180) }}
+                  className="relative flex flex-col min-h-0"
+                >
+                  <div
+                    ref={terminalResizeElement}
+                    className="absolute -right-6 top-0 bottom-0 w-6 hover:cursor-col-resize select-none"
+                  />
+                  <div className="text-xs uppercase flex gap-1.5 items-center  ">
+                    <TerminalIcon />
+                    <span>Terminal</span>
+                  </div>
+                  <div className="flex flex-col flex-grow overflow-y-auto overflow-x-hidden min-h-0">
+                    {mode === "starter" && (
+                      <TerminalEmptyState
+                        handleCreateProcess={showCreateModal}
+                        handleConnectProcess={showConnectModal}
+                      />
+                    )}
+                  </div>
+                  <div className="flex gap-2 border-1 transition-colors border-gray-text-color rounded-lg  focus-within:border-primary-dark-color ">
+                    <label
+                      htmlFor="runCommandInput"
+                      className="flex-grow h-full relative"
+                    >
+                      <span className="absolute left-3 top-3">{"aos>"}</span>
+                      <textarea
+                        ref={textareaRef}
+                        name="runCommandInput"
+                        className="py-3 pl-13 w-full bg-transparent h-full resize-none outline-none min-h-0 overflow-hidden "
+                        spellCheck="false"
+                      ></textarea>
+                    </label>
+                    <div className="p-1.5">
+                      <SmallButton handleClick={() => {}} text="run" />
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="flex flex-col ronuded-smd border-1 border-light-gray-color rounded-smd min-h-0">
-                <div className="text-xs uppercase flex gap-1.5 items-center border-b-1 border-light-gray-color px-4 py-2.5">
-                  <FeedIcon />
-                  <span>Feed</span>
-                </div>
-                <div className="flex flex-grow overflow-y-auto overflow-x-hidden min-h-0">
-                  {mode === "starter" && <FeedEmptyState />}
+                <div className="flex flex-col ronuded-smd border-1 border-light-gray-color rounded-smd min-h-0">
+                  <div className="text-xs uppercase flex gap-1.5 items-center border-b-1 border-light-gray-color px-4 py-2.5">
+                    <FeedIcon />
+                    <span>Feed</span>
+                  </div>
+                  <div className="flex flex-grow overflow-y-auto overflow-x-hidden min-h-0">
+                    {mode === "starter" && <FeedEmptyState />}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

@@ -4,3 +4,21 @@
 
 :root {
 }
+
+.base-transition {
+  transition-property: background-color, border-color, color, fill, stroke,
+    opacity, box-shadow, transform;
+  transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+  transition-duration: 200ms;
+  opacity: 1;
+  transform: scale(1);
+}
+
+.base-transition:hover {
+  transform: scale(1.0125);
+}
+
+.base-transition:active {
+  opacity: 0.5;
+  transform: scale(0.975);
+}
