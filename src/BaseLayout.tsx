@@ -15,7 +15,7 @@ import BreadcrumbChevron from "./components/icons/BreadcrumbChevron";
 function BaseLayout() {
   const { processId } = useParams();
 
-  const mode = processId ? "process" : "starter";
+  const mode: "starter" | "process" = processId ? "process" : "starter";
 
   const resizeElement = useRef<HTMLDivElement>(null);
   const terminalResizeElement = useRef<HTMLDivElement>(null);
@@ -230,7 +230,14 @@ function BaseLayout() {
                       />
                     )}
                   </div>
-                  <div className="flex gap-2 border-1 transition-colors border-gray-text-color rounded-lg  focus-within:border-primary-dark-color ">
+                  <div
+                    className={
+                      "flex gap-2 border-1 transition-colors border-gray-text-color rounded-lg  focus-within:border-primary-dark-color " +
+                      (mode === "starter"
+                        ? "select-none pointer-events-none opacity-50"
+                        : "")
+                    }
+                  >
                     <label
                       htmlFor="runCommandInput"
                       className="flex-grow h-full relative"
