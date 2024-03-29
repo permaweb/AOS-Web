@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, ReactNode } from "react";
 
-type ProcessProps = {
+export type ProcessProps = {
   id: string;
   isGlobal: boolean;
 };
@@ -17,28 +17,23 @@ const MyProcessesContext = createContext<ProcessesContextType>({
   removeProcess: (processId: string) => {},
 });
 
-// Step 2: Create the provider component
 const MyProcessesProvider = ({ children }: { children: ReactNode }) => {
   const [myProcesses, setMyProcesses] = useState<ProcessProps[]>([]);
 
-  // Function to add a process
   const addProcess = (process: ProcessProps) => {
     setMyProcesses((currentProcesses) => [...currentProcesses, process]);
   };
 
-  // Function to remove a process
   const removeProcess = (processId: string) => {
     setMyProcesses((currentProcesses) =>
       currentProcesses.filter((process) => process.id !== processId)
     );
   };
 
-  // Effect to log the current processes, can be replaced with any other side effects
   useEffect(() => {
     console.log("Current Processes:", myProcesses);
   }, [myProcesses]);
 
-  // Step 3: Return the provider with the context value
   return (
     <MyProcessesContext.Provider
       value={{ myProcesses, addProcess, removeProcess }}
@@ -48,5 +43,4 @@ const MyProcessesProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// Export the context and provider
 export { MyProcessesContext, MyProcessesProvider };

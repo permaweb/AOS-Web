@@ -6,11 +6,11 @@ import TerminalIcon from "./components/icons/TerminalIcon";
 import FeedIcon from "./components/icons/FeedIcon";
 import FeedEmptyState from "./components/empty_states/FeedEmptyState";
 import TerminalEmptyState from "./components/empty_states/TerminalEmptyState";
-import ProcessesBarEmptyState from "./components/empty_states/ProcessesBarEmptyState";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import AddProcessButton from "./components/AddProcessButton";
-import CloseIcon from "./components/icons/CloseIcon";
 import ProcessModal from "./components/modals/ProcessModal";
+import ProcessList from "./components/data_component/ProcessList";
+import BreadcrumbChevron from "./components/icons/BreadcrumbChevron";
 
 function BaseLayout() {
   const { processId } = useParams();
@@ -146,6 +146,7 @@ function BaseLayout() {
           text="Connect to a process"
           placeholder="Enter Process ID"
           buttonText="Connect"
+          mode="connect"
         />
       )}
       {modalShown === "create" && (
@@ -154,20 +155,23 @@ function BaseLayout() {
           text="Create a new process"
           placeholder="Type Name"
           buttonText="Create"
+          mode="create"
         />
       )}
       <div className="fixed left-0 top-0 right-0 bottom-0 font-roboto-mono text-primary-dark-color bg-bg-color text-sm">
         <div className="grid grid-rows-[auto,1fr] h-full w-full">
           <div className="flex justify-between items-center p-5 border-b-1 border-light-gray-color ">
-            <AOSLogo />
+            <Link to={"/"}>
+              <AOSLogo />
+            </Link>
             <button className="px-4 py-2.5 font-dm-sans text-base border-1 transition leading-none rounded-smd border-light-gray-color hover:border-primary-dark-color base-transition">
               Connect Wallet: {mode}
             </button>
           </div>
           <div className="grid grid-cols-[auto,1fr] min-h-0">
             <div
-              className="flex flex-col relative gap-5 py-5 border-r-1 border-light-gray-color "
-              style={{ width: Math.max(sideBarWidth, 180) }}
+              className="flex flex-col relative gap-5 pt-5 border-r-1 border-light-gray-color "
+              style={{ width: Math.max(sideBarWidth, 200) }}
             >
               <div
                 ref={resizeElement}
@@ -193,12 +197,17 @@ function BaseLayout() {
                   />
                 </div>
               </div>
-              <ProcessesBarEmptyState />
+              <ProcessList currentId={processId || ""} />
             </div>
             <div className="flex flex-col p-5 gap-5 min-h-0">
-              <div className="text-xs uppercase">
-                <span>My Processes</span>
-              </div>
+              {processId && (
+                <div className="text-xs uppercase flex items-center gap-2">
+                  <Link to={"/"}>My Processes</Link>
+
+                  <BreadcrumbChevron />
+                  <Link to={`/process/${processId}`}>{processId}</Link>
+                </div>
+              )}
               <div className="grid grid-cols-[auto,1fr] gap-5 flex-grow min-h-0">
                 <div
                   ref={terminalRef}
