@@ -1,6 +1,6 @@
 import AOSLogo from "./components/icons/AOSLogo";
 import SmallButton from "./components/SmallButton";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import TerminalIcon from "./components/icons/TerminalIcon";
 import FeedIcon from "./components/icons/FeedIcon";
 import FeedEmptyState from "./components/empty_states/FeedEmptyState";
@@ -9,9 +9,12 @@ import { Link, useParams } from "react-router-dom";
 import ProcessModal from "./components/modals/ProcessModal";
 import BreadcrumbChevron from "./components/icons/BreadcrumbChevron";
 import SidebarProcessPanel from "./components/data_component/SidebarProcessPanel";
+import { WalletContext } from "./context/WalletContext";
+import WalletModal from "./components/modals/WalletModal";
 
 function BaseLayout() {
   const { processId } = useParams();
+  const { myWallet } = useContext(WalletContext);
 
   const mode: "starter" | "process" = processId ? "process" : "starter";
 
@@ -33,12 +36,13 @@ function BaseLayout() {
       return parseFloat(localStorageWidth);
     return 600;
   });
-  const [modalShown, setModalShown] = useState<"none" | "create" | "connect">(
-    "none"
-  );
+  const [modalShown, setModalShown] = useState<
+    "none" | "create" | "connect" | "wallet"
+  >("none");
 
   const showConnectModal = () => setModalShown("connect");
   const showCreateModal = () => setModalShown("create");
+  const showWalletModal = () => setModalShown("wallet");
   const closeModal = () => setModalShown("none");
 
   useEffect(() => {
@@ -138,6 +142,7 @@ function BaseLayout() {
 
   return (
     <>
+      {modalShown === "wallet" && <WalletModal closeModal={closeModal} />}
       {modalShown === "connect" && (
         <ProcessModal
           closeModal={closeModal}
@@ -162,9 +167,19 @@ function BaseLayout() {
             <Link to={"/"}>
               <AOSLogo />
             </Link>
-            <button className="px-4 py-2.5 font-dm-sans text-base border-1 transition leading-none rounded-smd border-light-gray-color hover:border-primary-dark-color base-transition">
-              Connect Wallet: {mode}
-            </button>
+            {myWallet && "id" in myWallet ? (
+              <div className="px-4 py-2.5 flex items-center gap-2 font-dm-sans text-base border-1 transition leading-none rounded-smd border-light-gray-color base-transition">
+                <div className="rounded-full bg-dark-gray-color aspect-square w-5"></div>
+                <div className="truncate max-w-24">Placeholder Name</div>
+              </div>
+            ) : (
+              <button
+                onClick={showWalletModal}
+                className="px-4 py-2.5 font-dm-sans text-base border-1 transition leading-none rounded-smd text-[#FF0E0E] bg-[#FBDADA] border-[#DD8686] base-transition"
+              >
+                Connect Wallet
+              </button>
+            )}
           </div>
           <div className="grid grid-cols-[auto,1fr] min-h-0">
             <div
