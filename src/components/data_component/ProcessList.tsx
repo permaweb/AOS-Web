@@ -8,6 +8,7 @@ import { useContext, useState } from "react";
 import ProcessesBarEmptyState from "../empty_states/ProcessesBarEmptyState";
 import Toggle from "../Toggle";
 import { ArrowLeft } from "../AddProcessButton";
+import EmptySearchIcon from "../icons/EmptySearchIcon";
 
 type ProcessListItemProps = ProcessProps & {
   active: boolean;
@@ -77,25 +78,41 @@ export default function ProcessList({
       return { ...prevValue, showMyProcesses: invertMyProcesses };
     });
 
+  const filteredProcess = myProcesses.filter(
+    (process) =>
+      (process.isGlobal
+        ? processDisplaySettings.showGlobalProcesses
+        : processDisplaySettings.showMyProcesses) &&
+      (searchParam ? process.id.includes(searchParam) : true)
+  );
+
   if (myProcesses.length > 0) {
     return (
       <div className="flex flex-col flex-grow min-h-0">
         <div className="flex flex-col flex-grow min-h-0">
-          {myProcesses
-            .filter(
-              (process) =>
-                (process.isGlobal
-                  ? processDisplaySettings.showGlobalProcesses
-                  : processDisplaySettings.showMyProcesses) &&
-                (searchParam ? process.id.includes(searchParam) : true)
-            )
-            .map((process) => (
+          {filteredProcess.length > 0 ? (
+            filteredProcess.map((process) => (
               <ProcessListItem
                 key={process.id}
                 {...process}
                 active={currentId === process.id}
               />
-            ))}
+            ))
+          ) : (
+            <div className="p-5">
+              <div className="flex flex-col items-center gap-4 p-4 border-1 text-center border-gray-text-color rounded-xl border-dashed">
+                <EmptySearchIcon />
+                <div className="flex flex-col items-center gap-2">
+                  <span className="uppercase font-bold leading-none">
+                    No results
+                  </span>
+                  <span className="font-dm-sans">
+                    Looks like there’s no processes that match this query
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
         {myProcesses.some((process) => process.isGlobal) &&
           myProcesses.some((process) => !process.isGlobal) && (
