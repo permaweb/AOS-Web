@@ -7,6 +7,7 @@ import GlobalIcon from "../icons/GlobalIcon";
 import { useContext, useState } from "react";
 import ProcessesBarEmptyState from "../empty_states/ProcessesBarEmptyState";
 import Toggle from "../Toggle";
+import { ArrowLeft } from "../AddProcessButton";
 
 type ProcessListItemProps = ProcessProps & {
   active: boolean;
@@ -15,6 +16,20 @@ type ProcessListItemProps = ProcessProps & {
 type ProcessListProps = {
   currentId: string;
 };
+
+function GlobalProcessInfo() {
+  return (
+    <div className="hidden group-hover:flex flex-col gap-3 animate-slide-in-left absolute w-max max-w-48 left-full font-roboto-mono -top-2 ml-3 bg-primary-dark-color text-bg-color p-3 rounded-smd z-40">
+      <ArrowLeft />
+      <GlobalIcon />
+      <span className="font-bold uppercase leading-none">Global Process</span>
+      <span className="font-dm-sans">
+        This process is from a different user’s wallet, so you cannot run
+        commands in it.
+      </span>
+    </div>
+  );
+}
 
 function ProcessListItem({ id, isGlobal, active }: ProcessListItemProps) {
   return (
@@ -26,7 +41,14 @@ function ProcessListItem({ id, isGlobal, active }: ProcessListItemProps) {
     >
       <div className="base-transition flex gap-2 items-center py-1.5 pl-5 pr-2 ">
         <span className="truncate max-w-28">{id}</span>
-        {isGlobal ? <GlobalIcon /> : <div className="w-3" />}
+        {isGlobal ? (
+          <div className="group p-2 relative -m-2">
+            <GlobalIcon />
+            <GlobalProcessInfo />
+          </div>
+        ) : (
+          <div className="w-3" />
+        )}
       </div>
     </Link>
   );

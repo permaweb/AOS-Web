@@ -74,7 +74,7 @@ export default function AddProcessButton({
   );
 }
 
-function ArrowLeft() {
+export function ArrowLeft() {
   return (
     <svg
       width="12"
