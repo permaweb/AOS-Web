@@ -7,6 +7,10 @@ export default function WalletWrapper({ children }: { children: React.ReactNode 
                 permissions: ["ACCESS_ADDRESS", "SIGN_TRANSACTION"],
                 ensurePermissions: true,
             }}
+
+            theme={{
+                radius: "minimal",
+            }}
         >
             {children}
         </ArweaveWalletKit>
