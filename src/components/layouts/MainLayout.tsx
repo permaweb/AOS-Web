@@ -2,7 +2,7 @@ import { Header } from "../header";
 
 export default function MainLayout({ children }: { children: React.ReactElement | React.ReactElement[] }) {
     return (
-        <section className="relative w-full min-h-screen font-roboto-mono text-primary-dark-color bg-bg-color">
+        <section className="relative w-full min-h-screen font-roboto-mono text-primary-dark-color bg-bg-color text-sm">
             <Header />
             {children}
         </section>

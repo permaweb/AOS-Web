@@ -136,88 +136,87 @@ export default function Dashboard() {
 
     return (
         <MainLayout>
-            <div className="text-sm">
-                <div className="grid grid-rows-[auto,1fr] h-full w-full">
-
-                    <div className="grid grid-cols-[auto,1fr] min-h-0">
+            <div className="grid grid-rows-[auto,1fr] h-full w-full">
+                <div className="grid grid-cols-[auto,1fr] min-h-0">
+                    <div
+                        className="flex flex-col relative gap-5 border-r-1 border-light-gray-color "
+                        style={{ width: Math.max(sideBarWidth, 200) }}
+                    >
                         <div
-                            className="flex flex-col relative gap-5 pt-5 border-r-1 border-light-gray-color "
-                            style={{ width: Math.max(sideBarWidth, 200) }}
-                        >
-                            <div
-                                ref={resizeElement}
-                                className="absolute -right-2 top-0 bottom-0 w-4 hover:cursor-col-resize select-none"
-                            />
-                            <SidebarProcessPanel
-                                processId={processId}
-                                showConnectModal={showConnectModal}
-                                showCreateModal={showCreateModal}
-                            />
-                        </div>
-                        <div className="flex flex-col p-5 gap-5 min-h-0">
-                            {processId && (
-                                <div className="text-xs uppercase flex items-center gap-2">
-                                    <Link to={"/"}>My Processes</Link>
+                            ref={resizeElement}
+                            className="absolute -right-2 top-0 bottom-0 w-4 hover:cursor-col-resize select-none h-[92vh] "
+                        />
+                        <SidebarProcessPanel
+                            processId={processId}
+                            showConnectModal={showConnectModal}
+                            showCreateModal={showCreateModal}
+                        />
+                    </div>
 
-                                    <BreadcrumbChevron />
-                                    <Link to={`/process/${processId}`}>{processId}</Link>
-                                </div>
-                            )}
-                            <div className="grid grid-cols-[auto,1fr] gap-5 flex-grow min-h-0">
+
+                    <div className="flex flex-col p-5 gap-5 min-h-0">
+                        {processId && (
+                            <div className="text-xs uppercase flex items-center gap-2">
+                                <Link to={"/"}>My Processes</Link>
+
+                                <BreadcrumbChevron />
+                                <Link to={`/process/${processId}`}>{processId}</Link>
+                            </div>
+                        )}
+                        <div className="grid grid-cols-[auto,1fr] gap-5 flex-grow min-h-0">
+                            <div
+                                ref={terminalRef}
+                                style={{ width: Math.max(terminalWidth, 180) }}
+                                className="relative flex flex-col min-h-0"
+                            >
                                 <div
-                                    ref={terminalRef}
-                                    style={{ width: Math.max(terminalWidth, 180) }}
-                                    className="relative flex flex-col min-h-0"
+                                    ref={terminalResizeElement}
+                                    className="absolute -right-6 top-0 bottom-0 w-6 hover:cursor-col-resize select-none"
+                                />
+                                <div className="text-xs uppercase flex gap-1.5 items-center  ">
+                                    <TerminalIcon />
+                                    <span>Terminal</span>
+                                </div>
+                                <div className="flex flex-col flex-grow overflow-y-auto overflow-x-hidden min-h-0">
+                                    {mode === "starter" && (
+                                        <TerminalEmptyState
+                                            handleCreateProcess={showCreateModal}
+                                            handleConnectProcess={showConnectModal}
+                                        />
+                                    )}
+                                </div>
+                                <div
+                                    className={
+                                        "flex gap-2 border-1 transition-colors border-gray-text-color rounded-lg  focus-within:border-primary-dark-color " +
+                                        (mode === "starter"
+                                            ? "select-none pointer-events-none opacity-50"
+                                            : "")
+                                    }
                                 >
-                                    <div
-                                        ref={terminalResizeElement}
-                                        className="absolute -right-6 top-0 bottom-0 w-6 hover:cursor-col-resize select-none"
-                                    />
-                                    <div className="text-xs uppercase flex gap-1.5 items-center  ">
-                                        <TerminalIcon />
-                                        <span>Terminal</span>
-                                    </div>
-                                    <div className="flex flex-col flex-grow overflow-y-auto overflow-x-hidden min-h-0">
-                                        {mode === "starter" && (
-                                            <TerminalEmptyState
-                                                handleCreateProcess={showCreateModal}
-                                                handleConnectProcess={showConnectModal}
-                                            />
-                                        )}
-                                    </div>
-                                    <div
-                                        className={
-                                            "flex gap-2 border-1 transition-colors border-gray-text-color rounded-lg  focus-within:border-primary-dark-color " +
-                                            (mode === "starter"
-                                                ? "select-none pointer-events-none opacity-50"
-                                                : "")
-                                        }
+                                    <label
+                                        htmlFor="runCommandInput"
+                                        className="flex-grow h-full relative"
                                     >
-                                        <label
-                                            htmlFor="runCommandInput"
-                                            className="flex-grow h-full relative"
-                                        >
-                                            <span className="absolute left-3 top-3">{"aos>"}</span>
-                                            <textarea
-                                                ref={textareaRef}
-                                                name="runCommandInput"
-                                                className="py-3 pl-13 w-full bg-transparent h-full resize-none outline-none min-h-0 overflow-hidden "
-                                                spellCheck="false"
-                                            ></textarea>
-                                        </label>
-                                        <div className="p-1.5">
-                                            <SmallButton handleClick={() => { }} text="run" />
-                                        </div>
+                                        <span className="absolute left-3 top-3">{"aos>"}</span>
+                                        <textarea
+                                            ref={textareaRef}
+                                            name="runCommandInput"
+                                            className="py-3 pl-13 w-full bg-transparent h-full resize-none outline-none min-h-0 overflow-hidden "
+                                            spellCheck="false"
+                                        ></textarea>
+                                    </label>
+                                    <div className="p-1.5">
+                                        <SmallButton handleClick={() => { }} text="run" />
                                     </div>
                                 </div>
-                                <div className="flex flex-col ronuded-smd border-1 border-light-gray-color rounded-smd min-h-0">
-                                    <div className="text-xs uppercase flex gap-1.5 items-center border-b-1 border-light-gray-color px-4 py-2.5">
-                                        <FeedIcon />
-                                        <span>Feed</span>
-                                    </div>
-                                    <div className="flex flex-grow overflow-y-auto overflow-x-hidden min-h-0">
-                                        {mode === "starter" && <FeedEmptyState />}
-                                    </div>
+                            </div>
+                            <div className="flex flex-col ronuded-smd border-1 border-light-gray-color rounded-smd min-h-0">
+                                <div className="text-xs uppercase flex gap-1.5 items-center border-b-1 border-light-gray-color px-4 py-2.5">
+                                    <FeedIcon />
+                                    <span>Feed</span>
+                                </div>
+                                <div className="flex flex-grow overflow-y-auto overflow-x-hidden min-h-0">
+                                    {mode === "starter" && <FeedEmptyState />}
                                 </div>
                             </div>
                         </div>

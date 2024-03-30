@@ -88,7 +88,7 @@ export default function ProcessList({
 
   if (myProcesses.length > 0) {
     return (
-      <div className="flex flex-col flex-grow min-h-0">
+      <div className="flex flex-col flex-grow min-h-0 mb-4">
         <div className="flex flex-col flex-grow min-h-0">
           {filteredProcess.length > 0 ? (
             filteredProcess.map((process) => (

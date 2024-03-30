@@ -26,8 +26,8 @@ export default function SidebarProcessPanel({
     );
 
   return (
-    <>
-      <div className="flex flex-col gap-2.5 px-5">
+    <div className="h-[92vh] flex flex-col justify-between">
+      <div className="flex flex-col gap-2.5 px-5 pt-2">
         <span className="uppercase">MY PROCESSES</span>
         <div className="flex flex-col gap-1.5">
           <label className="relative" htmlFor="searchProcesses">
@@ -48,8 +48,9 @@ export default function SidebarProcessPanel({
             handleConnectProcess={showConnectModal}
           />
         </div>
+
       </div>
       <ProcessList currentId={processId || ""} searchParam={searchParam} />
-    </>
+    </div>
   );
 }
