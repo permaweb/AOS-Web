@@ -1,22 +1,17 @@
 import { HashRouter } from "react-router-dom";
-import { Routes, Route } from "react-router-dom";
-
-import BaseLayout from "./BaseLayout";
+import { Routes } from "./routes";
 import { MyProcessesProvider } from "./context/ProcessesContext";
-import { WalletProvider } from "./context/WalletContext";
+import WalletWrapper from "./components/wallet/WalletWrapper";
 
 function App() {
   return (
-    <WalletProvider>
+    <WalletWrapper>
       <MyProcessesProvider>
         <HashRouter>
-          <Routes>
-            <Route path={"/"} element={<BaseLayout />} />
-            <Route path={"/process/:processId"} element={<BaseLayout />} />
-          </Routes>
+          <Routes />
         </HashRouter>
       </MyProcessesProvider>
-    </WalletProvider>
+    </WalletWrapper>
   );
 }
 

@@ -1,4 +1,3 @@
-import AOSLogo from "./components/icons/AOSLogo";
 import SmallButton from "./components/SmallButton";
 import { useContext, useEffect, useRef, useState } from "react";
 import TerminalIcon from "./components/icons/TerminalIcon";
@@ -163,24 +162,7 @@ function BaseLayout() {
       )}
       <div className="fixed left-0 top-0 right-0 bottom-0 font-roboto-mono text-primary-dark-color bg-bg-color text-sm">
         <div className="grid grid-rows-[auto,1fr] h-full w-full">
-          <div className="flex justify-between items-center p-5 border-b-1 border-light-gray-color ">
-            <Link to={"/"}>
-              <AOSLogo />
-            </Link>
-            {myWallet && "id" in myWallet ? (
-              <div className="px-4 py-2.5 flex items-center gap-2 font-dm-sans text-base border-1 transition leading-none rounded-smd border-light-gray-color base-transition">
-                <div className="rounded-full bg-dark-gray-color aspect-square w-5"></div>
-                <div className="truncate max-w-24">Placeholder Name</div>
-              </div>
-            ) : (
-              <button
-                onClick={showWalletModal}
-                className="px-4 py-2.5 font-dm-sans text-base border-1 transition leading-none rounded-smd text-[#FF0E0E] bg-[#FBDADA] border-[#DD8686] base-transition"
-              >
-                Connect Wallet
-              </button>
-            )}
-          </div>
+
           <div className="grid grid-cols-[auto,1fr] min-h-0">
             <div
               className="flex flex-col relative gap-5 pt-5 border-r-1 border-light-gray-color "
@@ -248,7 +230,7 @@ function BaseLayout() {
                       ></textarea>
                     </label>
                     <div className="p-1.5">
-                      <SmallButton handleClick={() => {}} text="run" />
+                      <SmallButton handleClick={() => { }} text="run" />
                     </div>
                   </div>
                 </div>
