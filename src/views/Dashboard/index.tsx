@@ -6,8 +6,8 @@ import TerminalIcon from "../../components/icons/TerminalIcon";
 import TerminalEmptyState from "../../components/empty_states/TerminalEmptyState";
 import SmallButton from "../../components/SmallButton";
 import FeedIcon from "../../components/icons/FeedIcon";
-import FeedEmptyState from "../../components/empty_states/FeedEmptyState";
 import { MainLayout } from "../../components/layouts";
+import FeedTerminal from "../../components/data_component/FeedTerminal";
 
 export default function Dashboard() {
     const { processId } = useParams();
@@ -136,7 +136,7 @@ export default function Dashboard() {
 
     return (
         <MainLayout>
-            <div className="grid grid-rows-[auto,1fr] h-full w-full">
+            <div className="grid grid-rows-[auto,1fr] h-full w-full overflow-clip">
                 <div className="grid grid-cols-[auto,1fr] min-h-0">
                     <div
                         className="flex flex-col relative gap-5 border-r-1 border-light-gray-color "
@@ -154,7 +154,7 @@ export default function Dashboard() {
                     </div>
 
 
-                    <div className="flex flex-col p-5 gap-5 min-h-0">
+                    <div className="flex flex-col p-5 gap-5 min-h-0 ">
                         {processId && (
                             <div className="text-xs uppercase flex items-center gap-2">
                                 <Link to={"/"}>My Processes</Link>
@@ -163,11 +163,11 @@ export default function Dashboard() {
                                 <Link to={`/process/${processId}`}>{processId}</Link>
                             </div>
                         )}
-                        <div className="grid grid-cols-[auto,1fr] gap-5 flex-grow min-h-0">
+                        <div className="grid grid-cols-[auto,1fr] gap-5 flex-grow min-h-0 w-full">
                             <div
                                 ref={terminalRef}
                                 style={{ width: Math.max(terminalWidth, 180) }}
-                                className="relative flex flex-col min-h-0"
+                                className="relative flex flex-col min-h-0 max-w-[65vw] min-w-[20vw]"
                             >
                                 <div
                                     ref={terminalResizeElement}
@@ -210,13 +210,15 @@ export default function Dashboard() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex flex-col ronuded-smd border-1 border-light-gray-color rounded-smd min-h-0">
+
+
+                            <div className="flex flex-col ronuded-smd border-1 border-light-gray-color rounded-smd min-h-0 min-w-[10vw]">
                                 <div className="text-xs uppercase flex gap-1.5 items-center border-b-1 border-light-gray-color px-4 py-2.5">
                                     <FeedIcon />
                                     <span>Feed</span>
                                 </div>
                                 <div className="flex flex-grow overflow-y-auto overflow-x-hidden min-h-0">
-                                    {mode === "starter" && <FeedEmptyState />}
+                                    <FeedTerminal />
                                 </div>
                             </div>
                         </div>

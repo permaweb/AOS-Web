@@ -10,10 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@permaweb/aoconnect": "^0.0.51",
+    "@xterm/xterm": "^5.4.0",
     "arweave-wallet-kit": "^1.0.4",
+    "flowbite": "^2.3.0",
+    "flowbite-react": "^0.7.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.22.3"
+    "react-router-dom": "^6.22.3",
+    "xterm-readline": "^1.1.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
