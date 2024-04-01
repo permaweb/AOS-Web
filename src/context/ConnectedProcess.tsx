@@ -3,6 +3,7 @@ import { live } from "../helpers/aos";
 
 export type ProcessProps = {
     data: any;
+    isConnected: boolean;
 };
 
 type ConnectedProcessContextType = {
@@ -25,16 +26,22 @@ const ConnectedProcessProvider = ({ children }: { children: ReactNode }) => {
     const connectProcess = async (processId: string) => {
         const data = await live(processId);
 
-        // if (data) {
-        setConnectedProcess({ data: data });
-        setTimer(setInterval(async () => {
-            const newData = await live(processId);
-            // if (newData !== null && newData !== "") {
-            console.log("data ", data);
-            setConnectedProcess({ data: newData });
-            // }
-        }, interval));
-        // }
+        if (data) {
+            setConnectedProcess({
+                data: data,
+                isConnected: true
+            });
+            setTimer(setInterval(async () => {
+                const newData = await live(processId);
+                if (newData !== null && newData !== "") {
+                    // console.log("data ", data);
+                    setConnectedProcess({
+                        data: newData,
+                        isConnected: true
+                    });
+                }
+            }, interval));
+        }
     };
 
     const disconnectProcess = () => {

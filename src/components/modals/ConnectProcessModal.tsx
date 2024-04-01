@@ -1,6 +1,6 @@
 import { Label, Modal } from "flowbite-react";
 import SmallButton from "../SmallButton";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { InputField } from "../input";
 import { ConnectedProcessContext } from "../../context/ConnectedProcess";
 
@@ -10,7 +10,7 @@ interface Props {
 }
 
 export default function ConnectProcessModal({ openModal, setOpenModal }: Props) {
-    const { connectProcess, connectedProcess } = useContext(ConnectedProcessContext);
+    const { connectProcess } = useContext(ConnectedProcessContext);
 
     const [error, setError] = useState<string>("");
     const [pid, setPid] = useState<string>("");
@@ -25,10 +25,6 @@ export default function ConnectProcessModal({ openModal, setOpenModal }: Props) 
 
         setOpenModal(false);
     };
-
-    useEffect(() => {
-        console.log("connectedProcess", connectedProcess);
-    }, [connectedProcess]);
 
     return (
         <Modal show={openModal} onClose={() => setOpenModal(false)}>

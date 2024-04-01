@@ -1,14 +1,19 @@
 import { Terminal } from "@xterm/xterm";
-import { useContext, useEffect } from "react";
+import { FitAddon } from 'xterm-addon-fit';
+import React, { useContext, useEffect, useState } from "react";
 import { ConnectedProcessContext } from "../../context/ConnectedProcess";
+import 'xterm/css/xterm.css';
 
 export default function FeedTerminal() {
     const { connectedProcess, disconnectProcess } = useContext(ConnectedProcessContext);
-    let feed: Terminal | null = null;
+    const terminalRef = React.useRef<any>(null);
+    const [terminal, setTerminal] = useState<any>(null);
+    const [isTerminalInitialized, setIsTerminalInitialized] = useState(false);
 
-    const goLive = () => {
-        if (!feed) {
-            feed = new Terminal({
+    useEffect(() => {
+        if (terminalRef.current && terminal == null && !isTerminalInitialized) {
+            const newTerminal = new Terminal({
+                cursorBlink: true,
                 theme: {
                     background: "#FFF",
                     foreground: "#191A19",
@@ -20,44 +25,44 @@ export default function FeedTerminal() {
                 },
             });
 
-            const liveFeed = document.getElementById("live_feed");
-            if (liveFeed) {
-                feed.open(liveFeed);
-                feed.resize(feed.cols, 100);
-            }
-        }
+            const fitAddon = new FitAddon();
+            newTerminal.loadAddon(fitAddon);
+            newTerminal.open(terminalRef.current);
+            fitAddon.fit();
 
-        feed.writeln("Connecting to your process...");
-        connectedProcess?.data.split("\n").map((row: any) => feed!.writeln("\r" + row));
-    }
-
-    useEffect(() => {
-        if (connectedProcess && feed !== null) {
-            goLive();
+            setTerminal(newTerminal); // Save the terminal instance
+            setIsTerminalInitialized(true);
         }
 
         return () => {
+            terminalRef.current = null
+            terminal?.dispose();
             disconnectProcess();
-            if (feed) {
-                feed.dispose();
-                feed = null;
-            }
         };
-    }, [connectedProcess?.data]);
+    }, [terminal, isTerminalInitialized]);
+
+    useEffect(() => {
+        if (isTerminalInitialized && terminal && connectedProcess?.isConnected) {
+            try {
+                const outputText = connectedProcess.data.output.toString();
+                const promptText = connectedProcess.data.prompt;
+
+                terminal.writeln(`${promptText} ${outputText}`);
+            } catch (error: any) {
+                console.error("Error displaying data:", error.message);
+            }
+        }
+    }, [connectedProcess?.data, terminal, isTerminalInitialized]);
 
     return (
         <div className="w-full h-full flex items-center justify-center p-5">
-            <div className="flex flex-col gap-1 w-full">
+            <div className="flex flex-col gap-1 w-full relative">
                 <span className="uppercase font-bold max-w-52">This is your feed</span>
-                {
-                    connectedProcess?.data ? (
-                        <div id="live_feed" className="w-full h-96 bg-white rounded-md shadow-md"></div>
-                    ) : (
-                        <div className="font-dm-sans">
-                            Outputs from your commands will show up here.
-                        </div>
-                    )
-                }
+                <div ref={terminalRef} className={`w-full  ${connectedProcess?.isConnected ? "h-96" : "opacity-0"}`}></div>
+
+                <div className={`font-dm-sans absolute top-10  ${connectedProcess?.isConnected ? "hidden" : "block"}`}>
+                    Outputs from your commands will show up here.
+                </div>
             </div>
         </div>
     )
