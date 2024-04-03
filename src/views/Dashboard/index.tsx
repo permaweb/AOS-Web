@@ -224,7 +224,7 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <div className="flex flex-grow flex-col ronuded-smd border-1 border-light-gray-color rounded-smd min-h-0 min-w-[10vw]">
+              <div className="flex flex-grow flex-shrink flex-col ronuded-smd border-1 border-light-gray-color rounded-smd min-h-0 min-w-0">
                 <div className="text-xs uppercase flex gap-1.5 items-center border-b-1 border-light-gray-color px-4 py-2.5">
                   <FeedIcon />
                   <span>Feed</span>
