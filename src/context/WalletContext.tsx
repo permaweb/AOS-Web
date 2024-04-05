@@ -11,7 +11,7 @@ type WalletContextType = {
 
 const WalletContext = createContext<WalletContextType>({
   myWallet: null,
-  addWallet: (wallet: WalletProps | null) => {},
+  addWallet: () => {},
 });
 
 const WalletProvider = ({ children }: { children: ReactNode }) => {

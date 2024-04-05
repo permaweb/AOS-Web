@@ -33,12 +33,6 @@ export default function Dashboard() {
       return parseFloat(localStorageWidth);
     return 600;
   });
-  const [modalShown, setModalShown] = useState<
-    "none" | "create" | "connect" | "wallet"
-  >("none");
-
-  const showConnectModal = () => setModalShown("connect");
-  const showCreateModal = () => setModalShown("create");
 
   useEffect(() => {
     if (resizeElement.current) {
@@ -158,11 +152,7 @@ export default function Dashboard() {
               ref={resizeElement}
               className="absolute -right-2 top-0 bottom-0 w-4 hover:cursor-col-resize select-none h-[92vh] "
             />
-            <SidebarProcessPanel
-              processId={processId}
-              showConnectModal={showConnectModal}
-              showCreateModal={showCreateModal}
-            />
+            <SidebarProcessPanel processId={processId} />
           </div>
 
           <div className="flex flex-col p-5 gap-5 min-h-0 ">
@@ -191,12 +181,7 @@ export default function Dashboard() {
                   <span>Terminal</span>
                 </div>
                 <div className="flex flex-col flex-grow overflow-y-auto overflow-x-hidden min-h-0">
-                  {mode === "starter" && (
-                    <TerminalEmptyState
-                      handleCreateProcess={showCreateModal}
-                      handleConnectProcess={showConnectModal}
-                    />
-                  )}
+                  {mode === "starter" && <TerminalEmptyState />}
                 </div>
                 <div
                   className={

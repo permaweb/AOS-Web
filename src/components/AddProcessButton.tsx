@@ -7,15 +7,9 @@ import TerminalIcon from "./icons/TerminalIcon";
 import ConnectIcon from "./icons/ConnectIcon";
 import ConnectProcessModal from "./modals/ConnectProcessModal";
 
-export type AddProcessButtonProps = {
-  handleCreateProcess: () => void;
-  handleConnectProcess: () => void;
-};
+export type AddProcessButtonProps = {};
 
-export default function AddProcessButton({
-  handleCreateProcess,
-  handleConnectProcess,
-}: AddProcessButtonProps) {
+export default function AddProcessButton({}: AddProcessButtonProps) {
   const [showConnectModal, setShowConnectModal] = useState<boolean>(false);
   const [showOptions, setShowOptions] = useState<boolean>(false);
 
@@ -32,11 +26,9 @@ export default function AddProcessButton({
   }, []);
 
   const handleCreateProcessThenClose = () => {
-    handleCreateProcess();
     setShowOptions(false);
   };
   const handleConnectProcessThenClose = () => {
-    handleConnectProcess();
     setShowOptions(false);
     setShowConnectModal(true);
   };
@@ -76,7 +68,10 @@ export default function AddProcessButton({
         )}
       </div>
 
-      <ConnectProcessModal openModal={showConnectModal} setOpenModal={setShowConnectModal} />
+      <ConnectProcessModal
+        openModal={showConnectModal}
+        setOpenModal={setShowConnectModal}
+      />
     </>
   );
 }

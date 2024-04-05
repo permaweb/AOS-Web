@@ -1,4 +1,4 @@
-import { useEffect, useState, type MouseEvent, useRef } from "react";
+import { useEffect, useState, type MouseEvent } from "react";
 import QuestsIcon from "./icons/QuestsIcon";
 import CloseIcon from "./icons/CloseIcon";
 import { Link } from "react-router-dom";

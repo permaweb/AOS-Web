@@ -13,8 +13,8 @@ type ProcessesContextType = {
 
 const MyProcessesContext = createContext<ProcessesContextType>({
   myProcesses: [],
-  addProcess: (process: ProcessProps) => {},
-  removeProcess: (processId: string) => {},
+  addProcess: () => {},
+  removeProcess: () => {},
 });
 
 const MyProcessesProvider = ({ children }: { children: ReactNode }) => {
