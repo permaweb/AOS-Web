@@ -44,10 +44,11 @@ export default function FeedTerminal() {
     useEffect(() => {
         if (isTerminalInitialized && terminal && connectedProcess?.isConnected) {
             try {
-                const outputText = connectedProcess.data.output.toString();
-                const promptText = connectedProcess.data.prompt;
-
-                terminal.writeln(`${promptText} ${outputText}`);
+                const liveFeed: any = connectedProcess?.data;
+                if (liveFeed) {
+                    liveFeed.split("\n").map((feed: any) => terminal.writeln("\r" + feed));
+                    terminal.scrollToBottom();
+                }
             } catch (error: any) {
                 console.error("Error displaying data:", error.message);
             }

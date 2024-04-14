@@ -26,22 +26,23 @@ const ConnectedProcessProvider = ({ children }: { children: ReactNode }) => {
     const connectProcess = async (processId: string) => {
         const data = await live(processId);
 
-        if (data) {
+        if (data === null || data === "") {
             setConnectedProcess({
                 data: data,
                 isConnected: true
             });
-            setTimer(setInterval(async () => {
-                const newData = await live(processId);
-                if (newData !== null && newData !== "") {
-                    // console.log("data ", data);
-                    setConnectedProcess({
-                        data: newData,
-                        isConnected: true
-                    });
-                }
-            }, interval));
         }
+        setTimer(setInterval(async () => {
+            const newData = await live(processId);
+            if (newData !== null && newData !== "") {
+                // console.log("data ", data);
+                setConnectedProcess({
+                    data: newData,
+                    isConnected: true
+                });
+            }
+        }, interval));
+        // }
     };
 
     const disconnectProcess = () => {
