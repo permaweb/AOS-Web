@@ -6,6 +6,7 @@ import SmallPlus from "./icons/SmallPlus";
 import TerminalIcon from "./icons/TerminalIcon";
 import ConnectIcon from "./icons/ConnectIcon";
 import ConnectProcessModal from "./modals/ConnectProcessModal";
+import CreateProcessModal from "./modals/CreateProcessModel";
 
 export type AddProcessButtonProps = {
   handleCreateProcess: () => void;
@@ -17,6 +18,7 @@ export default function AddProcessButton({
   handleConnectProcess,
 }: AddProcessButtonProps) {
   const [showConnectModal, setShowConnectModal] = useState<boolean>(false);
+  const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
   const [showOptions, setShowOptions] = useState<boolean>(false);
 
   const handleClick = (e: MouseEvent) => {
@@ -34,6 +36,7 @@ export default function AddProcessButton({
   const handleCreateProcessThenClose = () => {
     handleCreateProcess();
     setShowOptions(false);
+    setShowCreateModal(true);
   };
   const handleConnectProcessThenClose = () => {
     handleConnectProcess();
@@ -77,6 +80,7 @@ export default function AddProcessButton({
       </div>
 
       <ConnectProcessModal openModal={showConnectModal} setOpenModal={setShowConnectModal} />
+      <CreateProcessModal openModal={showCreateModal} setOpenModal={setShowCreateModal} />
     </>
   );
 }

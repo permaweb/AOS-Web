@@ -3,7 +3,8 @@ import { MouseEvent } from "react";
 type SmallButtonProps = {
   text: string;
   state?: "black" | "white" | "larger";
-  handleClick: (e: MouseEvent) => void;
+  type?: "button" | "submit" | "reset";
+  handleClick?: (e: MouseEvent) => void;
   IconComponent?: () => JSX.Element;
 };
 
@@ -11,6 +12,7 @@ export default function SmallButton({
   handleClick,
   state = "black",
   text,
+  type = "button",
   IconComponent,
 }: SmallButtonProps) {
   return (
@@ -24,9 +26,8 @@ export default function SmallButton({
           ? "bg-primary-dark-color text-bg-color "
           : "border-[#D6D7DC] border-1 bg-[#ECEFEF] text-primary-dark-color")
       }
-      onClick={(e) => {
-        handleClick(e);
-      }}
+      onClick={handleClick}
+      type={type}
     >
       {IconComponent && <IconComponent />}
       <span>{text}</span>

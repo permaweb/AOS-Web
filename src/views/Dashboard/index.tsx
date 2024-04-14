@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import SidebarProcessPanel from "../../components/data_component/SidebarProcessPanel";
 import BreadcrumbChevron from "../../components/icons/BreadcrumbChevron";
@@ -8,9 +8,15 @@ import SmallButton from "../../components/SmallButton";
 import FeedIcon from "../../components/icons/FeedIcon";
 import { MainLayout } from "../../components/layouts";
 import FeedTerminal from "../../components/data_component/FeedTerminal";
+import { ConnectedProcessContext } from "../../context/ConnectedProcess";
+import ConnectProcessModal from "../../components/modals/ConnectProcessModal";
+import CreateProcessModal from "../../components/modals/CreateProcessModel";
+import { TextareaField } from "../../components/input";
 
 export default function Dashboard() {
     const { processId } = useParams();
+    const { connectProcess } = useContext(ConnectedProcessContext);
+    const [commandToRun, setCommandToRun] = useState<string>("");
 
     const mode: "starter" | "process" = processId ? "process" : "starter";
 
@@ -32,10 +38,7 @@ export default function Dashboard() {
             return parseFloat(localStorageWidth);
         return 600;
     });
-    const [modalShown, setModalShown] = useState<
-        "none" | "create" | "connect" | "wallet"
-    >("none");
-
+    const [modalShown, setModalShown] = useState<"none" | "create" | "connect">("none");
     const showConnectModal = () => setModalShown("connect");
     const showCreateModal = () => setModalShown("create");
 
@@ -112,27 +115,44 @@ export default function Dashboard() {
         }
     }, [terminalResizeElement, terminalRef]);
 
+    // useEffect(() => {
+    //     const handleResize = () => {
+    //         if (textareaRef.current) {
+    //             textareaRef.current.style.height = "auto";
+
+    //             const lineHeightPx = 1.25 * 16;
+    //             textareaRef.current.style.height = `${lineHeightPx}px`;
+
+    //             const newHeight = textareaRef.current.scrollHeight;
+    //             textareaRef.current.style.height = `${newHeight}px`;
+    //         }
+    //     };
+
+    //     textareaRef.current?.addEventListener("input", handleResize);
+
+    //     handleResize();
+
+    //     return () => {
+    //         textareaRef.current?.removeEventListener("input", handleResize);
+    //     };
+    // }, []);
+
+    // procecssId
     useEffect(() => {
-        const handleResize = () => {
-            if (textareaRef.current) {
-                textareaRef.current.style.height = "auto";
+        if (processId !== undefined && processId !== null && processId !== "") {
+            connectProcess(processId);
+        }
+    }, [processId]);
 
-                const lineHeightPx = 1.25 * 16;
-                textareaRef.current.style.height = `${lineHeightPx}px`;
 
-                const newHeight = textareaRef.current.scrollHeight;
-                textareaRef.current.style.height = `${newHeight}px`;
-            }
-        };
+    const handleRunCommand = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (commandToRun === "") return;
 
-        textareaRef.current?.addEventListener("input", handleResize);
+        console.log("Running command: ", commandToRun);
+        setCommandToRun("");
 
-        handleResize();
-
-        return () => {
-            textareaRef.current?.removeEventListener("input", handleResize);
-        };
-    }, []);
+    };
 
     return (
         <MainLayout>
@@ -185,7 +205,8 @@ export default function Dashboard() {
                                         />
                                     )}
                                 </div>
-                                <div
+                                <form
+                                    onSubmit={handleRunCommand}
                                     className={
                                         "flex gap-2 border-1 transition-colors border-gray-text-color rounded-lg  focus-within:border-primary-dark-color " +
                                         (mode === "starter"
@@ -198,17 +219,19 @@ export default function Dashboard() {
                                         className="flex-grow h-full relative"
                                     >
                                         <span className="absolute left-3 top-3">{"aos>"}</span>
-                                        <textarea
-                                            ref={textareaRef}
+                                        <TextareaField
                                             name="runCommandInput"
-                                            className="py-3 pl-13 w-full bg-transparent h-full resize-none outline-none min-h-0 overflow-hidden "
+                                            className="py-3 pl-13 w-full bg-transparent h-12 resize-none outline-none min-h-0 overflow-hidden "
                                             spellCheck="false"
-                                        ></textarea>
+                                            onChange={(e: any) => setCommandToRun(e.target.value)}
+                                            value={commandToRun}
+                                        />
                                     </label>
+
                                     <div className="p-1.5">
-                                        <SmallButton handleClick={() => { }} text="run" />
+                                        <SmallButton text="run" type="submit" />
                                     </div>
-                                </div>
+                                </form>
                             </div>
 
 
@@ -225,6 +248,9 @@ export default function Dashboard() {
                     </div>
                 </div>
             </div>
+
+            <ConnectProcessModal openModal={modalShown == "connect"} setOpenModal={showConnectModal} />
+            <CreateProcessModal openModal={modalShown == "create"} setOpenModal={showCreateModal} />
         </MainLayout>
     )
 }
