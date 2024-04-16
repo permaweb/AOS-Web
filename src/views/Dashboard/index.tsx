@@ -12,11 +12,14 @@ import { ConnectedProcessContext } from "../../context/ConnectedProcess";
 import ConnectProcessModal from "../../components/modals/ConnectProcessModal";
 import CreateProcessModal from "../../components/modals/CreateProcessModel";
 import { TextareaField } from "../../components/input";
+import { InputTerminal } from "../../components/Terminals";
 
 export default function Dashboard() {
     const { processId } = useParams();
-    const { connectProcess } = useContext(ConnectedProcessContext);
+    const { connectProcess, sendCommand } = useContext(ConnectedProcessContext);
     const [commandToRun, setCommandToRun] = useState<string>("");
+    const [userCommand, setUserCommand] = useState<string>("");
+    const [userCommandResult, setUserCommandResult] = useState<any>(null);
 
     const mode: "starter" | "process" = processId ? "process" : "starter";
 
@@ -38,9 +41,9 @@ export default function Dashboard() {
             return parseFloat(localStorageWidth);
         return 600;
     });
-    const [modalShown, setModalShown] = useState<"none" | "create" | "connect">("none");
-    const showConnectModal = () => setModalShown("connect");
-    const showCreateModal = () => setModalShown("create");
+
+    const [createModelOpen, setCreateModelOpen] = useState<boolean>(false);
+    const [connectModelOpen, setConnectModelOpen] = useState<boolean>(false);
 
     useEffect(() => {
         if (resizeElement.current) {
@@ -145,13 +148,20 @@ export default function Dashboard() {
     }, [processId]);
 
 
-    const handleRunCommand = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleRunCommand = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (commandToRun === "") return;
+        if (processId === undefined || processId === null || processId === "") return;
 
-        console.log("Running command: ", commandToRun);
+        setUserCommand(commandToRun);
+        console.log("commandToRun: ", commandToRun);
+
+        const result = await sendCommand(processId, commandToRun);
+
+        setUserCommandResult(result);
+        console.log("Result: ", result);
+
         setCommandToRun("");
-
     };
 
     return (
@@ -168,11 +178,10 @@ export default function Dashboard() {
                         />
                         <SidebarProcessPanel
                             processId={processId}
-                            showConnectModal={showConnectModal}
-                            showCreateModal={showCreateModal}
+                            showConnectModal={setConnectModelOpen}
+                            showCreateModal={setCreateModelOpen}
                         />
                     </div>
-
 
                     <div className="flex flex-col p-5 gap-5 min-h-0 ">
                         {processId && (
@@ -180,7 +189,7 @@ export default function Dashboard() {
                                 <Link to={"/"}>My Processes</Link>
 
                                 <BreadcrumbChevron />
-                                <Link to={`/process/${processId}`}>{processId}</Link>
+                                <Link to={`/process/${processId}`} className="normal-case">{processId}</Link>
                             </div>
                         )}
                         <div className="grid grid-cols-[auto,1fr] gap-5 flex-grow min-h-0 w-full">
@@ -198,12 +207,18 @@ export default function Dashboard() {
                                     <span>Terminal</span>
                                 </div>
                                 <div className="flex flex-col flex-grow overflow-y-auto overflow-x-hidden min-h-0">
-                                    {mode === "starter" && (
+                                    {mode === "starter" ? (
                                         <TerminalEmptyState
-                                            handleCreateProcess={showCreateModal}
-                                            handleConnectProcess={showConnectModal}
+                                            showCreateModal={setCreateModelOpen}
+                                            showConnectModal={setConnectModelOpen}
                                         />
-                                    )}
+                                    ) : mode === "process" ? (
+                                        <InputTerminal
+                                            userCommand={userCommand}
+                                            userCommandResult={userCommandResult}
+                                        />
+                                    ) : ""
+                                    }
                                 </div>
                                 <form
                                     onSubmit={handleRunCommand}
@@ -249,8 +264,8 @@ export default function Dashboard() {
                 </div>
             </div>
 
-            <ConnectProcessModal openModal={modalShown == "connect"} setOpenModal={showConnectModal} />
-            <CreateProcessModal openModal={modalShown == "create"} setOpenModal={showCreateModal} />
+            <ConnectProcessModal openModal={connectModelOpen} setOpenModal={setConnectModelOpen} />
+            <CreateProcessModal openModal={createModelOpen} setOpenModal={setCreateModelOpen} />
         </MainLayout>
     )
 }

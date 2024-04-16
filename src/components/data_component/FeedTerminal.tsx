@@ -15,9 +15,9 @@ export default function FeedTerminal() {
             const newTerminal = new Terminal({
                 cursorBlink: true,
                 theme: {
-                    background: "#FFF",
+                    background: "#f2f2f2",
                     foreground: "#191A19",
-                    selectionForeground: "#FFF",
+                    selectionForeground: "#f2f2f2",
                     selectionBackground: "#191A19",
                     cursor: "black",
                     cursorAccent: "black",

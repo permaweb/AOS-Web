@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect, ReactNode } from "react";
-import { live, register } from "../helpers/aos";
+import { evaluate, live, register } from "../helpers/aos";
 
 export type ProcessProps = {
     data: any;
@@ -10,6 +10,7 @@ type ConnectedProcessContextType = {
     connectedProcess: ProcessProps | null;
     connectProcess: (process: string) => void;
     createProcess: (name: string) => void;
+    sendCommand: (processId: string, command: string) => void;
     disconnectProcess: () => void;
 };
 
@@ -17,6 +18,7 @@ const ConnectedProcessContext = createContext<ConnectedProcessContextType>({
     connectedProcess: null,
     connectProcess: (process: string) => { },
     createProcess: (name: string) => { },
+    sendCommand: (processId: string, command: string) => { },
     disconnectProcess: () => { },
 });
 
@@ -29,6 +31,7 @@ const ConnectedProcessProvider = ({ children }: { children: ReactNode }) => {
         console.log("Creating process with name: ", name);
         const globalWallet: any = globalThis;
         const signer = globalWallet.arweaveWallet;
+        // await signer.connect();
 
         if (signer === undefined || signer === null || signer === "") {
             console.error("Please connect your wallet to create a process");
@@ -59,7 +62,24 @@ const ConnectedProcessProvider = ({ children }: { children: ReactNode }) => {
                 });
             }
         }, interval));
-        // }
+    };
+
+    const sendCommand = async (processId: string, command: string) => {
+        const globalWallet: any = globalThis;
+        const signer = globalWallet.arweaveWallet;
+        // await signer.connect();
+
+        if (signer === undefined || signer === null || signer === "") {
+            console.error("Please connect your wallet to send a command");
+            return;
+        }
+
+        try {
+            const result = await evaluate(processId, command, signer);
+            return result;
+        } catch (error: any) {
+            console.error("Error sending command: ", error.message);
+        }
     };
 
     const disconnectProcess = () => {
@@ -77,7 +97,7 @@ const ConnectedProcessProvider = ({ children }: { children: ReactNode }) => {
 
     return (
         <ConnectedProcessContext.Provider
-            value={{ connectedProcess, connectProcess, disconnectProcess, createProcess }}
+            value={{ connectedProcess, connectProcess, disconnectProcess, createProcess, sendCommand }}
         >
             {children}
         </ConnectedProcessContext.Provider>

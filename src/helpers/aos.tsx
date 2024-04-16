@@ -26,9 +26,6 @@ export async function live(pid: string) {
     return null
 }
 
-
-
-
 export async function register(name: string, signer: any) {
     if (name === "") {
         throw new Error("Name cannot be empty")
@@ -48,4 +45,31 @@ export async function register(name: string, signer: any) {
     })
 
     return pid
+}
+
+export async function evaluate(pid: string, command: string, signer: any) {
+    const aos = connect();
+
+    const messageId = await aos.message({
+        process: pid,
+        signer: createDataItemSigner(signer),
+        tags: [{ name: 'Action', value: 'Eval' }],
+        data: command
+    });
+
+    const result = await aos.result({
+        process: pid,
+        message: messageId
+    });
+
+
+    if (result.Error) {
+        throw new Error(result.Error)
+    }
+
+    if (result.Output?.data?.output) {
+        return result.Output?.data?.output
+    }
+
+    return undefined
 }

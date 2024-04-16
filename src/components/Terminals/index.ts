@@ -1,0 +1,1 @@
+export { default as InputTerminal } from './InputTerminal';
