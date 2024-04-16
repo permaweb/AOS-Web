@@ -1,12 +1,14 @@
 import { createContext, useState, useEffect, ReactNode } from "react";
-import { evaluate, live, register } from "../helpers/aos";
+import { evaluate, findMyPIDs, live, register } from "../helpers/aos";
 
 export type ProcessProps = {
-    data: any;
-    isConnected: boolean;
+    selectedProcessHistory?: any;
+    isConnected?: boolean;
 };
 
 type ConnectedProcessContextType = {
+    processHistoryList: string[];
+    findProcessHistory: (owner: string) => void;
     connectedProcess: ProcessProps | null;
     connectProcess: (process: string) => void;
     createProcess: (name: string) => void;
@@ -15,6 +17,8 @@ type ConnectedProcessContextType = {
 };
 
 const ConnectedProcessContext = createContext<ConnectedProcessContextType>({
+    processHistoryList: [],
+    findProcessHistory: (owner: string) => { },
     connectedProcess: null,
     connectProcess: (process: string) => { },
     createProcess: (name: string) => { },
@@ -23,6 +27,7 @@ const ConnectedProcessContext = createContext<ConnectedProcessContextType>({
 });
 
 const ConnectedProcessProvider = ({ children }: { children: ReactNode }) => {
+    const [processHistoryList, setProcessHistoryList] = useState<string[]>([]);
     const [connectedProcess, setConnectedProcess] = useState<ProcessProps | null>(null);
     const interval = 3000; // 5 seconds
     const [timer, setTimer] = useState<any>(null);
@@ -43,12 +48,17 @@ const ConnectedProcessProvider = ({ children }: { children: ReactNode }) => {
         return pid;
     }
 
+    const findProcessHistory = async (owner: string) => {
+        const processes = await findMyPIDs(owner);
+        setProcessHistoryList(processes);
+    };
+
     const connectProcess = async (processId: string) => {
         const data = await live(processId);
 
         if (data === null || data === "") {
             setConnectedProcess({
-                data: data,
+                selectedProcessHistory: data,
                 isConnected: true
             });
         }
@@ -57,7 +67,7 @@ const ConnectedProcessProvider = ({ children }: { children: ReactNode }) => {
             if (newData !== null && newData !== "") {
                 // console.log("data ", data);
                 setConnectedProcess({
-                    data: newData,
+                    selectedProcessHistory: newData,
                     isConnected: true
                 });
             }
@@ -70,15 +80,14 @@ const ConnectedProcessProvider = ({ children }: { children: ReactNode }) => {
         // await signer.connect();
 
         if (signer === undefined || signer === null || signer === "") {
-            console.error("Please connect your wallet to send a command");
-            return;
+            throw new Error("Please connect your wallet to send a command");
         }
 
         try {
             const result = await evaluate(processId, command, signer);
             return result;
         } catch (error: any) {
-            console.error("Error sending command: ", error.message);
+            throw new Error("Error sending command: " + error.message);
         }
     };
 
@@ -97,7 +106,7 @@ const ConnectedProcessProvider = ({ children }: { children: ReactNode }) => {
 
     return (
         <ConnectedProcessContext.Provider
-            value={{ connectedProcess, connectProcess, disconnectProcess, createProcess, sendCommand }}
+            value={{ connectedProcess, connectProcess, disconnectProcess, createProcess, sendCommand, processHistoryList, findProcessHistory }}
         >
             {children}
         </ConnectedProcessContext.Provider>

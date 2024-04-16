@@ -44,7 +44,7 @@ export default function FeedTerminal() {
     useEffect(() => {
         if (isTerminalInitialized && terminal && connectedProcess?.isConnected) {
             try {
-                const liveFeed: any = connectedProcess?.data;
+                const liveFeed: any = connectedProcess?.selectedProcessHistory;
                 if (liveFeed) {
                     liveFeed.split("\n").map((feed: any) => terminal.writeln("\r" + feed));
                     terminal.scrollToBottom();
@@ -53,7 +53,7 @@ export default function FeedTerminal() {
                 console.error("Error displaying data:", error.message);
             }
         }
-    }, [connectedProcess?.data, terminal, isTerminalInitialized]);
+    }, [connectedProcess?.selectedProcessHistory, terminal, isTerminalInitialized]);
 
     return (
         <div className="w-full h-full flex items-center justify-center p-5">

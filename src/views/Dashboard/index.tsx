@@ -13,6 +13,7 @@ import ConnectProcessModal from "../../components/modals/ConnectProcessModal";
 import CreateProcessModal from "../../components/modals/CreateProcessModel";
 import { TextareaField } from "../../components/input";
 import { InputTerminal } from "../../components/Terminals";
+import { loadBluePrint } from "../../helpers/aos";
 
 export default function Dashboard() {
     const { processId } = useParams();
@@ -150,16 +151,21 @@ export default function Dashboard() {
 
     const handleRunCommand = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
         if (commandToRun === "") return;
         if (processId === undefined || processId === null || processId === "") return;
-
         setUserCommand(commandToRun);
-        console.log("commandToRun: ", commandToRun);
 
-        const result = await sendCommand(processId, commandToRun);
-
-        setUserCommandResult(result);
-        console.log("Result: ", result);
+        const loadBlueprintExp = /\.load-blueprint\s+(\w*)/;
+        if (loadBlueprintExp.test(commandToRun)) {
+            const [, name] = commandToRun.match(loadBlueprintExp) || [];
+            console.log("name: ", name);
+            const result = await loadBluePrint(name);
+            setUserCommandResult(result);
+        } else {
+            const result = await sendCommand(processId, commandToRun);
+            setUserCommandResult(result);
+        }
 
         setCommandToRun("");
     };

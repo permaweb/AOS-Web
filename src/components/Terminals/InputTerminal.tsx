@@ -59,7 +59,7 @@ export default function InputTerminal({ userCommand, userCommandResult }: InputT
     React.useEffect(() => {
         if (isTerminalInitialized && terminal) {
             console.log("userCommandResult", userCommandResult);
-            terminal.writeln(` ${userCommandResult}`); // Write the command result
+            terminal.writeln("\r" + ">" + userCommandResult); // Write the command result
         }
     }, [userCommandResult]);
 
