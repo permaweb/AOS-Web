@@ -3,6 +3,7 @@ import { FitAddon } from 'xterm-addon-fit';
 import React from "react";
 import 'xterm/css/xterm.css';
 import { useParams } from "react-router-dom";
+import { Readline } from "xterm-readline";
 
 interface InputTerminalProps {
     userCommand: string;
@@ -14,6 +15,7 @@ export default function InputTerminal({ userCommand, userCommandResult }: InputT
     const terminalRef = React.useRef<any>(null);
     const [terminal, setTerminal] = React.useState<any>(null);
     const [isTerminalInitialized, setIsTerminalInitialized] = React.useState(false);
+    const [readLine, setReadLine] = React.useState<any>(null);
 
     React.useEffect(() => {
         if (terminalRef.current && terminal == null && !isTerminalInitialized) {
@@ -30,8 +32,12 @@ export default function InputTerminal({ userCommand, userCommandResult }: InputT
                 },
             });
 
+            const readline = new Readline();
+            setReadLine(readline);
+
             const fitAddon = new FitAddon();
             newTerminal.loadAddon(fitAddon);
+            newTerminal.loadAddon(readline);
             newTerminal.open(terminalRef.current);
             fitAddon.fit();
 
@@ -60,8 +66,9 @@ export default function InputTerminal({ userCommand, userCommandResult }: InputT
 
     React.useEffect(() => {
         if (isTerminalInitialized && terminal) {
-            console.log("userCommandResult", userCommandResult);
-            terminal.writeln("\r" + ">" + userCommandResult); // Write the command result
+            // console.log("userCommandResult", userCommandResult);
+            // terminal.writeln("\r" + ">" + userCommandResult); // Write the command result
+            readLine.println("\r" + ">" + userCommandResult);
         }
     }, [userCommandResult]);
 

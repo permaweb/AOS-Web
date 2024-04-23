@@ -168,7 +168,7 @@ export default function Dashboard() {
             setUserCommandResult(`undefined`);
         } else {
             const result = await sendCommand(processId, command);
-            setUserCommandResult(result);
+            setUserCommandResult(`${result}`);
         }
 
         setSendingCommand(false);
