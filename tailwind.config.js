@@ -3,7 +3,8 @@ export default {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
-    "node_modules/flowbite-react/lib/esm/**/*.js"],
+    "node_modules/flowbite-react/lib/esm/**/*.js",
+  ],
 
   theme: {
     extend: {
@@ -36,6 +37,14 @@ export default {
           "0%": { transform: "translateX(-1rem)" },
           "100%": { transform: "translateX(0)" },
         },
+        slideInRight: {
+          "0%": { transform: "translateX(1rem)" },
+          "100%": { transform: "translateX(0)" },
+        },
+        slideInTop: {
+          "0%": { transform: "translateY(-1rem)" },
+          "100%": { transform: "translateY(0)" },
+        },
         scaleIn: {
           "0%": { transform: "scale(1.1)" },
           "100%": { transform: "scale(1)" },
@@ -44,11 +53,12 @@ export default {
       animation: {
         "slide-in-left":
           "slideInLeft 0.5s cubic-bezier(.02,.88,.24,1) forwards",
+        "slide-in-right":
+          "slideInRight 0.5s cubic-bezier(.02,.88,.24,1) forwards",
+        "slide-in-top": "slideInTop 0.5s cubic-bezier(.02,.88,.24,1) forwards",
         "scale-in": "scaleIn 0.5s cubic-bezier(.02,.88,.24,1) forwards",
       },
     },
   },
-  plugins: [
-    require("flowbite/plugin"),
-  ],
+  plugins: [require("flowbite/plugin")],
 };

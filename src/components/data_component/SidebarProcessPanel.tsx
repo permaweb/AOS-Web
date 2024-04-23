@@ -48,7 +48,6 @@ export default function SidebarProcessPanel({
             showCreateModal={showCreateModal}
           />
         </div>
-
       </div>
       <ProcessList currentId={processId || ""} searchParam={searchParam} />
     </div>

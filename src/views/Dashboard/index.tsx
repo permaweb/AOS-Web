@@ -17,138 +17,128 @@ import { loadBluePrint } from "../../helpers/aos";
 import PreDefinedCommands from "../../components/PreDefinedCommands";
 
 export default function Dashboard() {
-    const { processId } = useParams();
-    const { connectProcess, sendCommand } = useContext(ConnectedProcessContext);
-    const [commandToRun, setCommandToRun] = useState<string>("");
-    const [userCommand, setUserCommand] = useState<string>("");
-    const [userCommandResult, setUserCommandResult] = useState<any>(null);
-    const [sendingCommand, setSendingCommand] = useState<boolean>(false);
+  const { processId } = useParams();
+  const { connectProcess, sendCommand } = useContext(ConnectedProcessContext);
+  const [commandToRun, setCommandToRun] = useState<string>("");
+  const [userCommand, setUserCommand] = useState<string>("");
+  const [userCommandResult, setUserCommandResult] = useState<any>(null);
+  const [sendingCommand, setSendingCommand] = useState<boolean>(false);
 
-    const mode: "starter" | "process" = processId ? "process" : "starter";
+  const mode: "starter" | "process" = processId ? "process" : "starter";
 
-    const resizeElement = useRef<HTMLDivElement>(null);
-    const terminalResizeElement = useRef<HTMLDivElement>(null);
-    const terminalRef = useRef<HTMLDivElement>(null);
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
-    const [sideBarWidth, setSideBarWidth] = useState<number>(() => {
-        const localStorageWidth: string | null =
-            localStorage.getItem("sideBarWidth");
-        if (typeof localStorageWidth === "string")
-            return parseFloat(localStorageWidth);
-        return 250;
-    });
-    const [terminalWidth, setTerminalWidth] = useState<number>(() => {
-        const localStorageWidth: string | null =
-            localStorage.getItem("terminalWidth");
-        if (typeof localStorageWidth === "string")
-            return parseFloat(localStorageWidth);
-        return 600;
-    });
+  const resizeElement = useRef<HTMLDivElement>(null);
+  const terminalResizeElement = useRef<HTMLDivElement>(null);
+  const terminalRef = useRef<HTMLDivElement>(null);
+  const terminalParentRef = useRef<HTMLDivElement>(null);
+  const [sideBarWidth, setSideBarWidth] = useState<number>(() => {
+    const localStorageWidth: string | null =
+      localStorage.getItem("sideBarWidth");
+    if (typeof localStorageWidth === "string")
+      return parseFloat(localStorageWidth);
+    return 250;
+  });
+  const [terminalWidth, setTerminalWidth] = useState<number>(() => {
+    const localStorageWidth: string | null =
+      localStorage.getItem("terminalWidth");
+    if (typeof localStorageWidth === "string")
+      return parseFloat(localStorageWidth);
+    return 600;
+  });
+    
+  const [createModelOpen, setCreateModelOpen] = useState<boolean>(false);
+  const [connectModelOpen, setConnectModelOpen] = useState<boolean>(false);
 
-    const [createModelOpen, setCreateModelOpen] = useState<boolean>(false);
-    const [connectModelOpen, setConnectModelOpen] = useState<boolean>(false);
+  useEffect(() => {
+    if (resizeElement.current) {
+      const resizeSidebar = (e: MouseEvent) => {
 
-    useEffect(() => {
         if (resizeElement.current) {
-            const resizeSidebar = (e: MouseEvent) => {
-                if (resizeElement.current) {
-                    const newWidth = e.clientX;
-                    setSideBarWidth(newWidth);
-                    localStorage.setItem("sideBarWidth", `${newWidth}`);
-                }
-            };
-            const stopResize = () => {
-                window.removeEventListener("mousemove", resizeSidebar, false);
-                window.removeEventListener("mouseup", stopResize, false);
-            };
-            const initResize = () => {
-                window.addEventListener("mousemove", resizeSidebar, false);
-                window.addEventListener("mouseup", stopResize, false);
-            };
-            resizeElement.current.addEventListener("mousedown", initResize, false);
-
-            return () => {
-                if (resizeElement.current)
-                    resizeElement.current.removeEventListener(
-                        "mousedown",
-                        initResize,
-                        false
-                    );
-                stopResize();
-            };
+          const newWidth = e.clientX;
+          setSideBarWidth(newWidth);
+          localStorage.setItem("sideBarWidth", `${newWidth}`);
         }
-    }, [resizeElement]);
+      };
+      const stopResize = () => {
+        window.removeEventListener("mousemove", resizeSidebar, false);
+        window.removeEventListener("mouseup", stopResize, false);
+      };
+      const initResize = () => {
+        window.addEventListener("mousemove", resizeSidebar, false);
+        window.addEventListener("mouseup", stopResize, false);
+      };
+      resizeElement.current.addEventListener("mousedown", initResize, false);
 
-    useEffect(() => {
-        if (terminalResizeElement.current && terminalRef.current) {
-            const resizeTerminal = (e: MouseEvent) => {
-                const offsetLeft = terminalRef.current?.offsetLeft || 0;
-                const resizeOffsetLeft =
-                    terminalResizeElement.current?.getBoundingClientRect().width || 0;
-                if (terminalResizeElement.current) {
-                    const newWidth = e.clientX - offsetLeft - resizeOffsetLeft / 2;
-                    setTerminalWidth(newWidth);
-                    localStorage.setItem("terminalWidth", `${newWidth}`);
-                }
-            };
+      return () => {
+        if (resizeElement.current)
+          resizeElement.current.removeEventListener(
+            "mousedown",
+            initResize,
+            false
+          );
+        stopResize();
+      };
+    }
+  }, [resizeElement]);
 
-            const stopResize = () => {
-                window.removeEventListener("mousemove", resizeTerminal, false);
-                window.removeEventListener("mouseup", stopResize, false);
-            };
-
-            const initResize = () => {
-                window.addEventListener("mousemove", resizeTerminal, false);
-                window.addEventListener("mouseup", stopResize, false);
-            };
-
-            terminalResizeElement.current.addEventListener(
-                "mousedown",
-                initResize,
-                false
-            );
-
-            return () => {
-                if (terminalResizeElement.current) {
-                    terminalResizeElement.current.removeEventListener(
-                        "mousedown",
-                        initResize,
-                        false
-                    );
-                }
-                stopResize();
-            };
+  useEffect(() => {
+    if (
+      terminalResizeElement.current &&
+      terminalRef.current &&
+      terminalParentRef.current
+    ) {
+      const resizeTerminal = (e: MouseEvent) => {
+        if (terminalParentRef.current) {
+          const parentWidth = terminalParentRef.current.offsetWidth;
+          const resizeOffsetLeft =
+            terminalResizeElement.current?.getBoundingClientRect().width || 0;
+          if (terminalRef.current && terminalResizeElement.current) {
+            const newWidth =
+              ((e.clientX -
+                terminalRef.current.getBoundingClientRect().left +
+                resizeOffsetLeft / 2) /
+                parentWidth) *
+              100;
+            setTerminalWidth(newWidth);
+            localStorage.setItem("terminalWidth", newWidth.toString());
+          }
         }
-    }, [terminalResizeElement, terminalRef]);
+      };
 
-    // useEffect(() => {
-    //     const handleResize = () => {
-    //         if (textareaRef.current) {
-    //             textareaRef.current.style.height = "auto";
+      const stopResize = () => {
+        window.removeEventListener("mousemove", resizeTerminal, false);
+        window.removeEventListener("mouseup", stopResize, false);
+      };
 
-    //             const lineHeightPx = 1.25 * 16;
-    //             textareaRef.current.style.height = `${lineHeightPx}px`;
+      const initResize = () => {
+        window.addEventListener("mousemove", resizeTerminal, false);
+        window.addEventListener("mouseup", stopResize, false);
+      };
 
-    //             const newHeight = textareaRef.current.scrollHeight;
-    //             textareaRef.current.style.height = `${newHeight}px`;
-    //         }
-    //     };
+      terminalResizeElement.current.addEventListener(
+        "mousedown",
+        initResize,
+        false
+      );
 
-    //     textareaRef.current?.addEventListener("input", handleResize);
-
-    //     handleResize();
-
-    //     return () => {
-    //         textareaRef.current?.removeEventListener("input", handleResize);
-    //     };
-    // }, []);
-
-    // procecssId
-    useEffect(() => {
-        if (processId !== undefined && processId !== null && processId !== "") {
-            connectProcess(processId);
+      return () => {
+        if (terminalResizeElement.current) {
+          terminalResizeElement.current.removeEventListener(
+            "mousedown",
+            initResize,
+            false
+          );
         }
-    }, [processId]);
+        stopResize();
+      };
+    }
+  }, [terminalResizeElement, terminalRef, terminalParentRef]);
+
+  // procecssId
+  useEffect(() => {
+      if (processId !== undefined && processId !== null && processId !== "") {
+          connectProcess(processId);
+      }
+  }, [processId]);
 
     const [showPreDefinedCommands, setShowPreDefinedCommands] = useState<boolean>(false);
     const handleKeyUp = (e: any) => {
@@ -161,32 +151,33 @@ export default function Dashboard() {
         }
     };
 
-    const handleRunCommand = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+  const handleRunCommand = async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
 
-        if (commandToRun === "") return;
-        if (processId === undefined || processId === null || processId === "") return;
-        setSendingCommand(true);
-        setUserCommand(commandToRun);
-        let command = commandToRun;
-        setCommandToRun("");
+      if (commandToRun === "") return;
+      if (processId === undefined || processId === null || processId === "") return;
+      setSendingCommand(true);
+      setUserCommand(commandToRun);
+      let command = commandToRun;
+      setCommandToRun("");
 
-        const loadBlueprintExp = /\.load-blueprint\s+(\w*)/;
-        if (loadBlueprintExp.test(command)) {
-            const [, name] = command.match(loadBlueprintExp) || [];
-            setUserCommandResult(`loading ${name}...`);
-            await loadBluePrint(name);
-            setUserCommandResult(`undefined`);
-        } else {
-            const result = await sendCommand(processId, command);
-            setUserCommandResult(`${result}`);
-        }
+      const loadBlueprintExp = /\.load-blueprint\s+(\w*)/;
+      if (loadBlueprintExp.test(command)) {
+          const [, name] = command.match(loadBlueprintExp) || [];
+          setUserCommandResult(`loading ${name}...`);
+          await loadBluePrint(name);
+          setUserCommandResult(`undefined`);
+      } else {
+          const result = await sendCommand(processId, command);
+          setUserCommandResult(`${result}`);
+      }
 
-        setSendingCommand(false);
-    };
+      setSendingCommand(false);
+  };
 
     return (
         <MainLayout>
+          <>  
             <div className="grid grid-rows-[auto,1fr] h-full w-full overflow-clip">
                 <div className="grid grid-cols-[auto,1fr] min-h-0">
                     <div
@@ -213,15 +204,18 @@ export default function Dashboard() {
                                 <Link to={`/process/${processId}`} className="normal-case">{processId}</Link>
                             </div>
                         )}
-                        <div className="grid grid-cols-[auto,1fr] gap-5 flex-grow min-h-0 w-full">
+                        
+                        <div ref={terminalParentRef} className="flex flex-grow min-h-0">
                             <div
-                                ref={terminalRef}
-                                style={{ width: Math.max(terminalWidth, 180) }}
-                                className="relative flex flex-col min-h-0 max-w-[65vw] min-w-[20vw]"
+                              ref={terminalRef}
+                              style={{
+                                width: `${Math.min(Math.max(terminalWidth, 20), 90)}%`,
+                              }}
+                              className="relative flex-shrink-0 flex flex-col min-h-0 pr-5"
                             >
                                 <div
-                                    ref={terminalResizeElement}
-                                    className="absolute -right-6 top-0 bottom-0 w-6 hover:cursor-col-resize select-none"
+                                  ref={terminalResizeElement}
+                                  className="absolute right-0 top-0 bottom-0 w-6 hover:cursor-col-resize select-none"
                                 />
                                 <div className="text-xs uppercase flex gap-1.5 items-center  ">
                                     <TerminalIcon />
@@ -285,24 +279,22 @@ export default function Dashboard() {
                                     </div>
                                 </form>
                             </div>
-
-
-                            <div className="flex flex-col ronuded-smd border-1 border-light-gray-color rounded-smd min-h-0 min-w-[10vw]">
-                                <div className="text-xs uppercase flex gap-1.5 items-center border-b-1 border-light-gray-color px-4 py-2.5">
-                                    <FeedIcon />
-                                    <span>Feed</span>
-                                </div>
-                                <div className="flex flex-grow overflow-y-auto overflow-x-hidden min-h-0">
-                                    <FeedTerminal />
-                                </div>
+                            <div className="flex flex-grow flex-shrink flex-col border-1 border-light-gray-color rounded-smd min-h-0 min-w-0">
+                              <div className="text-xs uppercase flex gap-1.5 items-center border-b-1 border-light-gray-color px-4 py-2.5">
+                                  <FeedIcon />
+                                  <span>Feed</span>
+                              </div>
+                              <div className="flex flex-grow overflow-y-auto overflow-x-hidden min-h-0">
+                                  <FeedTerminal />
+                              </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <ConnectProcessModal openModal={connectModelOpen} setOpenModal={setConnectModelOpen} />
-            <CreateProcessModal openModal={createModelOpen} setOpenModal={setCreateModelOpen} />
+              </div>
+              <ConnectProcessModal openModal={connectModelOpen} setOpenModal={setConnectModelOpen} />
+              <CreateProcessModal openModal={createModelOpen} setOpenModal={setCreateModelOpen} />
+            </>
         </MainLayout>
     )
 }

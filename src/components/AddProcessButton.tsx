@@ -6,6 +6,7 @@ import SmallPlus from "./icons/SmallPlus";
 import TerminalIcon from "./icons/TerminalIcon";
 import ConnectIcon from "./icons/ConnectIcon";
 
+
 export type AddProcessButtonProps = {
   showConnectModal: (val: boolean) => void;
   showCreateModal: (val: boolean) => void;

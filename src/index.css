@@ -22,3 +22,35 @@
   opacity: 0.5;
   transform: scale(0.975);
 }
+
+/* Custom scrollbar styles */
+.scrollbar-style::-webkit-scrollbar {
+  width: 0.5rem; /* Adjust the width of the scrollbar */
+}
+
+.scrollbar-style::-webkit-scrollbar-track {
+  background-color: transparent; /* Track background */
+}
+
+.scrollbar-style::-webkit-scrollbar-thumb {
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.3
+  ); /* Thumb color and initial opacity */
+  border-radius: 9999px; /* Roundness of the scrollbar thumb, similar to Tailwind's full rounded */
+}
+
+.scrollbar-style::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.8
+  ); /* Thumb color and hover opacity */
+}
+
+.scrollbar-style::-webkit-scrollbar-thumb:active {
+  background-color: rgba(255, 255, 255, 1); /* Thumb color and active opacity */
+}
