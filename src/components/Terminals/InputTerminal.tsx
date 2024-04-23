@@ -2,6 +2,7 @@ import { Terminal } from "@xterm/xterm";
 import { FitAddon } from 'xterm-addon-fit';
 import React from "react";
 import 'xterm/css/xterm.css';
+import { useParams } from "react-router-dom";
 
 interface InputTerminalProps {
     userCommand: string;
@@ -9,6 +10,7 @@ interface InputTerminalProps {
 }
 
 export default function InputTerminal({ userCommand, userCommandResult }: InputTerminalProps) {
+    const { processId } = useParams();
     const terminalRef = React.useRef<any>(null);
     const [terminal, setTerminal] = React.useState<any>(null);
     const [isTerminalInitialized, setIsTerminalInitialized] = React.useState(false);
@@ -62,6 +64,13 @@ export default function InputTerminal({ userCommand, userCommandResult }: InputT
             terminal.writeln("\r" + ">" + userCommandResult); // Write the command result
         }
     }, [userCommandResult]);
+
+    React.useEffect(() => {
+        if (terminal !== null) {
+            terminal.reset();
+        }
+    }, [processId]);
+
 
     return (
         <>

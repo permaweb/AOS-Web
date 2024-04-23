@@ -1,16 +1,18 @@
 import { Terminal } from "@xterm/xterm";
 import { FitAddon } from 'xterm-addon-fit';
-import React, { useContext, useEffect, useState } from "react";
+import React from "react";
 import { ConnectedProcessContext } from "../../context/ConnectedProcess";
 import 'xterm/css/xterm.css';
+import { useParams } from "react-router-dom";
 
 export default function FeedTerminal() {
-    const { connectedProcess, disconnectProcess } = useContext(ConnectedProcessContext);
+    const { processId } = useParams();
+    const { connectedProcess, disconnectProcess } = React.useContext(ConnectedProcessContext);
     const terminalRef = React.useRef<any>(null);
-    const [terminal, setTerminal] = useState<any>(null);
-    const [isTerminalInitialized, setIsTerminalInitialized] = useState(false);
+    const [terminal, setTerminal] = React.useState<any>(null);
+    const [isTerminalInitialized, setIsTerminalInitialized] = React.useState(false);
 
-    useEffect(() => {
+    React.useEffect(() => {
         if (terminalRef.current && terminal == null && !isTerminalInitialized) {
             const newTerminal = new Terminal({
                 cursorBlink: true,
@@ -41,7 +43,7 @@ export default function FeedTerminal() {
         };
     }, [terminal, isTerminalInitialized]);
 
-    useEffect(() => {
+    React.useEffect(() => {
         if (isTerminalInitialized && terminal && connectedProcess?.isConnected) {
             try {
                 const liveFeed: any = connectedProcess?.selectedProcessHistory;
@@ -54,6 +56,12 @@ export default function FeedTerminal() {
             }
         }
     }, [connectedProcess?.selectedProcessHistory, terminal, isTerminalInitialized]);
+
+    React.useEffect(() => {
+        if (terminal !== null) {
+            terminal.reset();
+        }
+    }, [processId]);
 
     return (
         <div className="w-full h-full flex items-center justify-center p-5">
