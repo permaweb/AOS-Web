@@ -5,10 +5,14 @@ import ProcessList from "./ProcessList";
 
 type SidebarProcessPanelProps = {
   processId: string | undefined;
+  showConnectModal: (val: boolean) => void;
+  showCreateModal: (val: boolean) => void;
 };
 
 export default function SidebarProcessPanel({
   processId,
+  showCreateModal,
+  showConnectModal
 }: SidebarProcessPanelProps) {
   const [searchParam, setSearchParam] = useState<string | null>(null);
   const inputElement = useRef<HTMLInputElement>(null);
@@ -39,7 +43,10 @@ export default function SidebarProcessPanel({
             ></input>
             <SearchIcon className="absolute left-2.5 top-0 bottom-0 m-auto transition-colors text-gray-text-color peer-focus:text-primary-dark-color" />
           </label>
-          <AddProcessButton />
+          <AddProcessButton
+            showConnectModal={showConnectModal}
+            showCreateModal={showCreateModal}
+          />
         </div>
       </div>
       <ProcessList currentId={processId || ""} searchParam={searchParam} />

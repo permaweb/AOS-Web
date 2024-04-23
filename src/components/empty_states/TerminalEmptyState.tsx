@@ -1,4 +1,22 @@
-export default function TerminalEmptyState() {
+interface TerminalEmptyStateProps {
+  showConnectModal: (val: boolean) => void;
+  showCreateModal: (val: boolean) => void;
+}
+
+export default function TerminalEmptyState({
+  showConnectModal,
+  showCreateModal,
+}: TerminalEmptyStateProps) {
+
+  const handleCreateProcess = () => {
+    showConnectModal(false);
+    showCreateModal(true);
+  };
+
+  const handleConnectProcess = () => {
+    showCreateModal(false);
+    showConnectModal(true);
+  };
   return (
     <div className="flex flex-grow items-center justify-center p-5">
       <div className="flex flex-col gap-5 max-w-80 w-full">

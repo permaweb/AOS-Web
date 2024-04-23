@@ -2,7 +2,7 @@ import { createContext, useState, useEffect, ReactNode } from "react";
 
 export type ProcessProps = {
   id: string;
-  isGlobal: boolean;
+  isGlobal?: boolean;
 };
 
 type ProcessesContextType = {
@@ -13,8 +13,8 @@ type ProcessesContextType = {
 
 const MyProcessesContext = createContext<ProcessesContextType>({
   myProcesses: [],
-  addProcess: () => {},
-  removeProcess: () => {},
+  addProcess: (process: ProcessProps) => { },
+  removeProcess: (processId: string) => { },
 });
 
 const MyProcessesProvider = ({ children }: { children: ReactNode }) => {
