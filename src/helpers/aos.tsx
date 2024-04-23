@@ -81,6 +81,7 @@ export async function loadBluePrint(name: string) {
         return response;
     } catch (error: any) {
         console.error("Error loading blueprint: ", error.message);
+        return `-- Error loading blueprint: ${error.message}`
     }
 }
 

@@ -163,9 +163,9 @@ export default function Dashboard() {
         const loadBlueprintExp = /\.load-blueprint\s+(\w*)/;
         if (loadBlueprintExp.test(command)) {
             const [, name] = command.match(loadBlueprintExp) || [];
-            console.log("name: ", name);
-            const result = await loadBluePrint(name);
-            setUserCommandResult(result);
+            setUserCommandResult(`loading ${name}...`);
+            await loadBluePrint(name);
+            setUserCommandResult(`undefined`);
         } else {
             const result = await sendCommand(processId, command);
             setUserCommandResult(result);
