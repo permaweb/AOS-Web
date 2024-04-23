@@ -7,7 +7,6 @@ export default function TerminalEmptyState({
   showConnectModal,
   showCreateModal,
 }: TerminalEmptyStateProps) {
-
   const handleCreateProcess = () => {
     showConnectModal(false);
     showCreateModal(true);
@@ -28,7 +27,10 @@ export default function TerminalEmptyState({
           </div>
         </div>
         <div className="flex flex-col gap-3">
-          <button className="p-5 border-1 rounded-2xl transition border-[#B9C3DD] bg-gradient-to-r from-[#E9ECED] to-[#EFF2F1] flex flex-col gap-3 items-center justify-center h-36 hover:border-primary-dark-color base-transition">
+          <button
+            className="p-5 border-1 rounded-2xl transition border-[#B9C3DD] bg-gradient-to-r from-[#E9ECED] to-[#EFF2F1] flex flex-col gap-3 items-center justify-center h-36 hover:border-primary-dark-color base-transition"
+            onClick={handleCreateProcess}
+          >
             <svg
               width="36"
               height="36"
@@ -54,7 +56,10 @@ export default function TerminalEmptyState({
               </span>
             </div>
           </button>
-          <button className="p-5 border-1 rounded-2xl transition border-medium-gray-color bg-very-light-gray flex flex-col gap-3 items-center justify-center h-36 hover:border-primary-dark-color base-transition">
+          <button
+            className="p-5 border-1 rounded-2xl transition border-medium-gray-color bg-very-light-gray flex flex-col gap-3 items-center justify-center h-36 hover:border-primary-dark-color base-transition"
+            onClick={handleConnectProcess}
+          >
             <svg
               width="32"
               height="32"
