@@ -21,6 +21,7 @@ export default function Dashboard() {
     const [commandToRun, setCommandToRun] = useState<string>("");
     const [userCommand, setUserCommand] = useState<string>("");
     const [userCommandResult, setUserCommandResult] = useState<any>(null);
+    const [sendingCommand, setSendingCommand] = useState<boolean>(false);
 
     const mode: "starter" | "process" = processId ? "process" : "starter";
 
@@ -154,20 +155,23 @@ export default function Dashboard() {
 
         if (commandToRun === "") return;
         if (processId === undefined || processId === null || processId === "") return;
+        setSendingCommand(true);
         setUserCommand(commandToRun);
+        let command = commandToRun;
+        setCommandToRun("");
 
         const loadBlueprintExp = /\.load-blueprint\s+(\w*)/;
-        if (loadBlueprintExp.test(commandToRun)) {
-            const [, name] = commandToRun.match(loadBlueprintExp) || [];
+        if (loadBlueprintExp.test(command)) {
+            const [, name] = command.match(loadBlueprintExp) || [];
             console.log("name: ", name);
             const result = await loadBluePrint(name);
             setUserCommandResult(result);
         } else {
-            const result = await sendCommand(processId, commandToRun);
+            const result = await sendCommand(processId, command);
             setUserCommandResult(result);
         }
 
-        setCommandToRun("");
+        setSendingCommand(false);
     };
 
     return (
@@ -229,12 +233,18 @@ export default function Dashboard() {
                                 <form
                                     onSubmit={handleRunCommand}
                                     className={
-                                        "flex gap-2 border-1 transition-colors border-gray-text-color rounded-lg  focus-within:border-primary-dark-color " +
+                                        "relative flex gap-2 border-1 transition-colors border-gray-text-color rounded-lg  focus-within:border-primary-dark-color " +
                                         (mode === "starter"
                                             ? "select-none pointer-events-none opacity-50"
                                             : "")
                                     }
                                 >
+                                    {
+                                        sendingCommand && (
+                                            <span className="absolute bottom-16 text-sm left-1/2 -translate-x-1/2 ">Processing...</span>
+                                        )
+                                    }
+
                                     <label
                                         htmlFor="runCommandInput"
                                         className="flex-grow h-full relative"
