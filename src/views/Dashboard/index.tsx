@@ -14,6 +14,7 @@ import CreateProcessModal from "../../components/modals/CreateProcessModel";
 import { TextareaField } from "../../components/input";
 import { InputTerminal } from "../../components/Terminals";
 import { loadBluePrint } from "../../helpers/aos";
+import PreDefinedCommands from "../../components/PreDefinedCommands";
 
 export default function Dashboard() {
     const { processId } = useParams();
@@ -149,6 +150,16 @@ export default function Dashboard() {
         }
     }, [processId]);
 
+    const [showPreDefinedCommands, setShowPreDefinedCommands] = useState<boolean>(false);
+    const handleKeyUp = (e: any) => {
+        const position = e.target.selectionStart;
+        const lastChar = commandToRun.slice(position - 1, position);
+        if (lastChar === "/") {
+            setShowPreDefinedCommands(true);
+        } else {
+            setShowPreDefinedCommands(false);
+        }
+    };
 
     const handleRunCommand = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -245,6 +256,15 @@ export default function Dashboard() {
                                         )
                                     }
 
+                                    <PreDefinedCommands
+                                        isOpen={showPreDefinedCommands}
+                                        setIsOpen={setShowPreDefinedCommands}
+                                        setSendingCommand={setSendingCommand}
+                                        setUserCommand={setUserCommand}
+                                        setUserCommandResult={setUserCommandResult}
+                                        setCommandToRun={setCommandToRun}
+                                    />
+
                                     <label
                                         htmlFor="runCommandInput"
                                         className="flex-grow h-full relative"
@@ -256,6 +276,7 @@ export default function Dashboard() {
                                             spellCheck="false"
                                             onChange={(e: any) => setCommandToRun(e.target.value)}
                                             value={commandToRun}
+                                            onKeyUp={handleKeyUp}
                                         />
                                     </label>
 
