@@ -2,6 +2,8 @@ import { useEffect, useState, type MouseEvent } from "react";
 import QuestsIcon from "./icons/QuestsIcon";
 import CloseIcon from "./icons/CloseIcon";
 import { Link } from "react-router-dom";
+import { useActiveAddress } from "arweave-wallet-kit";
+import { getQuests } from "../helpers/aos";
 
 type QuestButtonProps = {
   walletConnected: boolean;
@@ -183,6 +185,7 @@ const initialQuests: { [key: string]: QuestEntry } = {
 export default function QuestsButton({ walletConnected }: QuestButtonProps) {
   const [showOptions, setShowOptions] = useState<boolean>(false);
   const [chosenQuestID, setChosenQuestID] = useState<"none" | string>("none");
+  const walletAddress = useActiveAddress();
 
   const handleClick = (e: MouseEvent) => {
     e.stopPropagation();
@@ -206,6 +209,13 @@ export default function QuestsButton({ walletConnected }: QuestButtonProps) {
     window.addEventListener("click", closeOptions);
     return () => window.removeEventListener("click", closeOptions);
   }, []);
+
+  useEffect(() => {
+    if (!!walletAddress) {
+      const quests = getQuests(walletAddress);
+      console.log("Quests: ", quests.then((res: any) => console.log(res.Messages[0].Data)));
+    }
+  }, [walletAddress])
 
   return (
     <div className="relative flex items-stretch py-1">

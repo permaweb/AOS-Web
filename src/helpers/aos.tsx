@@ -1,4 +1,4 @@
-import { connect, createDataItemSigner } from '@permaweb/aoconnect';
+import { connect, createDataItemSigner, dryrun } from '@permaweb/aoconnect';
 import { AOS_MODULE, AOS_SCHEDULER, GOLD_SKY_GQL } from './constants';
 
 export async function live(pid: string) {
@@ -84,6 +84,20 @@ export async function loadBluePrint(name: string) {
         return `-- Error loading blueprint: ${error.message}`
     }
 }
+
+export async function getQuests(owner: string) {
+    try {
+        const response = await dryrun({
+            process: "ge3fE2WaLbPYAfRIf7fRMC_R4A2_V729Yws6U0kGBy4",
+            Owner: owner,
+            tags: [{ name: 'Action', value: 'List' }],
+        });
+        return response;
+    } catch (error: any) {
+        console.error("Error getting quests: ", error.message);
+        return [];
+    }
+};
 
 export async function findMyPIDs(signer: any) {
     const processes = await fetch(GOLD_SKY_GQL, {
