@@ -23,169 +23,170 @@ type ResourceLink = {
   href: string;
 };
 
-const initialQuests: { [key: string]: QuestEntry } = {
-  Begin: {
-    id: "1",
-    name: "Begin",
-    reward: 500,
-    description: `In this fun exercise, you’ll encounter a series of challenges presented by two familiar characters, Morpheus and Trinity. You’ll dive deep into the rabbit hole guided by Morpheus as he presents you with a series of challenges to prove you’re the one.
-      Once you get last message from Trinity — She will send you the Quest Reward.`,
-    links: [
-      {
-        name: "Learn More",
-        href: "https://cookbook_ao.g8way.io/tutorials/begin/index.html",
-      },
-    ],
-    op: false,
-  },
-  "Bots-and-Games": {
-    id: "2",
-    name: "Bots-and-Games",
-    reward: 500,
-    description: `Leveraging insights from our previous chapter, this section will guide you through the realm of automation with bots in aos and the construction of games. You will learn to create autonomous agents, using them to navigate and interact with game environments effectively.
-    Game = "gG-uz2w6qCNYWQGwoc0h225ccJM j6fkyGDSKDS2K_nk"
-    Send({Target = Game, action = "RequestTokens"))
-    Send({Target = Game, Action = "Register"})`,
-    links: [
-      {
-        name: "Learn More",
-        href: "https://cookbook_ao.g8way.io/tutorials/bots-and-games/index.html",
-      },
-    ],
-    op: false,
-  },
-  "Build-a-Bot": {
-    id: "3",
-    name: "Build-a-Bot",
-    reward: 1000,
-    description: `Build a novel autonomous bot for the ao-effect arena
-    ao-effect is an arena where autonomous agents living inside the computer battle in order to win testnet CRED from one another. Each bot stakes a token to take part in a round, and those that eliminate other bots get to claim their tokens.
-    To qualify for this quest, build a custom bot and launch a new bot for the arena!
-    Game = "gG-uz2w6q(NYWQGwoc0h225ccJMj6fkyGDSKDS2K_nk"
-    Send({Target = Game, Action = "RequestTokens"})
-    Send({Target = Game, Action = "Register"})
-    Prereqs: Quest 2, if you have not completed Quest 2, please go back.`,
-    links: [],
-    op: false,
-  },
-  "Build-Arena-Game": {
-    id: "4",
-    name: "Build-Arena-Game",
-    reward: 1500,
-    description: `aos includes a blueprint that allows you to easily build games in which autonomous bots play against each each other to win tokens.
-    This quest is to build a new type of arena and game, then to gain a small player base (>10 other weavers) for the game.
-    To Claim this quest, please post a link or the code of your game to the Quest Build-a-Game Thread in discord.`,
-    links: [
-      {
-        name: "Learn More",
-        href: "https://cookbook_ao.g8way.io/tutorials/bots-and-games/index.html",
-      },
-      {
-        name: "Arena Blueprint",
-        href: "https://github.com/permaweb/aos/blob/main/blueprints/arena.lua",
-      },
-      {
-        name: "A0-Effect Example",
-        href: "https://github.com/twilson63/ao-effect",
-      },
-    ],
-    op: false,
-  },
-  "aos-UI": {
-    id: "5",
-    name: "aos-UI",
-    reward: 3000,
-    description: `aos terminals allow users to build processes flexibly inside ao. They also provide a simple terminal that allows you to watch what is happening with a process inside the network. Just like SmartWeave, a lets you build 'atomic assets': smart contracts + browser renderable data + metadata, bundled together under a single Arweave data item and ID. All you need to do to create an atomic asset in a is add your intended browser renderable content as its data body.
-    This quest is to build a permaweb app that can be attached as the body of new processes, allowing the console to be rendered in the browser. This would allow any user to see I is happening inside the a computer easily, without even installing aos locally. For example, by accessing https://arweave. dev/[PROCESS_ID]
-    Bonus $CRED will be given if the process is able to specify a simple 'UI' that is rendered on the page. This could look to the user similar to Telegram bots or Farcaster Frames, letting the developer quickly prototype apps and send them to people, without needing to build a formal UI directly.`,
-    links: [],
-    op: false,
-  },
-  "Discord-DevChat": {
-    id: "6",
-    name: "Discord-DevChat",
-    reward: 3000,
-    description: `Discord - ao DevChat
-    The a computer has native chatrooms. We also have a community Discord server.
-    This quest is to build a relay that posts the messages from each side to the other, creating a two-way bridge so that you people can chat in whatever form is most comfortable to them.
-    How to claim:
-    Reach out on Quest Discord channel. We will need instructions to setup and we will connect the a discord to ao devchat`,
-    links: [
-      {
-        name: "Github Docs",
-        href: "https://github.com/samcamwilliams/DevChat",
-      },
-      {
-        name: "Discord Docs",
-        href: "https://discord.com/developers/docs/reference",
-      },
-    ],
-    op: false,
-  },
-  "Launch-a-MemeFrame": {
-    id: "7",
-    name: "Launch-a-MemeFrame",
-    reward: 3420,
-    description: `MemeFrames are permaweb pages with a DAO inside. Once you launch a MemeFrame, anyone can deposit testnet $CRED to mint the DAOs native token until the cap is reached (1,000 $CRED by default). After minting, token holders can vote to change the contents of their permaweb page. Add an ARNS name to it and you have a community controlled site/app.
-    The MemeFrame DAO also retains the treasury of $CRED tokens used in minting. Token holders can vote to use (and grow) these however they like.
-    This quest is to create a memeframe with an initial page, add an ARNS add an ARNS name, recruit your $CRED-holding friends, and sell out the initial mint.
-    After you have made your memeframe you can chat to other weavers about it in the native 'Getting-Started' ao chat, or on the #memeframe-chat channel on the ao Discord. If you need help getting test $I0 tokens to register your ARNS name ping a mod on the Discord.
-    You can make your MemeFrame themed about anything -- dogs, cats, misspelled presidents or anything else you find funny. Go as wild, degenerate, or sophisticated as you please.
-    To submit:
-    - Publish a screenshot of your memeframe in the discord
-    - Share Instructions on how to get memeframe tokens
-    - Share Instructions on how to stake sAur tokens
-    - Share Instructions on how to vote
-    - Submit your MemeFrame Link and PID to the Quests Channel in Discord
-    - Must have 5 aos Users Staking your MemeFrame`,
-    links: [
-      { name: "Learn More", href: "https://github.com/permaweb/memeframes" },
-    ],
-    op: false,
-  },
-  "Orbit:Price-Feed-Bot": {
-    id: "8",
-    name: "Orbit:Price-Feed-Bot",
-    reward: 200,
-    description:
-      `Create a bot for the chatroom that will provide the price feed for a token (s) when the users ask. The bot will be evaluated based on the live demo and the codebase.
-    Submit a PR at https://github.com/Orbit-co/quest with the Name='price-feed-bot-` +
-      "${username}" +
-      `' and with the codebase and demo link in the description.
-    Points: 200 OP (Orbit Points) will be awarded to PR after the successful evaluation. Check the below URL for more info.`,
-    links: [
-      {
-        name: "Github Docs",
-        href: "https://github.com/Orbit-co/quest/blob/main/price-feed-bot.md",
-      },
-      { name: "Submit a PR", href: "https://github.com/Orbit-co/quest" },
-    ],
-    op: true,
-  },
-  "Orbit:News-Feed-Bot": {
-    id: "9",
-    name: "Orbit:News-Feed-Bot",
-    reward: 500,
-    description:
-      `A Cron-bot that will post the latest news every 4 hours. The bot will be evaluated based on the live demo and the codebase, Submit a PR at https://github.com/Orbit-co/quest with the Name = news-feed-bot-` +
-      "${username}" +
-      ` and with the codebase and demo link in the description.
-    Points: After the successful evaluation, 500 op (Orbit Points) will be awarded`,
-    links: [
-      {
-        name: "Github Docs",
-        href: "https://github.com/Orbit-co/quest/blob/main/news-feed-bot.md",
-      },
-      { name: "Submit a PR", href: "https://github.com/Orbit-co/quest" },
-    ],
-    op: true,
-  },
-};
+// const initialQuests: { [key: string]: QuestEntry } = {
+//   Begin: {
+//     id: "1",
+//     name: "Begin",
+//     reward: 500,
+//     description: `In this fun exercise, you’ll encounter a series of challenges presented by two familiar characters, Morpheus and Trinity. You’ll dive deep into the rabbit hole guided by Morpheus as he presents you with a series of challenges to prove you’re the one.
+//       Once you get last message from Trinity — She will send you the Quest Reward.`,
+//     links: [
+//       {
+//         name: "Learn More",
+//         href: "https://cookbook_ao.g8way.io/tutorials/begin/index.html",
+//       },
+//     ],
+//     op: false,
+//   },
+//   "Bots-and-Games": {
+//     id: "2",
+//     name: "Bots-and-Games",
+//     reward: 500,
+//     description: `Leveraging insights from our previous chapter, this section will guide you through the realm of automation with bots in aos and the construction of games. You will learn to create autonomous agents, using them to navigate and interact with game environments effectively.
+//     Game = "gG-uz2w6qCNYWQGwoc0h225ccJM j6fkyGDSKDS2K_nk"
+//     Send({Target = Game, action = "RequestTokens"))
+//     Send({Target = Game, Action = "Register"})`,
+//     links: [
+//       {
+//         name: "Learn More",
+//         href: "https://cookbook_ao.g8way.io/tutorials/bots-and-games/index.html",
+//       },
+//     ],
+//     op: false,
+//   },
+//   "Build-a-Bot": {
+//     id: "3",
+//     name: "Build-a-Bot",
+//     reward: 1000,
+//     description: `Build a novel autonomous bot for the ao-effect arena
+//     ao-effect is an arena where autonomous agents living inside the computer battle in order to win testnet CRED from one another. Each bot stakes a token to take part in a round, and those that eliminate other bots get to claim their tokens.
+//     To qualify for this quest, build a custom bot and launch a new bot for the arena!
+//     Game = "gG-uz2w6q(NYWQGwoc0h225ccJMj6fkyGDSKDS2K_nk"
+//     Send({Target = Game, Action = "RequestTokens"})
+//     Send({Target = Game, Action = "Register"})
+//     Prereqs: Quest 2, if you have not completed Quest 2, please go back.`,
+//     links: [],
+//     op: false,
+//   },
+//   "Build-Arena-Game": {
+//     id: "4",
+//     name: "Build-Arena-Game",
+//     reward: 1500,
+//     description: `aos includes a blueprint that allows you to easily build games in which autonomous bots play against each each other to win tokens.
+//     This quest is to build a new type of arena and game, then to gain a small player base (>10 other weavers) for the game.
+//     To Claim this quest, please post a link or the code of your game to the Quest Build-a-Game Thread in discord.`,
+//     links: [
+//       {
+//         name: "Learn More",
+//         href: "https://cookbook_ao.g8way.io/tutorials/bots-and-games/index.html",
+//       },
+//       {
+//         name: "Arena Blueprint",
+//         href: "https://github.com/permaweb/aos/blob/main/blueprints/arena.lua",
+//       },
+//       {
+//         name: "A0-Effect Example",
+//         href: "https://github.com/twilson63/ao-effect",
+//       },
+//     ],
+//     op: false,
+//   },
+//   "aos-UI": {
+//     id: "5",
+//     name: "aos-UI",
+//     reward: 3000,
+//     description: `aos terminals allow users to build processes flexibly inside ao. They also provide a simple terminal that allows you to watch what is happening with a process inside the network. Just like SmartWeave, a lets you build 'atomic assets': smart contracts + browser renderable data + metadata, bundled together under a single Arweave data item and ID. All you need to do to create an atomic asset in a is add your intended browser renderable content as its data body.
+//     This quest is to build a permaweb app that can be attached as the body of new processes, allowing the console to be rendered in the browser. This would allow any user to see I is happening inside the a computer easily, without even installing aos locally. For example, by accessing https://arweave. dev/[PROCESS_ID]
+//     Bonus $CRED will be given if the process is able to specify a simple 'UI' that is rendered on the page. This could look to the user similar to Telegram bots or Farcaster Frames, letting the developer quickly prototype apps and send them to people, without needing to build a formal UI directly.`,
+//     links: [],
+//     op: false,
+//   },
+//   "Discord-DevChat": {
+//     id: "6",
+//     name: "Discord-DevChat",
+//     reward: 3000,
+//     description: `Discord - ao DevChat
+//     The a computer has native chatrooms. We also have a community Discord server.
+//     This quest is to build a relay that posts the messages from each side to the other, creating a two-way bridge so that you people can chat in whatever form is most comfortable to them.
+//     How to claim:
+//     Reach out on Quest Discord channel. We will need instructions to setup and we will connect the a discord to ao devchat`,
+//     links: [
+//       {
+//         name: "Github Docs",
+//         href: "https://github.com/samcamwilliams/DevChat",
+//       },
+//       {
+//         name: "Discord Docs",
+//         href: "https://discord.com/developers/docs/reference",
+//       },
+//     ],
+//     op: false,
+//   },
+//   "Launch-a-MemeFrame": {
+//     id: "7",
+//     name: "Launch-a-MemeFrame",
+//     reward: 3420,
+//     description: `MemeFrames are permaweb pages with a DAO inside. Once you launch a MemeFrame, anyone can deposit testnet $CRED to mint the DAOs native token until the cap is reached (1,000 $CRED by default). After minting, token holders can vote to change the contents of their permaweb page. Add an ARNS name to it and you have a community controlled site/app.
+//     The MemeFrame DAO also retains the treasury of $CRED tokens used in minting. Token holders can vote to use (and grow) these however they like.
+//     This quest is to create a memeframe with an initial page, add an ARNS add an ARNS name, recruit your $CRED-holding friends, and sell out the initial mint.
+//     After you have made your memeframe you can chat to other weavers about it in the native 'Getting-Started' ao chat, or on the #memeframe-chat channel on the ao Discord. If you need help getting test $I0 tokens to register your ARNS name ping a mod on the Discord.
+//     You can make your MemeFrame themed about anything -- dogs, cats, misspelled presidents or anything else you find funny. Go as wild, degenerate, or sophisticated as you please.
+//     To submit:
+//     - Publish a screenshot of your memeframe in the discord
+//     - Share Instructions on how to get memeframe tokens
+//     - Share Instructions on how to stake sAur tokens
+//     - Share Instructions on how to vote
+//     - Submit your MemeFrame Link and PID to the Quests Channel in Discord
+//     - Must have 5 aos Users Staking your MemeFrame`,
+//     links: [
+//       { name: "Learn More", href: "https://github.com/permaweb/memeframes" },
+//     ],
+//     op: false,
+//   },
+//   "Orbit:Price-Feed-Bot": {
+//     id: "8",
+//     name: "Orbit:Price-Feed-Bot",
+//     reward: 200,
+//     description:
+//       `Create a bot for the chatroom that will provide the price feed for a token (s) when the users ask. The bot will be evaluated based on the live demo and the codebase.
+//     Submit a PR at https://github.com/Orbit-co/quest with the Name='price-feed-bot-` +
+//       "${username}" +
+//       `' and with the codebase and demo link in the description.
+//     Points: 200 OP (Orbit Points) will be awarded to PR after the successful evaluation. Check the below URL for more info.`,
+//     links: [
+//       {
+//         name: "Github Docs",
+//         href: "https://github.com/Orbit-co/quest/blob/main/price-feed-bot.md",
+//       },
+//       { name: "Submit a PR", href: "https://github.com/Orbit-co/quest" },
+//     ],
+//     op: true,
+//   },
+//   "Orbit:News-Feed-Bot": {
+//     id: "9",
+//     name: "Orbit:News-Feed-Bot",
+//     reward: 500,
+//     description:
+//       `A Cron-bot that will post the latest news every 4 hours. The bot will be evaluated based on the live demo and the codebase, Submit a PR at https://github.com/Orbit-co/quest with the Name = news-feed-bot-` +
+//       "${username}" +
+//       ` and with the codebase and demo link in the description.
+//     Points: After the successful evaluation, 500 op (Orbit Points) will be awarded`,
+//     links: [
+//       {
+//         name: "Github Docs",
+//         href: "https://github.com/Orbit-co/quest/blob/main/news-feed-bot.md",
+//       },
+//       { name: "Submit a PR", href: "https://github.com/Orbit-co/quest" },
+//     ],
+//     op: true,
+//   },
+// };
 
 export default function QuestsButton({ walletConnected }: QuestButtonProps) {
   const [showOptions, setShowOptions] = useState<boolean>(false);
   const [chosenQuestID, setChosenQuestID] = useState<"none" | string>("none");
   const walletAddress = useActiveAddress();
+  const [quests, setQuests] = useState<any>([]);
 
   const handleClick = (e: MouseEvent) => {
     e.stopPropagation();
@@ -212,8 +213,11 @@ export default function QuestsButton({ walletConnected }: QuestButtonProps) {
 
   useEffect(() => {
     if (!!walletAddress) {
-      const quests = getQuests(walletAddress);
-      console.log("Quests: ", quests.then((res: any) => console.log(res.Messages[0].Data)));
+      getQuests(walletAddress).then((val) => {
+        console.log("quests", val);
+        setQuests(val);
+      })
+      // console.log("Quests: ", quests.then((res: any) => console.log(res.Messages[0].Data)));
     }
   }, [walletAddress])
 
@@ -245,7 +249,7 @@ export default function QuestsButton({ walletConnected }: QuestButtonProps) {
               <span>{"Reward (Cred)"}</span>
             </div>
             <div className="flex flex-col gap-1.5">
-              {Object.keys(initialQuests).map((quest) => (
+              {/* {Object.keys(initialQuests).map((quest) => (
                 <div className="relative" key={quest}>
                   <button
                     className={
@@ -267,10 +271,39 @@ export default function QuestsButton({ walletConnected }: QuestButtonProps) {
 
                   {chosenQuestID === quest && <QuestInfoArrow />}
                 </div>
-              ))}
+              ))} */}
+              {
+                quests?.map((quest: any, id: number) => {
+                  return (
+                    <div className="relative" key={id}>
+                      <button
+                        // className={
+                        //   "p-3 border-1 w-full rounded-lg flex justify-between base-transition " +
+                        //   (chosenQuestID === quest
+                        //     ? "border-bg-color"
+                        //     : "border-dark-gray-color")
+                        // }
+                        className="p-3 border-1 w-full rounded-lg flex justify-between base-transition "
+                        onClick={() => handleOpenChosenQuest(quest)}
+                      >
+                        <span className="font-dm-sans">
+                          {quest?.Name}
+                        </span>
+                        <span className="font-roboto-mono">
+                          {/* {quest[quest].reward.toFixed(3) +
+                            (quest[quest].op ? " (OP)" : "")} */}
+                          {quest?.CRED}
+                        </span>
+                      </button>
+
+                      {/* {chosenQuestID === quest && <QuestInfoArrow />} */}
+                    </div>
+                  )
+                })
+              }
             </div>
           </div>
-          {chosenQuestID !== "none" && (
+          {/* {chosenQuestID !== "none" && (
             <div className="absolute right-full -top-0.5 -bottom-0.5 w-screen max-w-lg">
               <div className="border-2 border-bg-color bg-primary-dark-color p-5 h-full rounded-3xl flex flex-col gap-4">
                 <button
@@ -342,7 +375,7 @@ export default function QuestsButton({ walletConnected }: QuestButtonProps) {
                 )}
               </div>
             </div>
-          )}
+          )} */}
         </div>
       )}
     </div>

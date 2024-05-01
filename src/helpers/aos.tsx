@@ -90,9 +90,32 @@ export async function getQuests(owner: string) {
         const response = await dryrun({
             process: "ge3fE2WaLbPYAfRIf7fRMC_R4A2_V729Yws6U0kGBy4",
             Owner: owner,
-            tags: [{ name: 'Action', value: 'List' }],
+            tags: [
+                { name: 'Action', value: 'List' },
+                { name: 'Format', value: 'json' }
+            ],
         });
-        return response;
+
+        const data = response.Messages[0].Data;
+        // Remove the headers and separators from the rows
+        let rows = data.trim().split('\n');
+        rows.shift(); // remove the header row
+        rows.shift(); // remove the separator row
+
+        // console.log("rows", rows);
+
+        // Create the array of objects
+        const dataArray = rows.map((row: any) => {
+            const matches = row.match(/^\s*(\d+)\s+([\w\s-:<>\(\)]+?)\s+(\d+(?:\.\d+)?(?:\s*\(\w+\))?)\s*$/);
+
+            return {
+                QuestId: matches && matches[1] ? matches[1].trim() : null,
+                Name: matches && matches[2] ? matches[2].trim() : null,
+                CRED: matches && matches[3] ? matches[3].trim() : null,
+            };
+        });
+
+        return dataArray;
     } catch (error: any) {
         console.error("Error getting quests: ", error.message);
         return [];

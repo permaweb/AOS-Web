@@ -91,18 +91,18 @@ const ConnectedProcessProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
-  const disconnectProcess = () => {
-    setConnectedProcess(null);
-  };
-
-  useEffect(() => {
-    return () => {
-      if (timer) {
-        console.log("clearing interval");
-        clearInterval(timer);
-      }
+    const disconnectProcess = () => {
+        setConnectedProcess(null);
     };
-  }, [timer]);
+
+    useEffect(() => {
+        return () => {
+            if (timer) {
+                console.log("clearing interval");
+                clearInterval(timer);
+            }
+        };
+    }, [timer]);
 
     return (
         <ConnectedProcessContext.Provider
