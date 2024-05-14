@@ -122,6 +122,26 @@ export async function getQuests(owner: string) {
     }
 };
 
+export async function getQuest(owner: string, questId: string) {
+    try {
+        const quest = await dryrun({
+            process: "ge3fE2WaLbPYAfRIf7fRMC_R4A2_V729Yws6U0kGBy4",
+            Owner: owner,
+            tags: [
+                { name: 'Action', value: 'Detail' },
+                { name: 'Index', value: questId },
+            ],
+        });
+
+        const data = quest.Messages[0].Data;
+
+        return data;
+    } catch (error: any) {
+        console.error("Error getting quest: ", error.message);
+        return null;
+    }
+}
+
 export async function findMyPIDs(signer: any) {
     const processes = await fetch(GOLD_SKY_GQL, {
         method: 'POST',

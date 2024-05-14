@@ -3,7 +3,7 @@ import QuestsIcon from "./icons/QuestsIcon";
 import CloseIcon from "./icons/CloseIcon";
 import { Link } from "react-router-dom";
 import { useActiveAddress } from "arweave-wallet-kit";
-import { getQuests } from "../helpers/aos";
+import { getQuest, getQuests } from "../helpers/aos";
 
 type QuestButtonProps = {
   walletConnected: boolean;
@@ -185,6 +185,8 @@ type ResourceLink = {
 export default function QuestsButton({ walletConnected }: QuestButtonProps) {
   const [showOptions, setShowOptions] = useState<boolean>(false);
   const [chosenQuestID, setChosenQuestID] = useState<"none" | string>("none");
+  const [chosenQuest, setChosenQuest] = useState<any>(null);
+  const [chosenQuestLoading, setChosenQuestLoading] = useState<boolean>(false);
   const walletAddress = useActiveAddress();
   const [quests, setQuests] = useState<any>([]);
 
@@ -198,10 +200,18 @@ export default function QuestsButton({ walletConnected }: QuestButtonProps) {
     setChosenQuestID("none");
   };
 
-  const handleOpenChosenQuest = (questKey: string) => {
-    setChosenQuestID((prevValue) =>
-      prevValue === questKey ? "none" : questKey
-    );
+  const handleOpenChosenQuest = async (questKey: any) => {
+    // console.log("questKey", questKey);
+    if (!!walletAddress) {
+      setChosenQuestLoading(true);
+
+      setChosenQuestID(questKey.QuestId);
+      const quest = await getQuest(walletAddress, questKey.QuestId);
+      setChosenQuest(quest);
+      // console.log("quest", quest);
+
+      setChosenQuestLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -217,9 +227,8 @@ export default function QuestsButton({ walletConnected }: QuestButtonProps) {
         console.log("quests", val);
         setQuests(val);
       })
-      // console.log("Quests: ", quests.then((res: any) => console.log(res.Messages[0].Data)));
     }
-  }, [walletAddress])
+  }, [walletAddress]);
 
   return (
     <div className="relative flex items-stretch py-1">
@@ -249,60 +258,68 @@ export default function QuestsButton({ walletConnected }: QuestButtonProps) {
               <span>{"Reward (Cred)"}</span>
             </div>
             <div className="flex flex-col gap-1.5">
-              {/* {Object.keys(initialQuests).map((quest) => (
-                <div className="relative" key={quest}>
-                  <button
-                    className={
-                      "p-3 border-1 w-full rounded-lg flex justify-between base-transition " +
-                      (chosenQuestID === quest
-                        ? "border-bg-color"
-                        : "border-dark-gray-color")
-                    }
-                    onClick={() => handleOpenChosenQuest(quest)}
-                  >
-                    <span className="font-dm-sans">
-                      {initialQuests[quest].name}
-                    </span>
-                    <span className="font-roboto-mono">
-                      {initialQuests[quest].reward.toFixed(3) +
-                        (initialQuests[quest].op ? " (OP)" : "")}
-                    </span>
-                  </button>
-
-                  {chosenQuestID === quest && <QuestInfoArrow />}
-                </div>
-              ))} */}
               {
                 quests?.map((quest: any, id: number) => {
                   return (
                     <div className="relative" key={id}>
                       <button
-                        // className={
-                        //   "p-3 border-1 w-full rounded-lg flex justify-between base-transition " +
-                        //   (chosenQuestID === quest
-                        //     ? "border-bg-color"
-                        //     : "border-dark-gray-color")
-                        // }
-                        className="p-3 border-1 w-full rounded-lg flex justify-between base-transition "
+                        className={
+                          "p-3 border-1 w-full rounded-lg flex justify-between base-transition " +
+                          (chosenQuestID === quest
+                            ? "border-bg-color"
+                            : "border-dark-gray-color")
+                        }
                         onClick={() => handleOpenChosenQuest(quest)}
                       >
                         <span className="font-dm-sans">
                           {quest?.Name}
                         </span>
                         <span className="font-roboto-mono">
-                          {/* {quest[quest].reward.toFixed(3) +
-                            (quest[quest].op ? " (OP)" : "")} */}
                           {quest?.CRED}
                         </span>
                       </button>
 
-                      {/* {chosenQuestID === quest && <QuestInfoArrow />} */}
+                      {chosenQuestID === quest && <QuestInfoArrow />}
                     </div>
                   )
                 })
               }
             </div>
           </div>
+
+          {
+            chosenQuestID !== "none" && (
+              <div className="absolute right-full -top-0.5 -bottom-0.5 w-screen max-w-lg">
+                <div className="border-2 border-bg-color bg-primary-dark-color p-5 h-full rounded-3xl flex flex-col gap-4">
+                  <button
+                    className="absolute right-5 top-5"
+                    onClick={handleCloseChosenQuest}
+                  >
+                    <CloseIcon />
+                  </button>
+
+                  {
+                    chosenQuestLoading ? (
+                      <div className="w-full h-full flex items-center justify-center">
+                        Loading...
+                      </div>
+                    ) : chosenQuest ? (
+                      <div className="w-full h-full overflow-auto">
+                        <pre className="w-full ">{chosenQuest}</pre>
+                      </div>
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        No data found
+                      </div>
+                    )
+                  }
+
+                </div>
+              </div>
+            )
+          }
+
+
           {/* {chosenQuestID !== "none" && (
             <div className="absolute right-full -top-0.5 -bottom-0.5 w-screen max-w-lg">
               <div className="border-2 border-bg-color bg-primary-dark-color p-5 h-full rounded-3xl flex flex-col gap-4">
