@@ -83,12 +83,9 @@ const ConnectedProcessProvider = ({ children }: { children: ReactNode }) => {
             throw new Error("Please connect your wallet to send a command");
         }
 
-        try {
-            const result = await evaluate(processId, command, signer);
-            return result;
-        } catch (error: any) {
-            throw new Error("Error sending command: " + error.message);
-        }
+        const result = await evaluate(processId, command, signer);
+        return result;
+
     };
 
     const disconnectProcess = () => {
