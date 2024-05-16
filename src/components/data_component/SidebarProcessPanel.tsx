@@ -12,7 +12,7 @@ type SidebarProcessPanelProps = {
 export default function SidebarProcessPanel({
   processId,
   showCreateModal,
-  showConnectModal
+  showConnectModal,
 }: SidebarProcessPanelProps) {
   const [searchParam, setSearchParam] = useState<string | null>(null);
   const inputElement = useRef<HTMLInputElement>(null);
@@ -26,7 +26,7 @@ export default function SidebarProcessPanel({
     );
 
   return (
-    <div className="h-[92vh] flex flex-col justify-between">
+    <div className="h-[92vh] flex flex-col gap-2.5 justify-between">
       <div className="flex flex-col gap-2.5 px-5 pt-2">
         <span className="uppercase">MY PROCESSES</span>
         <div className="flex flex-col gap-1.5">

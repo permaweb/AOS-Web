@@ -54,7 +54,6 @@ export default function Dashboard() {
   useEffect(() => {
     if (resizeElement.current) {
       const resizeSidebar = (e: MouseEvent) => {
-
         if (resizeElement.current) {
           const newWidth = e.clientX;
           setSideBarWidth(newWidth);
@@ -143,7 +142,8 @@ export default function Dashboard() {
     }
   }, [processId]);
 
-  const [showPreDefinedCommands, setShowPreDefinedCommands] = useState<boolean>(false);
+  const [showPreDefinedCommands, setShowPreDefinedCommands] =
+    useState<boolean>(false);
   const handleKeyUp = (e: any) => {
     const position = e.target.selectionStart;
     const lastChar = commandToRun.slice(position - 1, position);
@@ -164,7 +164,8 @@ export default function Dashboard() {
         return;
       }
 
-      if (processId === undefined || processId === null || processId === "") return;
+      if (processId === undefined || processId === null || processId === "")
+        return;
       setSendingCommand(true);
       setUserCommand(commandToRun);
       let command = commandToRun;
@@ -191,7 +192,8 @@ export default function Dashboard() {
 
   const handleExpressionLoad = async () => {
     try {
-      if (processId === undefined || processId === null || processId === "") return;
+      if (processId === undefined || processId === null || processId === "")
+        return;
       setSendingCommand(true);
       setUserCommand("load expression");
 
@@ -232,11 +234,21 @@ export default function Dashboard() {
 
             <div className="flex flex-col p-5 gap-5 min-h-0 ">
               {processId && (
-                <div className="text-xs uppercase flex items-center gap-2">
-                  <Link to={"/"}>My Processes</Link>
+                <div className="text-xs uppercase flex items-center gap-2 leading-none">
+                  <Link
+                    className="hover:ring-2 ring-offset-4 ring-light-gray-color hover:bg-light-gray-color hover:rounded-sm ring-offset-light-gray-color active:text-gray-text-color"
+                    to={"/"}
+                  >
+                    My Processes
+                  </Link>
 
                   <BreadcrumbChevron />
-                  <Link to={`/process/${processId}`} className="normal-case">{processId}</Link>
+                  <Link
+                    to={`/process/${processId}`}
+                    className="normal-case hover:ring-2 ring-offset-4 ring-light-gray-color hover:bg-light-gray-color hover:rounded-sm ring-offset-light-gray-color active:text-gray-text-color"
+                  >
+                    {processId}
+                  </Link>
                 </div>
               )}
 
@@ -267,23 +279,24 @@ export default function Dashboard() {
                         userCommand={userCommand}
                         userCommandResult={userCommandResult}
                       />
-                    ) : ""
-                    }
+                    ) : (
+                      ""
+                    )}
                   </div>
                   <form
                     onSubmit={handleRunCommand}
                     className={
-                      "relative flex gap-2 border-1 transition-colors border-gray-text-color rounded-lg  focus-within:border-primary-dark-color " +
+                      "relative flex gap-2 border-1 transition-colors border-gray-text-color rounded-lg  focus-within:border-primary-dark-color focus-within:ring-2  ring-offset-2 focus-within:bg-white" +
                       (mode === "starter"
                         ? "select-none pointer-events-none opacity-50"
                         : "")
                     }
                   >
-                    {
-                      sendingCommand && (
-                        <span className="absolute bottom-16 text-sm left-1/2 -translate-x-1/2 ">Processing...</span>
-                      )
-                    }
+                    {sendingCommand && (
+                      <span className="absolute bottom-16 text-sm left-1/2 -translate-x-1/2 ">
+                        Processing...
+                      </span>
+                    )}
 
                     <PreDefinedCommands
                       isOpen={showPreDefinedCommands}
@@ -327,10 +340,22 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-        <ConnectProcessModal openModal={connectModelOpen} setOpenModal={setConnectModelOpen} />
-        <CreateProcessModal openModal={createModelOpen} setOpenModal={setCreateModelOpen} />
-        <EditorModal openModal={showEditor} setOpenModal={setShowEditor} editorValue={editorValue} setEditorValue={setEditorValue} loadCode={handleExpressionLoad} />
+        <ConnectProcessModal
+          openModal={connectModelOpen}
+          setOpenModal={setConnectModelOpen}
+        />
+        <CreateProcessModal
+          openModal={createModelOpen}
+          setOpenModal={setCreateModelOpen}
+        />
+        <EditorModal
+          openModal={showEditor}
+          setOpenModal={setShowEditor}
+          editorValue={editorValue}
+          setEditorValue={setEditorValue}
+          loadCode={handleExpressionLoad}
+        />
       </>
     </MainLayout>
-  )
+  );
 }

@@ -1,15 +1,11 @@
 import { Link } from "react-router-dom";
-import {
-  MyProcessesContext,
-  ProcessProps,
-} from "../../context/ProcessesContext";
-import GlobalIcon from "../icons/GlobalIcon";
+import { ProcessProps } from "../../context/ProcessesContext";
 import { useContext, useEffect, useState } from "react";
 import ProcessesBarEmptyState from "../empty_states/ProcessesBarEmptyState";
-import Toggle from "../Toggle";
-import { ArrowLeft } from "../AddProcessButton";
 import EmptySearchIcon from "../icons/EmptySearchIcon";
 import { ConnectedProcessContext } from "../../context/ConnectedProcess";
+import CopyIcon from "../icons/CopyIcon";
+import CopyCheck from "../icons/CopyCheck";
 
 type ProcessListItemProps = ProcessProps & {
   active: boolean;
@@ -20,40 +16,60 @@ type ProcessListProps = {
   currentId: string;
 };
 
-function GlobalProcessInfo() {
-  return (
-    <div className="hidden group-hover:flex flex-col gap-3 animate-slide-in-left absolute w-max max-w-48 left-full font-roboto-mono -top-2 ml-3 bg-primary-dark-color text-bg-color p-3 rounded-smd z-40">
-      <ArrowLeft />
-      <GlobalIcon />
-      <span className="font-bold uppercase leading-none">Global Process</span>
-      <span className="font-dm-sans">
-        This process is from a different user’s wallet, so you cannot run
-        commands in it.
-      </span>
-    </div>
-  );
-}
-
 function ProcessListItem({ id, active }: ProcessListItemProps) {
+  const [copied, setCopied] = useState(false);
+
+  const formatId = (id: string) => {
+    if (id.length <= 12) {
+      return id;
+    }
+    return `${id.slice(0, 7)}...${id.slice(-5)}`;
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(id).then(() => {
+      setCopied(true);
+      setTimeout(() => {
+        setCopied(false);
+      }, 1000);
+    });
+  };
+
   return (
-    <Link
-      to={`/process/${id}`}
+    <div
       className={
-        " font-dm-sans tracking-wider  " + (active ? "bg-light-gray-color" : "")
+        "font-dm-sans tracking-wider flex " +
+        (active ? "bg-light-gray-color" : "")
       }
     >
-      <div className="base-transition flex gap-2 items-center py-1.5 pl-5 pr-2 ">
-        <span className="truncate max-w-28">{id}</span>
-        {/* {isGlobal ? (
-          <div className="group p-2 relative -m-2">
-            <GlobalIcon />
-            <GlobalProcessInfo />
-          </div>
-        ) : ( */}
-        <div className="w-3" />
-        {/* )} */}
+      <Link
+        to={`/process/${id}`}
+        className="base-transition flex gap-2 items-center py-1.5 pl-5 pr-2 flex-grow"
+      >
+        <span>{formatId(id)}</span>
+      </Link>
+      <div className="py-1 pr-5 flex items-center ">
+        <div className="relative">
+          <button
+            onClick={handleCopy}
+            className={`base-transition ${
+              active
+                ? "hover:bg-medium-gray-color"
+                : "hover:bg-light-gray-color"
+            } hover:text-primary-dark-color p-2 rounded-lg`}
+          >
+            {copied ? <CopyCheck /> : <CopyIcon />}
+          </button>
+          {copied && (
+            <div className="absolute left-full bottom-0 top-0 ml-2 flex items-center select-none z-10">
+              <div className="animate-slide-in-left  bg-primary-dark-color text-white px-2.5 py-1 rounded-md">
+                Copied!
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-    </Link>
+    </div>
   );
 }
 
@@ -62,31 +78,6 @@ export default function ProcessList({
   searchParam,
 }: ProcessListProps) {
   const { processHistoryList } = useContext(ConnectedProcessContext);
-  // const { myProcesses } = useContext(MyProcessesContext);
-  // const [processDisplaySettings, setProcessDisplaySettings] = useState<{
-  //   showGlobalProcesses: boolean;
-  //   showMyProcesses: boolean;
-  // }>({ showGlobalProcesses: true, showMyProcesses: true });
-
-  // const handleToggleGlobalProcesses = () =>
-  //   setProcessDisplaySettings((prevValue) => {
-  //     const invertGlobalProcesses = !prevValue.showGlobalProcesses;
-  //     return { ...prevValue, showGlobalProcesses: invertGlobalProcesses };
-  //   });
-
-  // const handleToggleMyProcesses = () =>
-  //   setProcessDisplaySettings((prevValue) => {
-  //     const invertMyProcesses = !prevValue.showMyProcesses;
-  //     return { ...prevValue, showMyProcesses: invertMyProcesses };
-  //   });
-
-  // const filteredProcess = processHistoryList.filter(
-  //   (process: any) =>
-  //     (process.isGlobal
-  //       ? processDisplaySettings.showGlobalProcesses
-  //       : processDisplaySettings.showMyProcesses) &&
-  //     (searchParam ? process.id.includes(searchParam) : true)
-  // );
 
   const [filteredProcess, setFilteredProcess] = useState(processHistoryList);
   useEffect(() => {
@@ -129,33 +120,6 @@ export default function ProcessList({
             </div>
           )}
         </div>
-        {/* {myProcesses.some((process) => process.isGlobal) &&
-          myProcesses.some((process) => !process.isGlobal) && (
-            <div className="flex flex-col gap-2 p-5 border-t-1 border-light-gray-color">
-              <span className="uppercase">Filter Processes</span>
-              <button
-                className="flex gap-2 items-center font-dm-sans"
-                onClick={handleToggleMyProcesses}
-              >
-                <Toggle on={processDisplaySettings.showMyProcesses} />
-                <span>My Processes</span>
-              </button>
-              <button
-                className="flex gap-2 items-center font-dm-sans"
-                onClick={handleToggleGlobalProcesses}
-              >
-                <Toggle on={processDisplaySettings.showGlobalProcesses} />
-                <div className="flex items-center gap-1">
-                  <span>Global</span>
-                  <div className="flex items-center">
-                    <span>{"("}</span>
-                    <GlobalIcon />
-                    <span>{")"}</span>
-                  </div>
-                </div>
-              </button>
-            </div>
-          )} */}
       </div>
     );
   }
