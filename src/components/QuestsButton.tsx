@@ -26,15 +26,15 @@ export default function QuestsButton({ walletConnected }: QuestButtonProps) {
     setChosenQuestID("none");
   };
 
-  const handleOpenChosenQuest = async (questKey: any) => {
-    // console.log("questKey", questKey);
+  const handleOpenChosenQuest = async (questKey: { QuestId: string }) => {
     if (!!walletAddress) {
       setChosenQuestLoading(true);
-
       setChosenQuestID(questKey.QuestId);
-      const quest = await getQuest(walletAddress, questKey.QuestId);
-      setChosenQuest(quest);
-      // console.log("quest", quest);
+
+      const quest: string = await getQuest(walletAddress, questKey.QuestId); // Assuming getQuest returns a string
+      console.log(quest);
+      const formattedQuest = formatQuestText(quest); // Apply the formatting function here
+      setChosenQuest(formattedQuest);
 
       setChosenQuestLoading(false);
     }
@@ -55,6 +55,64 @@ export default function QuestsButton({ walletConnected }: QuestButtonProps) {
       });
     }
   }, [walletAddress]);
+  function formatQuestText(inputText: string): string {
+    const keys = [
+      "CRED:",
+      "Name:",
+      "Description:",
+      "Points:",
+      "URL:",
+      "From:",
+      "Submit:",
+      "Visit:",
+    ];
+    const regexKey = new RegExp(`^(${keys.join("|")})`, "i");
+
+    // Split the text into sections based on double line breaks
+    const sections = inputText.split("\n\n");
+
+    // Process each section to handle internal line breaks correctly
+    const formattedSections = sections.map((section) => {
+      const lines = section.split("\n");
+      let formattedLines: string[] = [];
+
+      for (let i = 0; i < lines.length; i++) {
+        if (lines[i] === undefined) {
+          continue; // Skip undefined lines
+        }
+        if (regexKey.test(lines[i].trim()) || lines[i].trim() === "") {
+          // If the line starts with a key or is empty, push it to formattedLines and start a new paragraph
+          formattedLines.push(lines[i].trim());
+        } else if (i > 0 && regexKey.test(lines[i - 1].trim())) {
+          // If the previous line was a key, start this line on a new line to preserve the grouping
+          formattedLines.push(lines[i].trim());
+        } else {
+          // Concatenate lines to remove unnecessary breaks, ensuring no space is added before URLs
+          if (lines[i].trim().startsWith("http")) {
+            formattedLines[formattedLines.length - 1] =
+              formattedLines[formattedLines.length - 1].trim() +
+              "\n" +
+              lines[i].trim();
+          } else {
+            // Check if the last formatted line is available before appending
+            if (formattedLines.length > 0) {
+              formattedLines[formattedLines.length - 1] =
+                formattedLines[formattedLines.length - 1].trim() +
+                " " +
+                lines[i].trim();
+            } else {
+              formattedLines.push(lines[i].trim()); // Push first line if no previous line exists
+            }
+          }
+        }
+      }
+
+      return formattedLines.join("\n");
+    });
+
+    // Join all sections back with double line breaks
+    return formattedSections.join("\n\n");
+  }
 
   return (
     <div className="relative flex items-stretch py-1">
