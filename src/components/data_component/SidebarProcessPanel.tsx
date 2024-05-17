@@ -27,7 +27,7 @@ export default function SidebarProcessPanel({
 
   return (
     <div className="h-[92vh] flex flex-col gap-2.5 justify-between">
-      <div className="flex flex-col gap-2.5 px-5 pt-2">
+      <div className="flex flex-col gap-2.5 px-5 pt-4">
         <span className="uppercase">MY PROCESSES</span>
         <div className="flex flex-col gap-1.5">
           <label className="relative" htmlFor="searchProcesses">

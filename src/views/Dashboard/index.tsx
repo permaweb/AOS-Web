@@ -16,6 +16,11 @@ import { InputTerminal } from "../../components/Terminals";
 import { loadBluePrint } from "../../helpers/aos";
 import PreDefinedCommands from "../../components/PreDefinedCommands";
 import EditorModal from "../../components/modals/EditorModal";
+import { TabSelector } from "../../components/input";
+import { TabState } from "../../components/input/TabSelector";
+import QuestsPanel from "../../components/modals/QuestsPanel";
+import { formatId } from "../../helpers/helper";
+import SmallQuestIcon from "../../components/icons/SmallQuestIcon";
 
 export default function Dashboard() {
   const { processId } = useParams();
@@ -50,6 +55,8 @@ export default function Dashboard() {
 
   const [createModelOpen, setCreateModelOpen] = useState<boolean>(false);
   const [connectModelOpen, setConnectModelOpen] = useState<boolean>(false);
+  const [currentTab, setCurrentTab] = useState<TabState>("terminal"); // Track the current tab
+  const [showMobileQuests, setShowMobileQuests] = useState<boolean>(false);
 
   useEffect(() => {
     if (resizeElement.current) {
@@ -215,15 +222,15 @@ export default function Dashboard() {
   return (
     <MainLayout>
       <>
-        <div className="grid grid-rows-[auto,1fr] h-full w-full overflow-clip">
-          <div className="grid grid-cols-[auto,1fr] min-h-0">
+        <div className="h-full w-full overflow-clip grid grid-rows-[auto,1fr]">
+          <div className="hidden md:grid grid-cols-[auto,1fr] min-h-0">
             <div
-              className="flex flex-col relative gap-5 border-r-1 border-light-gray-color "
+              className="relative flex flex-col gap-5 border-r border-light-gray"
               style={{ width: Math.max(sideBarWidth, 200) }}
             >
               <div
                 ref={resizeElement}
-                className="absolute -right-2 top-0 bottom-0 w-4 hover:cursor-col-resize select-none h-[92vh] "
+                className="absolute -right-2 top-0 bottom-0 w-4 cursor-col-resize select-none"
               />
               <SidebarProcessPanel
                 processId={processId}
@@ -232,20 +239,19 @@ export default function Dashboard() {
               />
             </div>
 
-            <div className="flex flex-col p-5 gap-5 min-h-0 ">
+            <div className="flex flex-col gap-5 p-5 min-h-0">
               {processId && (
-                <div className="text-xs uppercase flex items-center gap-2 leading-none">
+                <div className="flex items-center gap-2 text-xs uppercase leading-none">
                   <Link
-                    className="hover:ring-2 ring-offset-4 ring-light-gray-color hover:bg-light-gray-color hover:rounded-sm ring-offset-light-gray-color active:text-gray-text-color"
-                    to={"/"}
+                    className="hover:ring-2 ring-offset-4 ring-light-gray-color hover:bg-light-gray-color hover:rounded-sm ring-offset-light-gray-color active:text-gray"
+                    to="/"
                   >
                     My Processes
                   </Link>
-
                   <BreadcrumbChevron />
                   <Link
                     to={`/process/${processId}`}
-                    className="normal-case hover:ring-2 ring-offset-4 ring-light-gray-color hover:bg-light-gray-color hover:rounded-sm ring-offset-light-gray-color active:text-gray-text-color"
+                    className="hover:ring-2 ring-offset-4 ring-light-gray-color hover:bg-light-gray-color hover:rounded-sm ring-offset-light-gray-color active:text-gray normal-case"
                   >
                     {processId}
                   </Link>
@@ -258,13 +264,13 @@ export default function Dashboard() {
                   style={{
                     width: `${Math.min(Math.max(terminalWidth, 20), 90)}%`,
                   }}
-                  className="relative flex-shrink-0 flex flex-col min-h-0 pr-5"
+                  className="relative flex flex-col flex-shrink-0 min-h-0 pr-5"
                 >
                   <div
                     ref={terminalResizeElement}
-                    className="absolute right-0 top-0 bottom-0 w-6 hover:cursor-col-resize select-none"
+                    className="absolute right-0 top-0 bottom-0 w-6 cursor-col-resize select-none"
                   />
-                  <div className="text-xs uppercase flex gap-1.5 items-center  ">
+                  <div className="flex gap-1.5 items-center text-xs uppercase">
                     <TerminalIcon />
                     <span>Terminal</span>
                   </div>
@@ -285,15 +291,14 @@ export default function Dashboard() {
                   </div>
                   <form
                     onSubmit={handleRunCommand}
-                    className={
-                      "relative flex gap-2 border-1 transition-colors border-gray-text-color rounded-lg  focus-within:border-primary-dark-color focus-within:ring-2  ring-offset-2 focus-within:bg-white" +
-                      (mode === "starter"
+                    className={`relative flex gap-2 border transition-colors border-gray rounded-lg focus-within:border-primary-dark focus-within:ring-2 ring-offset-2 focus-within:bg-white ${
+                      mode === "starter"
                         ? "select-none pointer-events-none opacity-50"
-                        : "")
-                    }
+                        : ""
+                    }`}
                   >
                     {sendingCommand && (
-                      <span className="absolute bottom-16 text-sm left-1/2 -translate-x-1/2 ">
+                      <span className="absolute bottom-16 left-1/2 -translate-x-1/2 text-sm">
                         Processing...
                       </span>
                     )}
@@ -309,12 +314,12 @@ export default function Dashboard() {
 
                     <label
                       htmlFor="runCommandInput"
-                      className="flex-grow h-full relative"
+                      className="relative flex-grow h-full"
                     >
                       <span className="absolute left-3 top-3">{"aos>"}</span>
                       <TextareaField
                         name="runCommandInput"
-                        className="py-3 pl-13 w-full bg-transparent h-12 resize-none outline-none min-h-0 overflow-hidden "
+                        className="w-full h-12 py-3 pl-13 bg-transparent resize-none outline-none min-h-0 overflow-hidden"
                         spellCheck="false"
                         onChange={(e: any) => setCommandToRun(e.target.value)}
                         value={commandToRun}
@@ -327,8 +332,8 @@ export default function Dashboard() {
                     </div>
                   </form>
                 </div>
-                <div className="flex flex-grow flex-shrink flex-col border-1 border-light-gray-color rounded-smd min-h-0 min-w-0">
-                  <div className="text-xs uppercase flex gap-1.5 items-center border-b-1 border-light-gray-color px-4 py-2.5">
+                <div className="flex flex-grow flex-shrink flex-col border border-light-gray rounded-smd min-h-0 min-w-0">
+                  <div className="flex items-center gap-1.5 text-xs uppercase border-b border-light-gray px-4 py-2.5">
                     <FeedIcon />
                     <span>Feed</span>
                   </div>
@@ -338,6 +343,165 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+        <div className="h-full w-full flex flex-col min-h-0 md:hidden flex-grow">
+          <div className="flex items-center  bg-white gap-2 px-4 py-3 border-b-1 border-light-gray-color text-xs uppercase leading-none justify-between">
+            <div className="flex gap-2">
+              <Link
+                className="hover:ring-2 ring-offset-4 ring-light-gray-color hover:bg-light-gray-color hover:rounded-sm ring-offset-light-gray-color active:text-gray"
+                to="/"
+              >
+                My Processes
+              </Link>
+              {processId && (
+                <>
+                  <BreadcrumbChevron />
+                  <Link
+                    to={`/process/${processId}`}
+                    className="hover:ring-2 ring-offset-4 ring-light-gray-color hover:bg-light-gray-color hover:rounded-sm ring-offset-light-gray-color active:text-gray normal-case"
+                  >
+                    {formatId(processId)}
+                  </Link>
+                </>
+              )}
+            </div>
+            <button
+              className="py-1.5 px-2.5 border-1 flex items-center gap-2 rounded-smd base-transition border-[#033FF3] text-[#033FF3] bg-[#DAE0FF]"
+              onClick={() => setShowMobileQuests((prevValue) => !prevValue)}
+            >
+              <SmallQuestIcon />
+              <span> QUESTS </span>
+
+              <svg
+                width="11"
+                height="7"
+                viewBox="0 0 11 7"
+                fill="none"
+                className={`transition-transform ${
+                  showMobileQuests ? "-rotate-180" : ""
+                }`}
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M1 1L5.5 6L10 1"
+                  stroke="#033FF3"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+          </div>
+          {!showMobileQuests && processId && (
+            <TabSelector
+              currentTab={currentTab}
+              setCurrentTab={setCurrentTab}
+            />
+          )}
+
+          <div className="flex flex-col flex-grow overflow-y-auto overflow-x-hidden min-h-0">
+            <div
+              className={!showMobileQuests && !processId ? "block" : "hidden"}
+            >
+              <SidebarProcessPanel
+                processId={processId}
+                showConnectModal={setConnectModelOpen}
+                showCreateModal={setCreateModelOpen}
+              />
+            </div>
+            <div
+              className={` flex-grow flex flex-col min-h-0  ${
+                !showMobileQuests && currentTab === "terminal" && processId
+                  ? "block"
+                  : "hidden"
+              }`}
+            >
+              <div className="grid grid-rows-[auto,1fr,auto]   flex-grow p-4">
+                <div className="flex gap-1.5 items-center text-xs uppercase">
+                  <TerminalIcon />
+                  <span>Terminal</span>
+                </div>
+                {mode === "starter" ? (
+                  <TerminalEmptyState
+                    showCreateModal={setCreateModelOpen}
+                    showConnectModal={setConnectModelOpen}
+                  />
+                ) : mode === "process" ? (
+                  <InputTerminal
+                    userCommand={userCommand}
+                    userCommandResult={userCommandResult}
+                  />
+                ) : (
+                  ""
+                )}
+                <form
+                  onSubmit={handleRunCommand}
+                  className={`relative flex gap-2 border transition-colors border-gray rounded-lg focus-within:border-primary-dark focus-within:ring-2 ring-offset-2 focus-within:bg-white ${
+                    mode === "starter"
+                      ? "select-none pointer-events-none opacity-50"
+                      : ""
+                  }`}
+                >
+                  {sendingCommand && (
+                    <span className="absolute bottom-16 left-1/2 -translate-x-1/2 text-sm">
+                      Processing...
+                    </span>
+                  )}
+                  <PreDefinedCommands
+                    isOpen={showPreDefinedCommands}
+                    setIsOpen={setShowPreDefinedCommands}
+                    setSendingCommand={setSendingCommand}
+                    setUserCommand={setUserCommand}
+                    setUserCommandResult={setUserCommandResult}
+                    setCommandToRun={setCommandToRun}
+                  />
+                  <label
+                    htmlFor="runCommandInput"
+                    className="relative flex-grow  "
+                  >
+                    <span className="absolute left-3 top-3">{"aos>"}</span>
+                    <TextareaField
+                      name="runCommandInput"
+                      className="w-full h-12 py-3 pl-13 bg-transparent resize-none outline-none min-h-0 overflow-hidden"
+                      spellCheck="false"
+                      onChange={(e: any) => setCommandToRun(e.target.value)}
+                      value={commandToRun}
+                      onKeyUp={handleKeyUp}
+                    />
+                  </label>
+                  <div className="p-1.5">
+                    <SmallButton text="run" type="submit" />
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div
+              className={`flex flex-col min-h-0 flex-grow ${
+                !showMobileQuests && currentTab === "feed" && processId
+                  ? "block"
+                  : "hidden"
+              }`}
+            >
+              <div className="min-h-0 min-w-0 flex flex-col   flex-grow flex-shrink p-4">
+                <div className="flex flex-grow  flex-col border border-light-gray rounded-smd min-h-0 min-w-0">
+                  <div className="flex items-center gap-1.5 text-xs uppercase border-b border-light-gray px-4 py-2.5">
+                    <FeedIcon />
+                    <span>Feed</span>
+                  </div>
+                  <div className="flex flex-grow overflow-y-auto overflow-x-hidden min-h-0">
+                    <FeedTerminal />
+                  </div>
+                </div>
+              </div>
+            </div>
+            {showMobileQuests && (
+              <div className="flex flex-col flex-grow bg-primary-dark-color">
+                <div className="animate-slide-in-top">
+                  <QuestsPanel mode="inline" />
+                </div>
+              </div>
+            )}
           </div>
         </div>
         <ConnectProcessModal

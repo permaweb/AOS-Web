@@ -54,3 +54,14 @@
 .scrollbar-style::-webkit-scrollbar-thumb:active {
   background-color: rgba(255, 255, 255, 1); /* Thumb color and active opacity */
 }
+
+/* Media query to disable hover effect below md breakpoint */
+@media (max-width: 767px) {
+  .base-transition:hover {
+    transform: scale(1); /* Reset transform on hover */
+  }
+  .base-transition:active {
+    opacity: 0.5;
+    transform: scale(0.975);
+  }
+}

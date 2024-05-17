@@ -6,6 +6,7 @@ import EmptySearchIcon from "../icons/EmptySearchIcon";
 import { ConnectedProcessContext } from "../../context/ConnectedProcess";
 import CopyIcon from "../icons/CopyIcon";
 import CopyCheck from "../icons/CopyCheck";
+import { formatId } from "../../helpers/helper";
 
 type ProcessListItemProps = ProcessProps & {
   active: boolean;
@@ -18,13 +19,6 @@ type ProcessListProps = {
 
 function ProcessListItem({ id, active }: ProcessListItemProps) {
   const [copied, setCopied] = useState(false);
-
-  const formatId = (id: string) => {
-    if (id.length <= 12) {
-      return id;
-    }
-    return `${id.slice(0, 7)}...${id.slice(-5)}`;
-  };
 
   const handleCopy = () => {
     navigator.clipboard.writeText(id).then(() => {
@@ -61,8 +55,8 @@ function ProcessListItem({ id, active }: ProcessListItemProps) {
             {copied ? <CopyCheck /> : <CopyIcon />}
           </button>
           {copied && (
-            <div className="absolute left-full bottom-0 top-0 ml-2 flex items-center select-none z-10">
-              <div className="animate-slide-in-left  bg-primary-dark-color text-white px-2.5 py-1 rounded-md">
+            <div className="absolute right-full mr-2 md:left-full  bottom-0  top-0 md:ml-2 md:mr-0 flex justify-end select-none z-10">
+              <div className="animate-slide-in-right md:animate-slide-in-left  bg-primary-dark-color text-white px-2.5 py-1 rounded-md">
                 Copied!
               </div>
             </div>
