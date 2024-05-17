@@ -21,6 +21,7 @@ import { TabState } from "../../components/input/TabSelector";
 import QuestsPanel from "../../components/modals/QuestsPanel";
 import { formatId } from "../../helpers/helper";
 import SmallQuestIcon from "../../components/icons/SmallQuestIcon";
+import StatusLoadingIcon from "../../components/icons/StatusLoadingIcon";
 
 export default function Dashboard() {
   const { processId } = useParams();
@@ -328,7 +329,17 @@ export default function Dashboard() {
                     </label>
 
                     <div className="p-1.5">
-                      <SmallButton text="run" type="submit" />
+                      {sendingCommand ? (
+                        <div className="pointer-events-none select-none">
+                          <SmallButton
+                            text="run"
+                            type="submit"
+                            IconComponent={StatusLoadingIcon}
+                          />
+                        </div>
+                      ) : (
+                        <SmallButton text="run" type="submit" />
+                      )}
                     </div>
                   </form>
                 </div>

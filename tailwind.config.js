@@ -49,6 +49,10 @@ export default {
           "0%": { transform: "scale(1.1)" },
           "100%": { transform: "scale(1)" },
         },
+        spinSlow: {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(360deg)" },
+        },
       },
       animation: {
         "slide-in-left":
@@ -57,6 +61,7 @@ export default {
           "slideInRight 0.5s cubic-bezier(.02,.88,.24,1) forwards",
         "slide-in-top": "slideInTop 0.5s cubic-bezier(.02,.88,.24,1) forwards",
         "scale-in": "scaleIn 0.5s cubic-bezier(.02,.88,.24,1) forwards",
+        "spin-slow": "spinSlow 3s linear infinite",
       },
     },
   },
