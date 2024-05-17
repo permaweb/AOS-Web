@@ -1,0 +1,14 @@
+{
+"manifest": "arweave/paths",
+"version": "0.1.0",
+"paths": {
+"favicon.ico":{"id":"lDnxNMPxYkmWn6SwtZffk2eBdyXNEk4BbYC861grioQ"},
+"index.html":{"id":"UBLkWrPbppaamgZBWHO-1YhQjWPT7XIcbaEoSdHPksA"},
+"assets/index-DzPY9W22.css":{"id":"hzGxokZ-ErUQ1EzMe0eGBbM04xGJofydu8-uHqF8PpA"},
+"quests.png":{"id":"jC5k7ihFhAx9grkdCwFnp6U6Z2M35azxJBm-p4o6jkg"},
+"assets/index-CafXj8rO.js":{"id":"ojg1qqm0AK4ndnNZhKvF5vwzQcPpNQnFnCE8cjS7-Jk"},
+"assets/index-DKnRUDUx.css":{"id":"tSV9R_Oc1MKghg8B7X_MgYmVEXWFmVhA8T4F2HSBWIY"},
+"assets/index-DGEpZwZ9.js":{"id":"nJlSp78gQtDylypfchhE0VwxCmDqUFtuVGEjkqnlJkc"}
+},
+"index":{"path":"index.html"}
+}
