@@ -22,6 +22,7 @@ import QuestsPanel from "../../components/modals/QuestsPanel";
 import { formatId } from "../../helpers/helper";
 import SmallQuestIcon from "../../components/icons/SmallQuestIcon";
 import StatusLoadingIcon from "../../components/icons/StatusLoadingIcon";
+import FeedEmptyState from "../../components/empty_states/FeedEmptyState";
 
 export default function Dashboard() {
   const { processId } = useParams();
@@ -223,134 +224,138 @@ export default function Dashboard() {
   return (
     <MainLayout>
       <>
-        <div className="h-full w-full overflow-clip grid grid-rows-[auto,1fr]">
-          <div className="hidden md:grid grid-cols-[auto,1fr] min-h-0">
+        <div className="h-full w-full flex-grow hidden md:grid grid-cols-[auto,1fr] min-h-0 ">
+          <div
+            className="relative flex flex-col gap-5 border-r border-light-gray"
+            style={{ width: Math.max(sideBarWidth, 200) }}
+          >
             <div
-              className="relative flex flex-col gap-5 border-r border-light-gray"
-              style={{ width: Math.max(sideBarWidth, 200) }}
-            >
-              <div
-                ref={resizeElement}
-                className="absolute -right-2 top-0 bottom-0 w-4 cursor-col-resize select-none"
-              />
-              <SidebarProcessPanel
-                processId={processId}
-                showConnectModal={setConnectModelOpen}
-                showCreateModal={setCreateModelOpen}
-              />
-            </div>
+              ref={resizeElement}
+              className="absolute -right-2 top-0 bottom-0 w-4 cursor-col-resize select-none"
+            />
+            <SidebarProcessPanel
+              processId={processId}
+              showConnectModal={setConnectModelOpen}
+              showCreateModal={setCreateModelOpen}
+            />
+          </div>
 
-            <div className="flex flex-col gap-5 p-5 min-h-0">
-              {processId && (
-                <div className="flex items-center gap-2 text-xs uppercase leading-none">
-                  <Link
-                    className="hover:ring-2 ring-offset-4 ring-light-gray-color hover:bg-light-gray-color hover:rounded-sm ring-offset-light-gray-color active:text-gray"
-                    to="/"
-                  >
-                    My Processes
-                  </Link>
-                  <BreadcrumbChevron />
-                  <Link
-                    to={`/process/${processId}`}
-                    className="hover:ring-2 ring-offset-4 ring-light-gray-color hover:bg-light-gray-color hover:rounded-sm ring-offset-light-gray-color active:text-gray normal-case"
-                  >
-                    {processId}
-                  </Link>
-                </div>
-              )}
-
-              <div ref={terminalParentRef} className="flex flex-grow min-h-0">
-                <div
-                  ref={terminalRef}
-                  style={{
-                    width: `${Math.min(Math.max(terminalWidth, 20), 90)}%`,
-                  }}
-                  className="relative flex flex-col flex-shrink-0 min-h-0 pr-5"
+          <div className="flex flex-col gap-5 p-5 min-h-0">
+            {processId && (
+              <div className="flex items-center gap-2 text-xs uppercase leading-none">
+                <Link
+                  className="hover:ring-2 ring-offset-4 ring-light-gray-color hover:bg-light-gray-color hover:rounded-sm ring-offset-light-gray-color active:text-gray"
+                  to="/"
                 >
-                  <div
-                    ref={terminalResizeElement}
-                    className="absolute right-0 top-0 bottom-0 w-6 cursor-col-resize select-none"
-                  />
-                  <div className="flex gap-1.5 items-center text-xs uppercase">
-                    <TerminalIcon />
-                    <span>Terminal</span>
-                  </div>
-                  <div className="flex flex-col flex-grow overflow-y-auto overflow-x-hidden min-h-0">
-                    {mode === "starter" ? (
-                      <TerminalEmptyState
-                        showCreateModal={setCreateModelOpen}
-                        showConnectModal={setConnectModelOpen}
-                      />
-                    ) : mode === "process" ? (
-                      <InputTerminal
-                        userCommand={userCommand}
-                        userCommandResult={userCommandResult}
-                      />
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                  <form
-                    onSubmit={handleRunCommand}
-                    className={`relative flex gap-2 border transition-colors border-gray rounded-lg focus-within:border-primary-dark focus-within:ring-2 ring-offset-2 focus-within:bg-white ${
-                      mode === "starter"
-                        ? "select-none pointer-events-none opacity-50"
-                        : ""
-                    }`}
-                  >
-                    {sendingCommand && (
-                      <span className="absolute bottom-16 left-1/2 -translate-x-1/2 text-sm">
-                        Processing...
-                      </span>
-                    )}
+                  My Processes
+                </Link>
+                <BreadcrumbChevron />
+                <Link
+                  to={`/process/${processId}`}
+                  className="hover:ring-2 ring-offset-4 ring-light-gray-color hover:bg-light-gray-color hover:rounded-sm ring-offset-light-gray-color active:text-gray normal-case"
+                >
+                  {processId}
+                </Link>
+              </div>
+            )}
 
-                    <PreDefinedCommands
-                      isOpen={showPreDefinedCommands}
-                      setIsOpen={setShowPreDefinedCommands}
-                      setSendingCommand={setSendingCommand}
-                      setUserCommand={setUserCommand}
-                      setUserCommandResult={setUserCommandResult}
-                      setCommandToRun={setCommandToRun}
-                    />
-
-                    <label
-                      htmlFor="runCommandInput"
-                      className="relative flex-grow h-full"
-                    >
-                      <span className="absolute left-3 top-3">{"aos>"}</span>
-                      <TextareaField
-                        name="runCommandInput"
-                        className="w-full h-12 py-3 pl-13 bg-transparent resize-none outline-none min-h-0 overflow-hidden"
-                        spellCheck="false"
-                        onChange={(e: any) => setCommandToRun(e.target.value)}
-                        value={commandToRun}
-                        onKeyUp={handleKeyUp}
-                      />
-                    </label>
-
-                    <div className="p-1.5">
-                      {sendingCommand ? (
-                        <div className="pointer-events-none select-none">
-                          <SmallButton
-                            text="run"
-                            type="submit"
-                            IconComponent={StatusLoadingIcon}
-                          />
-                        </div>
-                      ) : (
-                        <SmallButton text="run" type="submit" />
-                      )}
-                    </div>
-                  </form>
+            <div ref={terminalParentRef} className="flex flex-grow min-h-0">
+              <div
+                ref={terminalRef}
+                style={{
+                  width: `${Math.min(Math.max(terminalWidth, 20), 90)}%`,
+                }}
+                className="relative flex flex-col gap-2 flex-shrink-0 min-h-0 pr-5"
+              >
+                <div
+                  ref={terminalResizeElement}
+                  className="absolute right-0 top-0 bottom-0 w-6 cursor-col-resize select-none"
+                />
+                <div className="flex gap-1.5 items-center text-xs uppercase">
+                  <TerminalIcon />
+                  <span>Terminal</span>
                 </div>
-                <div className="flex flex-grow flex-shrink flex-col border border-light-gray rounded-smd min-h-0 min-w-0">
-                  <div className="flex items-center gap-1.5 text-xs uppercase border-b border-light-gray px-4 py-2.5">
-                    <FeedIcon />
-                    <span>Feed</span>
+                <div className="flex flex-col flex-grow overflow-y-auto overflow-x-hidden min-h-0">
+                  {mode === "starter" ? (
+                    <TerminalEmptyState
+                      showCreateModal={setCreateModelOpen}
+                      showConnectModal={setConnectModelOpen}
+                    />
+                  ) : mode === "process" ? (
+                    <InputTerminal
+                      userCommand={userCommand}
+                      userCommandResult={userCommandResult}
+                    />
+                  ) : (
+                    ""
+                  )}
+                </div>
+                <form
+                  onSubmit={handleRunCommand}
+                  className={`relative flex gap-2 border transition-colors border-gray rounded-lg focus-within:border-primary-dark focus-within:ring-2 ring-offset-2 focus-within:bg-white ${
+                    mode === "starter"
+                      ? "select-none pointer-events-none opacity-50"
+                      : ""
+                  }`}
+                >
+                  {sendingCommand && (
+                    <span className="absolute bottom-16 left-1/2 -translate-x-1/2 text-sm">
+                      Processing...
+                    </span>
+                  )}
+
+                  <PreDefinedCommands
+                    isOpen={showPreDefinedCommands}
+                    setIsOpen={setShowPreDefinedCommands}
+                    setSendingCommand={setSendingCommand}
+                    setUserCommand={setUserCommand}
+                    setUserCommandResult={setUserCommandResult}
+                    setCommandToRun={setCommandToRun}
+                  />
+
+                  <label
+                    htmlFor="runCommandInput"
+                    className="relative flex-grow h-full"
+                  >
+                    <span className="absolute left-3 top-3">{"aos>"}</span>
+                    <TextareaField
+                      name="runCommandInput"
+                      className="w-full h-12 py-3 pl-13 bg-transparent resize-none outline-none min-h-0 overflow-hidden"
+                      spellCheck="false"
+                      onChange={(e: any) => setCommandToRun(e.target.value)}
+                      value={commandToRun}
+                      onKeyUp={handleKeyUp}
+                    />
+                  </label>
+
+                  <div className="p-1.5">
+                    {sendingCommand ? (
+                      <div className="pointer-events-none select-none">
+                        <SmallButton
+                          text="run"
+                          type="submit"
+                          IconComponent={StatusLoadingIcon}
+                        />
+                      </div>
+                    ) : (
+                      <SmallButton text="run" type="submit" />
+                    )}
                   </div>
-                  <div className="flex flex-grow overflow-y-auto overflow-x-hidden min-h-0">
+                </form>
+              </div>
+              <div className="flex flex-grow flex-shrink flex-col border border-light-gray rounded-smd min-h-0 min-w-0">
+                <div className="flex items-center gap-1.5 text-xs uppercase border-b border-light-gray px-4 py-2.5">
+                  <FeedIcon />
+                  <span>Feed</span>
+                </div>
+                <div className="flex flex-grow overflow-y-auto overflow-x-hidden min-h-0">
+                  {mode === "starter" ? (
+                    <FeedEmptyState />
+                  ) : mode === "process" ? (
                     <FeedTerminal />
-                  </div>
+                  ) : (
+                    ""
+                  )}
                 </div>
               </div>
             </div>

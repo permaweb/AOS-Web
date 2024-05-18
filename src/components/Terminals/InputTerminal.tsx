@@ -1,6 +1,6 @@
 import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "xterm-addon-fit";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "xterm/css/xterm.css";
 import { useParams } from "react-router-dom";
 import { Readline } from "xterm-readline";
@@ -15,13 +15,15 @@ export default function InputTerminal({
   userCommandResult,
 }: InputTerminalProps) {
   const { processId } = useParams();
-  const terminalRef = React.useRef<any>(null);
-  const [terminal, setTerminal] = React.useState<any>(null);
-  const [isTerminalInitialized, setIsTerminalInitialized] =
-    React.useState(false);
-  const [readLine, setReadLine] = React.useState<any>(null);
+  const terminalRef = useRef<HTMLDivElement | null>(null);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const [terminal, setTerminal] = useState<Terminal | null>(null);
+  const [fitAddon, setFitAddon] = useState<FitAddon | null>(null);
+  const [isTerminalInitialized, setIsTerminalInitialized] = useState(false);
+  const [readLine, setReadLine] = useState<any>(null);
 
-  React.useEffect(() => {
+  // Initialize the terminal and basic configurations
+  useEffect(() => {
     if (terminalRef.current && terminal == null && !isTerminalInitialized) {
       const newTerminal = new Terminal({
         cursorBlink: true,
@@ -36,16 +38,10 @@ export default function InputTerminal({
         },
       });
 
-      const readline = new Readline();
-      setReadLine(readline);
+      setTerminal(newTerminal);
+      setFitAddon(new FitAddon());
 
-      const fitAddon = new FitAddon();
-      newTerminal.loadAddon(fitAddon);
-      newTerminal.loadAddon(readline);
       newTerminal.open(terminalRef.current);
-      fitAddon.fit();
-
-      setTerminal(newTerminal); // Save the terminal instance
       setIsTerminalInitialized(true);
     }
 
@@ -55,36 +51,73 @@ export default function InputTerminal({
     };
   }, [terminal, isTerminalInitialized]);
 
-  React.useEffect(() => {
+  // Load add-ons after fitAddon is set
+  useEffect(() => {
+    if (fitAddon && terminal) {
+      terminal.loadAddon(fitAddon);
+      const readline = new Readline();
+      setReadLine(readline);
+      terminal.loadAddon(readline);
+      fitAddon.fit();
+    }
+  }, [fitAddon, terminal]);
+
+  // Focus the terminal after initialization
+  useEffect(() => {
     if (isTerminalInitialized && terminal) {
       terminal.focus();
     }
   }, [isTerminalInitialized, terminal]);
 
   // Write the command to the terminal
-  React.useEffect(() => {
-    if (isTerminalInitialized && terminal) {
+  useEffect(() => {
+    if (isTerminalInitialized && terminal && userCommand) {
       terminal.writeln(`aos> ${userCommand}`); // Write the command
     }
-  }, [userCommand]);
+  }, [userCommand, isTerminalInitialized, terminal]);
 
-  React.useEffect(() => {
-    if (isTerminalInitialized && terminal) {
-      // console.log("userCommandResult", userCommandResult);
-      // terminal.writeln("\r" + ">" + userCommandResult); // Write the command result
+  // Write the command result to the terminal
+  useEffect(() => {
+    if (isTerminalInitialized && terminal && readLine && userCommandResult) {
       readLine.println("\r" + ">" + userCommandResult);
     }
-  }, [userCommandResult]);
+  }, [userCommandResult, isTerminalInitialized, terminal, readLine]);
 
-  React.useEffect(() => {
+  // Reset the terminal on processId change
+  useEffect(() => {
     if (terminal !== null) {
       terminal.reset();
     }
-  }, [processId]);
+  }, [processId, terminal]);
+
+  // Handle resize button click
+  const handleResize = () => {
+    if (fitAddon) {
+      fitAddon.fit();
+    }
+  };
+
+  // Observe wrapperRef changes
+  useEffect(() => {
+    if (wrapperRef.current) {
+      const resizeObserver = new ResizeObserver(() => {
+        handleResize();
+      });
+
+      resizeObserver.observe(wrapperRef.current);
+
+      return () => {
+        resizeObserver.disconnect();
+      };
+    }
+  }, [wrapperRef.current, fitAddon]);
 
   return (
-    <>
-      <div ref={terminalRef} className={`w-full h-full mt-4 `}></div>
-    </>
+    <div ref={wrapperRef} className="relative h-full w-full">
+      <div
+        ref={terminalRef}
+        className="w-full h-full absolute left-0 top-0 right-0 bottom-0 overflow-hidden flex flex-col "
+      ></div>
+    </div>
   );
 }

@@ -1,21 +1,22 @@
 import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "xterm-addon-fit";
-import React from "react";
+import { useEffect, useRef, useState, useContext } from "react";
 import { ConnectedProcessContext } from "../../context/ConnectedProcess";
 import "xterm/css/xterm.css";
 import { useParams } from "react-router-dom";
 
 export default function FeedTerminal() {
   const { processId } = useParams();
-  const { connectedProcess, disconnectProcess } = React.useContext(
+  const { connectedProcess, disconnectProcess } = useContext(
     ConnectedProcessContext
   );
-  const terminalRef = React.useRef<any>(null);
-  const [terminal, setTerminal] = React.useState<any>(null);
-  const [isTerminalInitialized, setIsTerminalInitialized] =
-    React.useState(false);
+  const terminalRef = useRef<HTMLDivElement | null>(null);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const [terminal, setTerminal] = useState<Terminal | null>(null);
+  const [fitAddon, setFitAddon] = useState<FitAddon | null>(null);
+  const [isTerminalInitialized, setIsTerminalInitialized] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (terminalRef.current && terminal == null && !isTerminalInitialized) {
       const newTerminal = new Terminal({
         cursorBlink: true,
@@ -30,12 +31,13 @@ export default function FeedTerminal() {
         },
       });
 
-      const fitAddon = new FitAddon();
-      newTerminal.loadAddon(fitAddon);
+      const newFitAddon = new FitAddon();
+      newTerminal.loadAddon(newFitAddon);
       newTerminal.open(terminalRef.current);
-      fitAddon.fit();
+      newFitAddon.fit();
 
-      setTerminal(newTerminal); // Save the terminal instance
+      setTerminal(newTerminal);
+      setFitAddon(newFitAddon);
       setIsTerminalInitialized(true);
     }
 
@@ -46,7 +48,7 @@ export default function FeedTerminal() {
     };
   }, [terminal, isTerminalInitialized]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isTerminalInitialized && terminal && connectedProcess?.isConnected) {
       try {
         const liveFeed: any = connectedProcess?.selectedProcessHistory;
@@ -66,31 +68,37 @@ export default function FeedTerminal() {
     isTerminalInitialized,
   ]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (terminal !== null) {
       terminal.reset();
     }
   }, [processId]);
 
-  return (
-    <div className="w-full h-full flex items-center justify-center p-5">
-      <div className="flex flex-col gap-1 w-full relative">
-        <span className="uppercase font-bold max-w-52">This is your feed</span>
-        <div
-          ref={terminalRef}
-          className={`w-full  ${
-            connectedProcess?.isConnected ? "h-96" : "opacity-0"
-          }`}
-        ></div>
+  // Observe wrapperRef changes
+  useEffect(() => {
+    if (wrapperRef.current) {
+      const resizeObserver = new ResizeObserver(() => {
+        if (fitAddon) {
+          fitAddon.fit();
+        }
+      });
 
-        <div
-          className={`font-dm-sans absolute top-10  ${
-            connectedProcess?.isConnected ? "hidden" : "block"
-          }`}
-        >
-          Outputs from your commands will show up here.
-        </div>
-      </div>
+      resizeObserver.observe(wrapperRef.current);
+
+      return () => {
+        resizeObserver.disconnect();
+      };
+    }
+  }, [wrapperRef.current, fitAddon]);
+
+  return (
+    <div ref={wrapperRef} className=" w-full h-full relative">
+      <div
+        ref={terminalRef}
+        className={`w-full h-full absolute top-0 left-0 right-0 bottom-0 p-2 overflow-hidden ${
+          connectedProcess?.isConnected ? "h-96" : "opacity-0"
+        }`}
+      ></div>
     </div>
   );
 }
