@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect, ReactNode } from "react";
 import { evaluate, findMyPIDs, live, register } from "../helpers/aos";
+import { useActiveAddress } from "arweave-wallet-kit";
 
 export type ProcessProps = {
   selectedProcessHistory?: any;
@@ -46,12 +47,14 @@ const ConnectedProcessProvider = ({ children }: { children: ReactNode }) => {
     }
 
     const pid = await register(name, signer);
+    await connectProcess(pid);
     console.log("pid ", pid);
     return pid;
   };
 
   const findProcessHistory = async (owner: string) => {
     const processes = await findMyPIDs(owner);
+    console.log(processes);
     setProcessHistoryList(processes);
   };
 

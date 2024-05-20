@@ -31,17 +31,21 @@ function ProcessListItem({ id, active }: ProcessListItemProps) {
 
   return (
     <div
-      className={
-        "font-dm-sans tracking-wider flex " +
-        (active ? "bg-light-gray-color" : "")
-      }
+      className={"font-dm-sans tracking-wider flex transition-colors relative "}
     >
       <Link
         to={`/process/${id}`}
-        className="base-transition flex gap-2 items-center py-1.5 pl-5 pr-2 flex-grow"
+        className="peer flex gap-2 items-center py-1.5 pl-5 pr-2 flex-grow relative z-[1]"
       >
         <span>{formatId(id)}</span>
       </Link>
+
+      <div
+        className={`absolute left-0 top-0 right-0 bottom-0 transition-colors peer-active:bg-medium-gray-color
+        ${
+          active ? " bg-light-gray-color" : " peer-hover:bg-light-gray-color "
+        }`}
+      />
       <div className="py-1 pr-5 flex items-center ">
         <div className="relative">
           <button
@@ -55,7 +59,7 @@ function ProcessListItem({ id, active }: ProcessListItemProps) {
             {copied ? <CopyCheck /> : <CopyIcon />}
           </button>
           {copied && (
-            <div className="absolute right-full mr-2 md:left-full  bottom-0  top-0 md:ml-2 md:mr-0 flex justify-end select-none z-10">
+            <div className="absolute right-full mr-2 md:left-full  bottom-0  top-0 md:right-auto md:ml-2 md:mr-0 flex justify-end select-none z-10">
               <div className="animate-slide-in-right md:animate-slide-in-left  bg-primary-dark-color text-white px-2.5 py-1 rounded-md">
                 Copied!
               </div>

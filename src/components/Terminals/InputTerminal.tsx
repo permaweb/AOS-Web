@@ -1,6 +1,6 @@
 import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "xterm-addon-fit";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "xterm/css/xterm.css";
 import { useParams } from "react-router-dom";
 import { Readline } from "xterm-readline";
