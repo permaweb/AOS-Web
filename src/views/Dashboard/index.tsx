@@ -156,7 +156,7 @@ export default function Dashboard() {
   const handleKeyUp = (e: any) => {
     const position = e.target.selectionStart;
     const lastChar = commandToRun.slice(position - 1, position);
-    if (lastChar === "/") {
+    if (lastChar === ".") {
       setShowPreDefinedCommands(true);
     } else {
       setShowPreDefinedCommands(false);

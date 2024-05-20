@@ -46,7 +46,6 @@ const ConnectedProcessProvider = ({ children }: { children: ReactNode }) => {
     }
 
     const pid = await register(name, signer);
-    await connectProcess(pid);
     console.log("pid ", pid);
     return pid;
   };
