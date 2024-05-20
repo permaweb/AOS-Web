@@ -181,19 +181,24 @@ export default function Dashboard() {
       setCommandToRun("");
 
       const loadBlueprintExp = /\.load-blueprint\s+(\w*)/;
+      let result: any = null;
       if (loadBlueprintExp.test(command)) {
         const [, name] = command.match(loadBlueprintExp) || [];
         setUserCommandResult(`loading ${name}...`);
-        await loadBluePrint(name);
-        setUserCommandResult(`undefined`);
-      } else {
-        const result: any = await sendCommand(processId, command);
+        const bluePrint = await loadBluePrint(name);
+
+        result = await sendCommand(processId, bluePrint);
         // console.log("result", result);
-        if (result?.output) {
-          setUserCommandResult(`${result?.output}`);
-        }
-        setPrompt(result?.prompt)
+        // console.log("bluePrint", bluePrint);
+      } else {
+        result = await sendCommand(processId, command);
+        // console.log("result", result);
       }
+
+      if (result?.output) {
+        setUserCommandResult(`${result?.output}`);
+      }
+      setPrompt(result?.prompt)
 
       setSendingCommand(false);
       console.log("command sent", connectedProcess);

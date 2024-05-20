@@ -77,8 +77,11 @@ export async function evaluate(pid: string, command: string, signer: any) {
 export async function loadBluePrint(name: string) {
     try {
         const data = await fetch(`https://raw.githubusercontent.com/permaweb/aos/main/blueprints/${name}.lua`);
-        const response = await data.text();
-        return response;
+        if (data.status == 200) {
+            const response = await data.text();
+            return response;
+        }
+        return `-- Error loading blueprint: ${data.statusText}`
     } catch (error: any) {
         console.error("Error loading blueprint: ", error.message);
         return `-- Error loading blueprint: ${error.message}`

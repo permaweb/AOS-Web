@@ -1,4 +1,7 @@
+import { useContext } from "react";
 import { loadBluePrint } from "../helpers/aos";
+import { ConnectedProcessContext } from "../context/ConnectedProcess";
+import { useParams } from "react-router-dom";
 
 interface PreDefinedCommandsProps {
   isOpen: boolean;
@@ -17,10 +20,13 @@ export default function PreDefinedCommands({
   setUserCommandResult,
   setCommandToRun,
 }: PreDefinedCommandsProps) {
+  const { processId } = useParams();
+  const { sendCommand } = useContext(ConnectedProcessContext);
+
   const blueprintsList = [
     {
       name: "Chatroom Blueprint",
-      command: "chatroom",
+      command: "chat",
     },
     {
       name: "CRED Blueprint",
@@ -48,10 +54,14 @@ export default function PreDefinedCommands({
       setUserCommand(`.load-blueprint ${item.command}`);
       setCommandToRun("");
 
-      await loadBluePrint(item.command);
+      const bluePrint = await loadBluePrint(item.command);
+      const result: any = await sendCommand(processId!, bluePrint);
+      // console.log(`bluePrint: `, bluePrint);
+      // console.log(`result: `, result);
 
       setSendingCommand(false);
-      setUserCommandResult(`Loaded ${item.command} blueprint successfully.`);
+      setUserCommandResult(`${result?.output}`);
+      // setUserCommandResult(`Loaded ${item.command} blueprint successfully.`);
     } catch (error) {
       console.error(`Error loading blueprint: `, error);
       setSendingCommand(false);
@@ -61,9 +71,8 @@ export default function PreDefinedCommands({
 
   return (
     <ul
-      className={`absolute bottom-13 w-full h-44 bg-white text-black p-4 rounded-md border border-gray-200 rounded-b-none flex flex-col gap-2 overflow-auto transition-all duration-200 ${
-        isOpen ? "flex" : "hidden"
-      }`}
+      className={`absolute bottom-13 w-full h-44 bg-white text-black p-4 rounded-md border border-gray-200 rounded-b-none flex flex-col gap-2 overflow-auto transition-all duration-200 ${isOpen ? "flex" : "hidden"
+        }`}
     >
       {blueprintsList.map((item: any, index: number) => {
         return (
