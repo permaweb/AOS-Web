@@ -1,6 +1,5 @@
 import { createContext, useState, useEffect, ReactNode } from "react";
 import { evaluate, findMyPIDs, live, register } from "../helpers/aos";
-import { useActiveAddress } from "arweave-wallet-kit";
 
 export type ProcessProps = {
   selectedProcessHistory?: any;
