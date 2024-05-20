@@ -348,7 +348,7 @@ export default function Dashboard() {
                   <FeedIcon />
                   <span>Feed</span>
                 </div>
-                <div className="flex flex-grow overflow-y-auto overflow-x-hidden min-h-0">
+                <div className="flex flex-col flex-grow overflow-y-auto overflow-x-hidden min-h-0">
                   {mode === "starter" ? (
                     <FeedEmptyState />
                   ) : mode === "process" ? (
@@ -505,7 +505,7 @@ export default function Dashboard() {
                     <FeedIcon />
                     <span>Feed</span>
                   </div>
-                  <div className="flex flex-grow overflow-y-auto overflow-x-hidden min-h-0">
+                  <div className="flex flex-col flex-grow overflow-y-auto overflow-x-hidden min-h-0">
                     <FeedTerminal />
                   </div>
                 </div>

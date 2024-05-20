@@ -92,7 +92,7 @@ export default function FeedTerminal() {
   }, [wrapperRef.current, fitAddon]);
 
   return (
-    <div ref={wrapperRef} className=" w-full h-full relative">
+    <div ref={wrapperRef} className="flex-grow w-full h-full relative ">
       <div
         ref={terminalRef}
         className={`w-full h-full absolute top-0 left-0 right-0 bottom-0 p-2 overflow-hidden ${
