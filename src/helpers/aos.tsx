@@ -67,8 +67,8 @@ export async function evaluate(pid: string, command: string, signer: any) {
         throw new Error(result.Error)
     }
 
-    if (result.Output?.data?.output) {
-        return result.Output?.data?.output
+    if (result.Output?.data) {
+        return result.Output?.data
     }
 
     return undefined
