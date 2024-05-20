@@ -11,12 +11,11 @@ import FeedTerminal from "../../components/data_component/FeedTerminal";
 import { ConnectedProcessContext } from "../../context/ConnectedProcess";
 import ConnectProcessModal from "../../components/modals/ConnectProcessModal";
 import CreateProcessModal from "../../components/modals/CreateProcessModel";
-import { TextareaField } from "../../components/input";
 import { InputTerminal } from "../../components/Terminals";
 import { loadBluePrint } from "../../helpers/aos";
 import PreDefinedCommands from "../../components/PreDefinedCommands";
 import EditorModal from "../../components/modals/EditorModal";
-import { TabSelector } from "../../components/input";
+import { CommandInputField, TabSelector } from "../../components/input";
 import { TabState } from "../../components/input/TabSelector";
 import QuestsPanel from "../../components/modals/QuestsPanel";
 import { formatId } from "../../helpers/helper";
@@ -317,10 +316,14 @@ export default function Dashboard() {
                     htmlFor="runCommandInput"
                     className="relative flex-grow h-full"
                   >
-                    <span className="absolute left-3 top-3">{"aos>"}</span>
-                    <TextareaField
+                    <span className="absolute left-3 top-0 bottom-0 flex items-center">
+                      {"aos>"}
+                    </span>
+                    <CommandInputField
+                      key={processId}
                       name="runCommandInput"
-                      className="w-full h-12 py-3 pl-13 bg-transparent resize-none outline-none min-h-0 overflow-hidden"
+                      mode={mode}
+                      className="w-full h-full pl-13 bg-transparent resize-none outline-none min-h-0 overflow-hidden"
                       spellCheck="false"
                       onChange={(e: any) => setCommandToRun(e.target.value)}
                       value={commandToRun}
@@ -477,7 +480,7 @@ export default function Dashboard() {
                     className="relative flex-grow  "
                   >
                     <span className="absolute left-3 top-3">{"aos>"}</span>
-                    <TextareaField
+                    <CommandInputField
                       name="runCommandInput"
                       className="w-full h-12 py-3 pl-13 bg-transparent resize-none outline-none min-h-0 overflow-hidden"
                       spellCheck="false"
