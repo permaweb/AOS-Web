@@ -30,23 +30,19 @@ function ProcessListItem({ id, active }: ProcessListItemProps) {
   };
 
   return (
-    <div
-      className={"font-dm-sans tracking-wider flex transition-colors relative "}
-    >
+    <div className={"font-dm-sans tracking-wider flex  relative "}>
       <Link
         to={`/process/${id}`}
-        className="peer flex gap-2 items-center py-1.5 pl-5 pr-2 flex-grow relative z-[1]"
+        className="peer flex gap-2 items-center py-1.5 pl-5 pr-2 flex-grow relative z-[1] transition-opacity active:opacity-25"
       >
         <span>{formatId(id)}</span>
       </Link>
 
       <div
-        className={`absolute left-0 top-0 right-0 bottom-0 transition-colors peer-active:bg-medium-gray-color
-        ${
-          active ? " bg-light-gray-color" : " peer-hover:bg-light-gray-color "
-        }`}
+        className={`absolute left-0 top-0 right-0 bottom-0 transition  peer-active:opacity-25
+        ${active ? " bg-light-gray-color" : " peer-hover:bg-[#e7e7e7] "}`}
       />
-      <div className="py-1 pr-5 flex items-center ">
+      <div className="py-1 pr-5 flex items-center transition-opacity peer-active:opacity-25 ">
         <div className="relative">
           <button
             onClick={handleCopy}
