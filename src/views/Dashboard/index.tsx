@@ -1,13 +1,10 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import SidebarProcessPanel from "../../components/data_component/SidebarProcessPanel";
-import BreadcrumbChevron from "../../components/icons/BreadcrumbChevron";
 import TerminalIcon from "../../components/icons/TerminalIcon";
 import TerminalEmptyState from "../../components/empty_states/TerminalEmptyState";
 import SmallButton from "../../components/SmallButton";
-import FeedIcon from "../../components/icons/FeedIcon";
 import { MainLayout } from "../../components/layouts";
-import FeedTerminal from "../../components/data_component/FeedTerminal";
 import { ConnectedProcessContext } from "../../context/ConnectedProcess";
 import ConnectProcessModal from "../../components/modals/ConnectProcessModal";
 import CreateProcessModal from "../../components/modals/CreateProcessModel";
@@ -18,14 +15,18 @@ import EditorModal from "../../components/modals/EditorModal";
 import { CommandInputField, TabSelector } from "../../components/input";
 import { TabState } from "../../components/input/TabSelector";
 import QuestsPanel from "../../components/modals/QuestsPanel";
-import { formatId } from "../../helpers/helper";
-import SmallQuestIcon from "../../components/icons/SmallQuestIcon";
 import StatusLoadingIcon from "../../components/icons/StatusLoadingIcon";
-import FeedEmptyState from "../../components/empty_states/FeedEmptyState";
+import Breadcrumbs from "../../components/dashboard_components/Breadcrumbs";
+import FeedWrapper from "../../components/data_component/FeedWrapper";
+import SmallQuestsButton from "../../components/SmallQuestionsButton";
+import CommandInputForm from "../../components/input/CommandInputForm";
+import TerminalOutput from "../../components/data_component/TerminalOutput";
 
 export default function Dashboard() {
   const { processId } = useParams();
-  const { connectProcess, sendCommand, connectedProcess } = useContext(ConnectedProcessContext);
+  const { connectProcess, sendCommand, connectedProcess } = useContext(
+    ConnectedProcessContext
+  );
   const [commandToRun, setCommandToRun] = useState<string>("");
   const [userCommand, setUserCommand] = useState<string>("");
   const [userCommandResult, setUserCommandResult] = useState<any>(null);
@@ -198,7 +199,7 @@ export default function Dashboard() {
       if (result?.output) {
         setUserCommandResult(`${result?.output}`);
       }
-      setPrompt(result?.prompt)
+      setPrompt(result?.prompt);
 
       setSendingCommand(false);
       console.log("command sent", connectedProcess);
@@ -251,23 +252,7 @@ export default function Dashboard() {
           </div>
 
           <div className="flex flex-col gap-5 p-5 min-h-0">
-            {processId && (
-              <div className="flex items-center gap-2 text-xs uppercase leading-none">
-                <Link
-                  className="hover:ring-2 ring-offset-4 ring-light-gray-color hover:bg-light-gray-color hover:rounded-sm ring-offset-light-gray-color active:text-gray"
-                  to="/"
-                >
-                  My Processes
-                </Link>
-                <BreadcrumbChevron />
-                <Link
-                  to={`/process/${processId}`}
-                  className="hover:ring-2 ring-offset-4 ring-light-gray-color hover:bg-light-gray-color hover:rounded-sm ring-offset-light-gray-color active:text-gray normal-case"
-                >
-                  {processId}
-                </Link>
-              </div>
-            )}
+            {processId && <Breadcrumbs processId={processId} />}
 
             <div ref={terminalParentRef} className="flex flex-grow min-h-0">
               <div
@@ -281,145 +266,42 @@ export default function Dashboard() {
                   ref={terminalResizeElement}
                   className="absolute right-0 top-0 bottom-0 w-6 cursor-col-resize select-none"
                 />
-                <div className="flex gap-1.5 items-center text-xs uppercase">
-                  <TerminalIcon />
-                  <span>Terminal</span>
-                </div>
-                <div className="flex flex-col flex-grow overflow-y-auto overflow-x-hidden min-h-0">
-                  {mode === "starter" ? (
-                    <TerminalEmptyState
-                      showCreateModal={setCreateModelOpen}
-                      showConnectModal={setConnectModelOpen}
-                    />
-                  ) : mode === "process" ? (
-                    <InputTerminal
-                      userCommand={userCommand}
-                      userCommandResult={userCommandResult}
-                    />
-                  ) : (
-                    ""
-                  )}
-                </div>
-                <form
-                  onSubmit={handleRunCommand}
-                  className={`relative flex gap-2 border transition-colors border-gray rounded-lg focus-within:border-primary-dark focus-within:ring-2 ring-offset-2 focus-within:bg-white ${mode === "starter"
-                    ? "select-none pointer-events-none opacity-50"
-                    : ""
-                    }`}
-                >
-                  {sendingCommand && (
-                    <span className="absolute bottom-16 left-1/2 -translate-x-1/2 text-sm">
-                      Processing...
-                    </span>
-                  )}
 
-                  <PreDefinedCommands
-                    isOpen={showPreDefinedCommands}
-                    setIsOpen={setShowPreDefinedCommands}
-                    setSendingCommand={setSendingCommand}
-                    setUserCommand={setUserCommand}
-                    setUserCommandResult={setUserCommandResult}
-                    setCommandToRun={setCommandToRun}
-                  />
+                <TerminalOutput
+                  mode={mode}
+                  setCreateModelOpen={setCreateModelOpen}
+                  setConnectModelOpen={setConnectModelOpen}
+                  userCommand={userCommand}
+                  userCommandResult={userCommandResult}
+                />
 
-                  <label
-                    htmlFor="runCommandInput"
-                    className="relative flex-grow h-full"
-                  >
-                    <span className="absolute left-3 top-0 bottom-0 flex items-center">
-                      {prompt || "aos> "}
-                    </span>
-                    <CommandInputField
-                      key={processId}
-                      name="runCommandInput"
-                      mode={mode}
-                      className="w-full h-full pl-13 bg-transparent resize-none outline-none min-h-0 overflow-hidden"
-                      spellCheck="false"
-                      onChange={(e: any) => setCommandToRun(e.target.value)}
-                      value={commandToRun}
-                      onKeyUp={handleKeyUp}
-                    />
-                  </label>
-
-                  <div className="p-1.5">
-                    {sendingCommand ? (
-                      <div className="pointer-events-none select-none">
-                        <SmallButton
-                          text="run"
-                          type="submit"
-                          IconComponent={StatusLoadingIcon}
-                        />
-                      </div>
-                    ) : (
-                      <SmallButton text="run" type="submit" />
-                    )}
-                  </div>
-                </form>
+                <CommandInputForm
+                  handleRunCommand={handleRunCommand}
+                  processId={processId}
+                  mode={mode}
+                  sendingCommand={sendingCommand}
+                  showPreDefinedCommands={showPreDefinedCommands}
+                  setShowPreDefinedCommands={setShowPreDefinedCommands}
+                  setSendingCommand={setSendingCommand}
+                  setUserCommand={setUserCommand}
+                  setUserCommandResult={setUserCommandResult}
+                  setCommandToRun={setCommandToRun}
+                  prompt={prompt}
+                  commandToRun={commandToRun}
+                  handleKeyUp={handleKeyUp}
+                />
               </div>
-              <div className="flex flex-grow flex-shrink flex-col border border-light-gray rounded-smd min-h-0 min-w-0">
-                <div className="flex items-center gap-1.5 text-xs uppercase border-b border-light-gray px-4 py-2.5">
-                  <FeedIcon />
-                  <span>Feed</span>
-                </div>
-                <div className="flex flex-col flex-grow overflow-y-auto overflow-x-hidden min-h-0">
-                  {mode === "starter" ? (
-                    <FeedEmptyState />
-                  ) : mode === "process" ? (
-                    <FeedTerminal />
-                  ) : (
-                    ""
-                  )}
-                </div>
-              </div>
+              <FeedWrapper mode={mode} />
             </div>
           </div>
         </div>
         <div className="h-full w-full flex flex-col min-h-0 md:hidden flex-grow">
           <div className="flex items-center  bg-white gap-2 px-4 py-3 border-b-1 border-light-gray-color text-xs uppercase leading-none justify-between">
-            <div className="flex gap-2">
-              <Link
-                className="hover:ring-2 ring-offset-4 ring-light-gray-color hover:bg-light-gray-color hover:rounded-sm ring-offset-light-gray-color active:text-gray"
-                to="/"
-              >
-                My Processes
-              </Link>
-              {processId && (
-                <>
-                  <BreadcrumbChevron />
-                  <Link
-                    to={`/process/${processId}`}
-                    className="hover:ring-2 ring-offset-4 ring-light-gray-color hover:bg-light-gray-color hover:rounded-sm ring-offset-light-gray-color active:text-gray normal-case"
-                  >
-                    {formatId(processId)}
-                  </Link>
-                </>
-              )}
-            </div>
-            <button
-              className="py-1.5 px-2.5 border-1 flex items-center gap-2 rounded-smd base-transition border-[#033FF3] text-[#033FF3] bg-[#DAE0FF]"
-              onClick={() => setShowMobileQuests((prevValue) => !prevValue)}
-            >
-              <SmallQuestIcon />
-              <span> QUESTS </span>
-
-              <svg
-                width="11"
-                height="7"
-                viewBox="0 0 11 7"
-                fill="none"
-                className={`transition-transform ${showMobileQuests ? "-rotate-180" : ""
-                  }`}
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M1 1L5.5 6L10 1"
-                  stroke="#033FF3"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
+            <Breadcrumbs processId={processId ? processId : null} />
+            <SmallQuestsButton
+              handleClick={() => setShowMobileQuests((prevValue) => !prevValue)}
+              open={showMobileQuests}
+            />
           </div>
           {!showMobileQuests && processId && (
             <TabSelector
@@ -439,85 +321,46 @@ export default function Dashboard() {
               />
             </div>
             <div
-              className={` flex-grow flex flex-col min-h-0  ${!showMobileQuests && currentTab === "terminal" && processId
-                ? "block"
-                : "hidden"
-                }`}
+              className={` flex-grow flex flex-col min-h-0  ${
+                !showMobileQuests && currentTab === "terminal" && processId
+                  ? "block"
+                  : "hidden"
+              }`}
             >
-              <div className="grid grid-rows-[auto,1fr,auto]   flex-grow p-4">
-                <div className="flex gap-1.5 items-center text-xs uppercase">
-                  <TerminalIcon />
-                  <span>Terminal</span>
-                </div>
-                {mode === "starter" ? (
-                  <TerminalEmptyState
-                    showCreateModal={setCreateModelOpen}
-                    showConnectModal={setConnectModelOpen}
-                  />
-                ) : mode === "process" ? (
-                  <InputTerminal
-                    userCommand={userCommand}
-                    userCommandResult={userCommandResult}
-                  />
-                ) : (
-                  ""
-                )}
-                <form
-                  onSubmit={handleRunCommand}
-                  className={`relative flex gap-2 border transition-colors border-gray rounded-lg focus-within:border-primary-dark focus-within:ring-2 ring-offset-2 focus-within:bg-white ${mode === "starter"
-                    ? "select-none pointer-events-none opacity-50"
-                    : ""
-                    }`}
-                >
-                  {sendingCommand && (
-                    <span className="absolute bottom-16 left-1/2 -translate-x-1/2 text-sm">
-                      Processing...
-                    </span>
-                  )}
-                  <PreDefinedCommands
-                    isOpen={showPreDefinedCommands}
-                    setIsOpen={setShowPreDefinedCommands}
-                    setSendingCommand={setSendingCommand}
-                    setUserCommand={setUserCommand}
-                    setUserCommandResult={setUserCommandResult}
-                    setCommandToRun={setCommandToRun}
-                  />
-                  <label
-                    htmlFor="runCommandInput"
-                    className="relative flex-grow  "
-                  >
-                    <span className="absolute left-3 top-3"> {prompt || "aos> "}</span>
-                    <CommandInputField
-                      name="runCommandInput"
-                      className="w-full h-12 py-3 pl-13 bg-transparent resize-none outline-none min-h-0 overflow-hidden"
-                      spellCheck="false"
-                      onChange={(e: any) => setCommandToRun(e.target.value)}
-                      value={commandToRun}
-                      onKeyUp={handleKeyUp}
-                    />
-                  </label>
-                  <div className="p-1.5">
-                    <SmallButton text="run" type="submit" />
-                  </div>
-                </form>
+              <div className="grid grid-rows-[1fr,auto] flex-grow p-4">
+                <TerminalOutput
+                  mode={mode}
+                  setCreateModelOpen={setCreateModelOpen}
+                  setConnectModelOpen={setConnectModelOpen}
+                  userCommand={userCommand}
+                  userCommandResult={userCommandResult}
+                />
+                <CommandInputForm
+                  handleRunCommand={handleRunCommand}
+                  processId={processId}
+                  mode={mode}
+                  sendingCommand={sendingCommand}
+                  showPreDefinedCommands={showPreDefinedCommands}
+                  setShowPreDefinedCommands={setShowPreDefinedCommands}
+                  setSendingCommand={setSendingCommand}
+                  setUserCommand={setUserCommand}
+                  setUserCommandResult={setUserCommandResult}
+                  setCommandToRun={setCommandToRun}
+                  prompt={prompt}
+                  commandToRun={commandToRun}
+                  handleKeyUp={handleKeyUp}
+                />
               </div>
             </div>
             <div
-              className={`flex flex-col min-h-0 flex-grow ${!showMobileQuests && currentTab === "feed" && processId
-                ? "block"
-                : "hidden"
-                }`}
+              className={`flex flex-col min-h-0 flex-grow ${
+                !showMobileQuests && currentTab === "feed" && processId
+                  ? "block"
+                  : "hidden"
+              }`}
             >
-              <div className="min-h-0 min-w-0 flex flex-col   flex-grow flex-shrink p-4">
-                <div className="flex flex-grow  flex-col border border-light-gray rounded-smd min-h-0 min-w-0">
-                  <div className="flex items-center gap-1.5 text-xs uppercase border-b border-light-gray px-4 py-2.5">
-                    <FeedIcon />
-                    <span>Feed</span>
-                  </div>
-                  <div className="flex flex-col flex-grow overflow-y-auto overflow-x-hidden min-h-0">
-                    <FeedTerminal />
-                  </div>
-                </div>
+              <div className="min-h-0 min-w-0 flex flex-col flex-grow flex-shrink p-4">
+                <FeedWrapper mode={mode} />
               </div>
             </div>
             {showMobileQuests && (
