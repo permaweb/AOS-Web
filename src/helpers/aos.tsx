@@ -67,8 +67,8 @@ export async function evaluate(pid: string, command: string, signer: any) {
         throw new Error(result.Error)
     }
 
-    if (result.Output?.data?.output) {
-        return result.Output?.data?.output
+    if (result.Output?.data) {
+        return result.Output?.data
     }
 
     return undefined
@@ -77,8 +77,11 @@ export async function evaluate(pid: string, command: string, signer: any) {
 export async function loadBluePrint(name: string) {
     try {
         const data = await fetch(`https://raw.githubusercontent.com/permaweb/aos/main/blueprints/${name}.lua`);
-        const response = await data.text();
-        return response;
+        if (data.status == 200) {
+            const response = await data.text();
+            return response;
+        }
+        return `-- Error loading blueprint: ${data.statusText}`
     } catch (error: any) {
         console.error("Error loading blueprint: ", error.message);
         return `-- Error loading blueprint: ${error.message}`
@@ -158,7 +161,14 @@ export async function findMyPIDs(signer: any) {
         throw new Error(data.errors[0].message)
     }
 
-    return data.data?.transactions?.edges?.map((x: any) => x.node.id);
+    return data.data?.transactions?.edges?.map((x: any) => {
+        // x.node.id
+        const processName = x.node.tags.find((tag: any) => tag.name === "Name")?.value;
+        return {
+            id: x.node.id,
+            name: processName
+        }
+    });
 }
 
 function findMyPIDsQuery(owner: string) {
@@ -170,7 +180,11 @@ function findMyPIDsQuery(owner: string) {
         ]) {
           edges {
             node {
-              id
+              id,
+              tags{
+                name,
+                value
+              }
             }
           }
         }

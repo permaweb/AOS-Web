@@ -1,14 +1,13 @@
 import { Link } from "react-router-dom";
-import { ProcessProps } from "../../context/ProcessesContext";
 import { useContext, useEffect, useState } from "react";
 import ProcessesBarEmptyState from "../empty_states/ProcessesBarEmptyState";
 import EmptySearchIcon from "../icons/EmptySearchIcon";
 import { ConnectedProcessContext } from "../../context/ConnectedProcess";
 import CopyIcon from "../icons/CopyIcon";
 import CopyCheck from "../icons/CopyCheck";
-import { formatId } from "../../helpers/helper";
 
-type ProcessListItemProps = ProcessProps & {
+type ProcessListItemProps = {
+  process: { id: string; name: string };
   active: boolean;
 };
 
@@ -17,11 +16,11 @@ type ProcessListProps = {
   currentId: string;
 };
 
-function ProcessListItem({ id, active }: ProcessListItemProps) {
+function ProcessListItem({ process, active }: ProcessListItemProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(id).then(() => {
+    navigator.clipboard.writeText(process.id).then(() => {
       setCopied(true);
       setTimeout(() => {
         setCopied(false);
@@ -29,13 +28,17 @@ function ProcessListItem({ id, active }: ProcessListItemProps) {
     });
   };
 
+  const formatProcessId = () => {
+    return `${process?.name}#${process?.id?.slice(0, 5)}`
+  }
+
   return (
     <div className={"font-dm-sans tracking-wider flex  relative "}>
       <Link
-        to={`/process/${id}`}
+        to={`/process/${process?.id}`}
         className="peer flex gap-2 items-center py-1.5 pl-5 pr-2 flex-grow relative z-[1] transition-opacity active:opacity-25"
       >
-        <span>{formatId(id)}</span>
+        <span>{formatProcessId() || ""}</span>
       </Link>
 
       <div
@@ -46,11 +49,10 @@ function ProcessListItem({ id, active }: ProcessListItemProps) {
         <div className="relative">
           <button
             onClick={handleCopy}
-            className={`base-transition ${
-              active
-                ? "hover:bg-medium-gray-color"
-                : "hover:bg-light-gray-color"
-            } hover:text-primary-dark-color p-2 rounded-lg`}
+            className={`base-transition ${active
+              ? "hover:bg-medium-gray-color"
+              : "hover:bg-light-gray-color"
+              } hover:text-primary-dark-color p-2 rounded-lg`}
           >
             {copied ? <CopyCheck /> : <CopyIcon />}
           </button>
@@ -91,11 +93,11 @@ export default function ProcessList({
       <div className="flex flex-col flex-grow min-h-0 mb-4">
         <div className="flex flex-col flex-grow min-h-0">
           {filteredProcess.length > 0 ? (
-            filteredProcess.map((process, id) => (
+            filteredProcess.map((process: any, id) => (
               <ProcessListItem
                 key={id}
-                id={process}
-                active={currentId === process}
+                process={process}
+                active={currentId === process?.id}
               />
             ))
           ) : (

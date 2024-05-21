@@ -25,13 +25,14 @@ import FeedEmptyState from "../../components/empty_states/FeedEmptyState";
 
 export default function Dashboard() {
   const { processId } = useParams();
-  const { connectProcess, sendCommand } = useContext(ConnectedProcessContext);
+  const { connectProcess, sendCommand, connectedProcess } = useContext(ConnectedProcessContext);
   const [commandToRun, setCommandToRun] = useState<string>("");
   const [userCommand, setUserCommand] = useState<string>("");
   const [userCommandResult, setUserCommandResult] = useState<any>(null);
   const [sendingCommand, setSendingCommand] = useState<boolean>(false);
   const [showEditor, setShowEditor] = useState<boolean>(false);
   const [editorValue, setEditorValue] = useState<string>("");
+  const [prompt, setPrompt] = useState("aos> ");
 
   const mode: "starter" | "process" = processId ? "process" : "starter";
 
@@ -180,17 +181,27 @@ export default function Dashboard() {
       setCommandToRun("");
 
       const loadBlueprintExp = /\.load-blueprint\s+(\w*)/;
+      let result: any = null;
       if (loadBlueprintExp.test(command)) {
         const [, name] = command.match(loadBlueprintExp) || [];
         setUserCommandResult(`loading ${name}...`);
-        await loadBluePrint(name);
-        setUserCommandResult(`undefined`);
+        const bluePrint = await loadBluePrint(name);
+
+        result = await sendCommand(processId, bluePrint);
+        // console.log("result", result);
+        // console.log("bluePrint", bluePrint);
       } else {
-        const result = await sendCommand(processId, command);
-        setUserCommandResult(`${result}`);
+        result = await sendCommand(processId, command);
+        // console.log("result", result);
       }
 
+      if (result?.output) {
+        setUserCommandResult(`${result?.output}`);
+      }
+      setPrompt(result?.prompt)
+
       setSendingCommand(false);
+      console.log("command sent", connectedProcess);
     } catch (error) {
       setSendingCommand(false);
       console.error(error);
@@ -291,11 +302,10 @@ export default function Dashboard() {
                 </div>
                 <form
                   onSubmit={handleRunCommand}
-                  className={`relative flex gap-2 border transition-colors border-gray rounded-lg focus-within:border-primary-dark focus-within:ring-2 ring-offset-2 focus-within:bg-white ${
-                    mode === "starter"
-                      ? "select-none pointer-events-none opacity-50"
-                      : ""
-                  }`}
+                  className={`relative flex gap-2 border transition-colors border-gray rounded-lg focus-within:border-primary-dark focus-within:ring-2 ring-offset-2 focus-within:bg-white ${mode === "starter"
+                    ? "select-none pointer-events-none opacity-50"
+                    : ""
+                    }`}
                 >
                   {sendingCommand && (
                     <span className="absolute bottom-16 left-1/2 -translate-x-1/2 text-sm">
@@ -317,7 +327,7 @@ export default function Dashboard() {
                     className="relative flex-grow h-full"
                   >
                     <span className="absolute left-3 top-0 bottom-0 flex items-center">
-                      {"aos>"}
+                      {prompt || "aos> "}
                     </span>
                     <CommandInputField
                       key={processId}
@@ -397,9 +407,8 @@ export default function Dashboard() {
                 height="7"
                 viewBox="0 0 11 7"
                 fill="none"
-                className={`transition-transform ${
-                  showMobileQuests ? "-rotate-180" : ""
-                }`}
+                className={`transition-transform ${showMobileQuests ? "-rotate-180" : ""
+                  }`}
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
@@ -430,11 +439,10 @@ export default function Dashboard() {
               />
             </div>
             <div
-              className={` flex-grow flex flex-col min-h-0  ${
-                !showMobileQuests && currentTab === "terminal" && processId
-                  ? "block"
-                  : "hidden"
-              }`}
+              className={` flex-grow flex flex-col min-h-0  ${!showMobileQuests && currentTab === "terminal" && processId
+                ? "block"
+                : "hidden"
+                }`}
             >
               <div className="grid grid-rows-[auto,1fr,auto]   flex-grow p-4">
                 <div className="flex gap-1.5 items-center text-xs uppercase">
@@ -456,11 +464,10 @@ export default function Dashboard() {
                 )}
                 <form
                   onSubmit={handleRunCommand}
-                  className={`relative flex gap-2 border transition-colors border-gray rounded-lg focus-within:border-primary-dark focus-within:ring-2 ring-offset-2 focus-within:bg-white ${
-                    mode === "starter"
-                      ? "select-none pointer-events-none opacity-50"
-                      : ""
-                  }`}
+                  className={`relative flex gap-2 border transition-colors border-gray rounded-lg focus-within:border-primary-dark focus-within:ring-2 ring-offset-2 focus-within:bg-white ${mode === "starter"
+                    ? "select-none pointer-events-none opacity-50"
+                    : ""
+                    }`}
                 >
                   {sendingCommand && (
                     <span className="absolute bottom-16 left-1/2 -translate-x-1/2 text-sm">
@@ -479,7 +486,7 @@ export default function Dashboard() {
                     htmlFor="runCommandInput"
                     className="relative flex-grow  "
                   >
-                    <span className="absolute left-3 top-3">{"aos>"}</span>
+                    <span className="absolute left-3 top-3"> {prompt || "aos> "}</span>
                     <CommandInputField
                       name="runCommandInput"
                       className="w-full h-12 py-3 pl-13 bg-transparent resize-none outline-none min-h-0 overflow-hidden"
@@ -496,11 +503,10 @@ export default function Dashboard() {
               </div>
             </div>
             <div
-              className={`flex flex-col min-h-0 flex-grow ${
-                !showMobileQuests && currentTab === "feed" && processId
-                  ? "block"
-                  : "hidden"
-              }`}
+              className={`flex flex-col min-h-0 flex-grow ${!showMobileQuests && currentTab === "feed" && processId
+                ? "block"
+                : "hidden"
+                }`}
             >
               <div className="min-h-0 min-w-0 flex flex-col   flex-grow flex-shrink p-4">
                 <div className="flex flex-grow  flex-col border border-light-gray rounded-smd min-h-0 min-w-0">
