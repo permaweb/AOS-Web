@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import AddProcessButton from "../AddProcessButton";
 import SearchIcon from "../icons/SearchIcon";
 import ProcessList from "./ProcessList";
+import ProcessPagination from "./ProcessPagination";
 
 type SidebarProcessPanelProps = {
   processId: string | undefined;
@@ -50,6 +51,9 @@ export default function SidebarProcessPanel({
         </div>
       </div>
       <ProcessList currentId={processId || ""} searchParam={searchParam} />
+      <div className="px-5">
+        <ProcessPagination />
+      </div>
     </div>
   );
 }

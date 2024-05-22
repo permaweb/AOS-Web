@@ -6,8 +6,10 @@ export type ProcessProps = {
   isConnected?: boolean;
 };
 
+export type ProcessHistoryItemProps = { id: string; name: string };
+
 type ConnectedProcessContextType = {
-  processHistoryList: string[];
+  processHistoryList: ProcessHistoryItemProps[];
   findProcessHistory: (owner: string) => void;
   connectedProcess: ProcessProps | null;
   connectProcess: (process: string) => void;
@@ -27,7 +29,9 @@ const ConnectedProcessContext = createContext<ConnectedProcessContextType>({
 });
 
 const ConnectedProcessProvider = ({ children }: { children: ReactNode }) => {
-  const [processHistoryList, setProcessHistoryList] = useState<string[]>([]);
+  const [processHistoryList, setProcessHistoryList] = useState<
+    ProcessHistoryItemProps[]
+  >([]);
   const [connectedProcess, setConnectedProcess] = useState<ProcessProps | null>(
     null
   );

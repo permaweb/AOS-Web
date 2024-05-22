@@ -1,7 +1,7 @@
 import { MouseEvent } from "react";
 
 type SmallButtonProps = {
-  text: string;
+  text?: string;
   state?: "black" | "white" | "larger";
   type?: "button" | "submit" | "reset";
   handleClick?: (e: MouseEvent) => void;
@@ -30,7 +30,7 @@ export default function SmallButton({
       type={type}
     >
       {IconComponent && <IconComponent />}
-      <span>{text}</span>
+      {text && <span>{text}</span>}
     </button>
   );
 }

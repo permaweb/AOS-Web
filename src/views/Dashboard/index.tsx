@@ -40,7 +40,7 @@ export default function Dashboard() {
       localStorage.getItem("sideBarWidth");
     if (typeof localStorageWidth === "string")
       return parseFloat(localStorageWidth);
-    return 250;
+    return 300;
   });
   const [terminalWidth, setTerminalWidth] = useState<number>(() => {
     const localStorageWidth: string | null =
