@@ -47,7 +47,7 @@ export default function Dashboard() {
       localStorage.getItem("terminalWidth");
     if (typeof localStorageWidth === "string")
       return parseFloat(localStorageWidth);
-    return 600;
+    return 50;
   });
 
   const [createModelOpen, setCreateModelOpen] = useState<boolean>(false);
