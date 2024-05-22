@@ -3,6 +3,7 @@ import { useActiveAddress } from "arweave-wallet-kit";
 import { getQuest, getQuests } from "../../helpers/aos";
 import QuestEmptyState from "../empty_states/QuestEmptyState";
 import CloseIcon from "../icons/CloseIcon";
+import StatusLoadingIcon from "../icons/StatusLoadingIcon";
 
 type Props = {
   mode?: "default" | "inline";
@@ -103,7 +104,7 @@ export default function QuestsPanel({ mode = "default" }: Props) {
       }}
     >
       {!walletAddress && !quests && <QuestEmptyState />}
-      {walletAddress && !quests && <div className="p-5">Loading...</div>}
+      {walletAddress && !quests && <QuestLoadingState />}
       {quests && quests.length > 0 && (
         <>
           <span className="uppercase font-bold">Quests</span>
@@ -152,7 +153,7 @@ export default function QuestsPanel({ mode = "default" }: Props) {
 
             {chosenQuestLoading ? (
               <div className="w-full h-full flex items-center justify-center">
-                Loading...
+                <QuestLoadingState />
               </div>
             ) : chosenQuest ? (
               <pre className="w-full h-full overflow-auto whitespace-pre-wrap break-words tracking-wide leading-normal font-dm-sans scrollbar-style text-white">
@@ -166,6 +167,15 @@ export default function QuestsPanel({ mode = "default" }: Props) {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function QuestLoadingState() {
+  return (
+    <div className="p-5 flex items-center gap-2">
+      <StatusLoadingIcon />
+      <span>Loading...</span>
     </div>
   );
 }
