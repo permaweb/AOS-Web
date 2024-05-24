@@ -145,14 +145,14 @@ export async function getQuest(owner: string, questId: string) {
     }
 }
 
-export async function findMyPIDs(signer: any) {
+export async function findMyPIDs(signer: any, length?: number, cursor?: string, pName?: string) {
     const processes = await fetch(GOLD_SKY_GQL, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            query: findMyPIDsQuery(signer)
+            query: findMyPIDsQuery(signer, length, cursor, pName)
         })
     });
 
@@ -166,19 +166,27 @@ export async function findMyPIDs(signer: any) {
         const processName = x.node.tags.find((tag: any) => tag.name === "Name")?.value;
         return {
             id: x.node.id,
-            name: processName
+            name: processName,
+            cursor: x.cursor
         }
     });
 }
 
-function findMyPIDsQuery(owner: string) {
+function findMyPIDsQuery(owner: string, length?: number, cursor?: string, pName?: string) {
     return `query {
         transactions(owners: ["${owner}"], tags: [
           {name: "Type", values: ["Process"]},
           {name: "Variant", values: ["ao.TN.1"]},
-          {name: "Data-Protocol", values: ["ao"]}
-        ]) {
+          {name: "Data-Protocol", values: ["ao"]},
+          ${pName ? `{name: "Name", values: ["${pName}"], match: FUZZY_OR}` : ""}
+         ],
+        sort: HEIGHT_DESC,
+        first: ${length || 11},
+        ${cursor ? `after: "${cursor}"` : ""}
+        )
+        {
           edges {
+            cursor
             node {
               id,
               tags{

@@ -6,11 +6,11 @@ export type ProcessProps = {
   isConnected?: boolean;
 };
 
-export type ProcessHistoryItemProps = { id: string; name: string };
+export type ProcessHistoryItemProps = { id: string; name: string, cursor: string };
 
 type ConnectedProcessContextType = {
   processHistoryList: ProcessHistoryItemProps[];
-  findProcessHistory: (owner: string) => void;
+  findProcessHistory: (owner: string, length?: number, cursor?: string, pName?: string) => void;
   connectedProcess: ProcessProps | null;
   connectProcess: (process: string) => void;
   createProcess: (name: string) => void;
@@ -20,12 +20,12 @@ type ConnectedProcessContextType = {
 
 const ConnectedProcessContext = createContext<ConnectedProcessContextType>({
   processHistoryList: [],
-  findProcessHistory: (_owner: string) => {},
+  findProcessHistory: (_owner: string, _length?: number, _cursor?: string, _pName?: string) => { },
   connectedProcess: null,
-  connectProcess: (_process: string) => {},
-  createProcess: (_name: string) => {},
-  sendCommand: (_processId: string, _command: string) => {},
-  disconnectProcess: () => {},
+  connectProcess: (_process: string) => { },
+  createProcess: (_name: string) => { },
+  sendCommand: (_processId: string, _command: string) => { },
+  disconnectProcess: () => { },
 });
 
 const ConnectedProcessProvider = ({ children }: { children: ReactNode }) => {
@@ -54,10 +54,20 @@ const ConnectedProcessProvider = ({ children }: { children: ReactNode }) => {
     return pid;
   };
 
-  const findProcessHistory = async (owner: string) => {
-    const processes = await findMyPIDs(owner);
-    console.log(processes);
-    setProcessHistoryList(processes);
+  const findProcessHistory = async (owner: string, length?: any, cursor?: any, pName?: any) => {
+    if (pName) {
+      const processes = await findMyPIDs(owner, length, cursor, pName);
+      setProcessHistoryList(processes);
+    } else if (cursor) {
+      const processes = await findMyPIDs(owner, length, cursor);
+      setProcessHistoryList((prev) => {
+        return [...prev, ...processes]
+      });
+    } else {
+      const processes = await findMyPIDs(owner, length);
+      setProcessHistoryList(processes);
+    }
+
   };
 
   const connectProcess = async (processId: string) => {

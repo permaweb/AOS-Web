@@ -1,8 +1,10 @@
-import { useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import AddProcessButton from "../AddProcessButton";
 import SearchIcon from "../icons/SearchIcon";
 import ProcessList from "./ProcessList";
 import ProcessPagination from "./ProcessPagination";
+import { ConnectedProcessContext } from "../../context/ConnectedProcess";
+import { useActiveAddress } from "arweave-wallet-kit";
 
 type SidebarProcessPanelProps = {
   processId: string | undefined;
@@ -15,6 +17,10 @@ export default function SidebarProcessPanel({
   showCreateModal,
   showConnectModal,
 }: SidebarProcessPanelProps) {
+  const { processHistoryList, findProcessHistory } = useContext(ConnectedProcessContext);
+  const publicKey = useActiveAddress();
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
   const [searchParam, setSearchParam] = useState<string | null>(null);
   const inputElement = useRef<HTMLInputElement>(null);
   const handleInputChange = () =>
@@ -25,6 +31,30 @@ export default function SidebarProcessPanel({
           : null
         : null
     );
+
+  const handleNextPage = async () => {
+    const lastProcess = processHistoryList[processHistoryList.length - 1];
+    console.log("lastProcess", lastProcess);
+
+    findProcessHistory(publicKey!, 11, lastProcess?.cursor);
+
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
+
+  const handlePreviousPage = () => {
+    setCurrentPage((prevPage) => (prevPage > 1 ? prevPage - 1 : prevPage));
+  };
+
+  useEffect(() => {
+    if (searchParam) {
+      const timeout = setTimeout(() => {
+        findProcessHistory(publicKey!, 10, undefined, searchParam);
+      }, 500);
+      return () => clearTimeout(timeout);
+    }
+  }, [searchParam]);
+
+
 
   return (
     <div className="  flex flex-col gap-2.5 justify-between">
@@ -50,9 +80,14 @@ export default function SidebarProcessPanel({
           />
         </div>
       </div>
-      <ProcessList currentId={processId || ""} searchParam={searchParam} />
+      <ProcessList currentId={processId || ""} currentPage={currentPage} />
       <div className="px-5">
-        <ProcessPagination />
+        <ProcessPagination
+          handleNextPage={handleNextPage}
+          handlePreviousPage={handlePreviousPage}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+        />
       </div>
     </div>
   );

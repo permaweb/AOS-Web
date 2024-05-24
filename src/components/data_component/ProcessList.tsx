@@ -15,9 +15,61 @@ type ProcessListItemProps = {
 };
 
 type ProcessListProps = {
-  searchParam: string | null;
   currentId: string;
+  currentPage: number;
 };
+
+export default function ProcessList({
+  currentId,
+  currentPage
+}: ProcessListProps) {
+  const { processHistoryList } = useContext(ConnectedProcessContext);
+  const [filteredProcess, setFilteredProcess] = useState<ProcessHistoryItemProps[]>([]);
+
+  useEffect(() => {
+    const itemsPerPage = 10;
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+
+    const filtered = processHistoryList.slice(startIndex, endIndex);
+    setFilteredProcess(filtered);
+  }, [processHistoryList, currentPage]);
+
+
+  if (processHistoryList.length > 0) {
+    return (
+      <div className="flex flex-col flex-grow min-h-0 mb-4">
+        <div className="flex flex-col flex-grow min-h-0">
+          {filteredProcess.length > 0 ? (
+            filteredProcess.map((process, id) => (
+              <ProcessListItem
+                key={id}
+                process={process}
+                active={currentId === process?.id}
+              />
+            ))
+          ) : (
+            <div className="p-5">
+              <div className="flex flex-col items-center gap-4 p-4 border-1 text-center border-gray-text-color rounded-xl border-dashed">
+                <EmptySearchIcon />
+                <div className="flex flex-col items-center gap-2">
+                  <span className="uppercase font-bold leading-none">
+                    No results
+                  </span>
+                  <span className="font-dm-sans">
+                    Looks like there’s no processes that match this query
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+  return <ProcessesBarEmptyState />;
+}
 
 function ProcessListItem({ process, active }: ProcessListItemProps) {
   const [copied, setCopied] = useState(false);
@@ -53,11 +105,10 @@ function ProcessListItem({ process, active }: ProcessListItemProps) {
         <div className="relative">
           <button
             onClick={handleCopy}
-            className={`base-transition ${
-              active
-                ? "hover:bg-medium-gray-color"
-                : "hover:bg-light-gray-color"
-            } hover:text-primary-dark-color p-2 rounded-lg`}
+            className={`base-transition ${active
+              ? "hover:bg-medium-gray-color"
+              : "hover:bg-light-gray-color"
+              } hover:text-primary-dark-color p-2 rounded-lg`}
           >
             {copied ? <CopyCheck /> : <CopyIcon />}
           </button>
@@ -72,60 +123,4 @@ function ProcessListItem({ process, active }: ProcessListItemProps) {
       </div>
     </div>
   );
-}
-
-export default function ProcessList({
-  currentId,
-  searchParam,
-}: ProcessListProps) {
-  const { processHistoryList } = useContext(ConnectedProcessContext);
-
-  const [filteredProcess, setFilteredProcess] =
-    useState<ProcessHistoryItemProps[]>(processHistoryList);
-  useEffect(() => {
-    if (searchParam && processHistoryList.length > 0) {
-      const searchParamLower = searchParam.toLowerCase();
-      const filtered = processHistoryList.filter(
-        (process) =>
-          process.name.toLocaleLowerCase().includes(searchParamLower) ||
-          process.id.toLocaleLowerCase().includes(searchParamLower)
-      );
-      setFilteredProcess(filtered);
-    } else {
-      setFilteredProcess(processHistoryList || []);
-    }
-  }, [searchParam, processHistoryList]);
-
-  if (processHistoryList.length > 0) {
-    return (
-      <div className="flex flex-col flex-grow min-h-0 mb-4">
-        <div className="flex flex-col flex-grow min-h-0">
-          {filteredProcess.length > 0 ? (
-            filteredProcess.map((process, id) => (
-              <ProcessListItem
-                key={id}
-                process={process}
-                active={currentId === process?.id}
-              />
-            ))
-          ) : (
-            <div className="p-5">
-              <div className="flex flex-col items-center gap-4 p-4 border-1 text-center border-gray-text-color rounded-xl border-dashed">
-                <EmptySearchIcon />
-                <div className="flex flex-col items-center gap-2">
-                  <span className="uppercase font-bold leading-none">
-                    No results
-                  </span>
-                  <span className="font-dm-sans">
-                    Looks like there’s no processes that match this query
-                  </span>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
-  return <ProcessesBarEmptyState />;
 }
