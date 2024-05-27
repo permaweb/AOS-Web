@@ -14,7 +14,9 @@ interface Props {
 
 export default function CreateProcessModal({ openModal, setOpenModal }: Props) {
   const navigate = useNavigate();
-  const { createProcess, connectProcess } = useContext(ConnectedProcessContext);
+  const { createProcess, setIsNewProcess } = useContext(
+    ConnectedProcessContext
+  );
   const publicKey = usePublicKey();
   const [error, setError] = useState<string>("");
   const [pName, setPName] = useState<string>("");
@@ -39,7 +41,7 @@ export default function CreateProcessModal({ openModal, setOpenModal }: Props) {
 
     if (pid) {
       navigate(`/process/${pid}`);
-      connectProcess(pid);
+      setIsNewProcess(true);
     }
   };
 

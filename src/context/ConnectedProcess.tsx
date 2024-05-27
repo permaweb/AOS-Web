@@ -21,6 +21,8 @@ type ConnectedProcessContextType = {
     pName?: string
   ) => void;
   connectedProcess: ProcessProps | null;
+  isNewProcess: boolean | null;
+  setIsNewProcess: (value: boolean) => void;
   connectProcess: (process: string) => void;
   createProcess: (name: string) => void;
   sendCommand: (processId: string, command: string) => void;
@@ -36,6 +38,8 @@ const ConnectedProcessContext = createContext<ConnectedProcessContextType>({
     _pName?: string
   ) => {},
   connectedProcess: null,
+  isNewProcess: null,
+  setIsNewProcess: (_value: boolean) => {},
   connectProcess: (_process: string) => {},
   createProcess: (_name: string) => {},
   sendCommand: (_processId: string, _command: string) => {},
@@ -49,6 +53,7 @@ const ConnectedProcessProvider = ({ children }: { children: ReactNode }) => {
   const [connectedProcess, setConnectedProcess] = useState<ProcessProps | null>(
     null
   );
+  const [isNewProcess, setIsNewProcess] = useState<boolean | null>(false);
   const interval = 3000; // 5 seconds
   const [timer, setTimer] = useState<any>(null);
 
@@ -143,6 +148,8 @@ const ConnectedProcessProvider = ({ children }: { children: ReactNode }) => {
   return (
     <ConnectedProcessContext.Provider
       value={{
+        isNewProcess,
+        setIsNewProcess,
         connectedProcess,
         connectProcess,
         disconnectProcess,

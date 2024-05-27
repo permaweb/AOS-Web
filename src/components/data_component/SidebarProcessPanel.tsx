@@ -19,7 +19,7 @@ export default function SidebarProcessPanel({
   showCreateModal,
   showConnectModal,
 }: SidebarProcessPanelProps) {
-  const { processHistoryList, findProcessHistory } = useContext(
+  const { processHistoryList, findProcessHistory, isNewProcess } = useContext(
     ConnectedProcessContext
   );
   const publicKey = useActiveAddress();
@@ -98,6 +98,15 @@ export default function SidebarProcessPanel({
       }
     };
   }, [searchParam]);
+
+  useEffect(() => {
+    if (isNewProcess === true && publicKey) {
+      findProcessHistory(publicKey);
+      setCurrentPage(1);
+      setSearchParam(null);
+      setThrottledSearchParam(null);
+    }
+  }, [isNewProcess]);
 
   return (
     <div className="flex flex-col gap-2.5 justify-between">
