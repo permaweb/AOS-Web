@@ -4,6 +4,7 @@ type SmallButtonProps = {
   text?: string;
   state?: "black" | "white" | "larger";
   type?: "button" | "submit" | "reset";
+  iconPosition?: "left" | "right";
   handleClick?: (e: MouseEvent) => void;
   IconComponent?: () => JSX.Element;
 };
@@ -12,6 +13,7 @@ export default function SmallButton({
   handleClick,
   state = "black",
   text,
+  iconPosition = "left",
   type = "button",
   IconComponent,
 }: SmallButtonProps) {
@@ -29,8 +31,9 @@ export default function SmallButton({
       onClick={handleClick}
       type={type}
     >
-      {IconComponent && <IconComponent />}
+      {iconPosition === "left" && IconComponent && <IconComponent />}
       {text && <span>{text}</span>}
+      {iconPosition === "right" && IconComponent && <IconComponent />}
     </button>
   );
 }

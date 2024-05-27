@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import SmallButton from "../SmallButton";
 import PaginationIconLeft from "../icons/PaginationIconLeft";
 import PaginationIconRight from "../icons/PaginationIconRight";
@@ -11,9 +11,38 @@ interface ProcessPaginationProps {
   setCurrentPage: (page: number) => void;
 }
 
-export default function ProcessPagination({ handleNextPage, handlePreviousPage, currentPage }: ProcessPaginationProps) {
+export default function ProcessPagination({
+  handleNextPage,
+  handlePreviousPage,
+  currentPage,
+}: ProcessPaginationProps) {
   const [pages, setPages] = useState<number>(1);
   const { processHistoryList } = useContext(ConnectedProcessContext);
+
+  const [isBelowWidth, setIsBelowWidth] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        if (entry.contentRect.width < 250) {
+          setIsBelowWidth(true);
+        } else {
+          setIsBelowWidth(false);
+        }
+      }
+    });
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => {
+      if (containerRef.current) {
+        observer.unobserve(containerRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (processHistoryList.length > 0) {
@@ -22,13 +51,14 @@ export default function ProcessPagination({ handleNextPage, handlePreviousPage, 
   }, [processHistoryList]);
 
   return (
-    <div className="flex gap-2 justify-between min-w-0">
+    <div ref={containerRef} className="flex gap-2 justify-between min-w-0">
       <div
-        className={`${currentPage > 1 ? "" : "pointer-events-none select-none opacity-25"
-          }`}
+        className={`${
+          currentPage > 1 ? "" : "pointer-events-none select-none opacity-25"
+        }`}
       >
         <SmallButton
-          text=""
+          text={isBelowWidth ? "Prev" : "Prev Page"}
           state="white"
           handleClick={handlePreviousPage}
           IconComponent={PaginationIconLeft}
@@ -36,11 +66,16 @@ export default function ProcessPagination({ handleNextPage, handlePreviousPage, 
       </div>
 
       <div
-        className={`${currentPage < pages ? "" : "pointer-events-none select-none opacity-25"}`}
+        className={`${
+          currentPage < pages
+            ? ""
+            : "pointer-events-none select-none opacity-25"
+        }`}
       >
         <SmallButton
-          text=""
+          text={isBelowWidth ? "Next" : "Next Page"}
           state="white"
+          iconPosition="right"
           handleClick={handleNextPage}
           IconComponent={PaginationIconRight}
         />
