@@ -8,16 +8,14 @@ export default function MainLayout({
 }: {
   children: React.ReactElement | React.ReactElement[];
 }) {
-  const { findProcessHistory, connectedProcess } = useContext(
-    ConnectedProcessContext
-  );
+  const { findProcessHistory } = useContext(ConnectedProcessContext);
   const publicKey = useActiveAddress();
 
   useEffect(() => {
     if (publicKey) {
       findProcessHistory(publicKey);
     }
-  }, [publicKey, connectedProcess]);
+  }, [publicKey]);
   return (
     <section className="relative w-full min-h-screen flex flex-col font-roboto-mono text-primary-dark-color bg-bg-color text-sm">
       <Header />
