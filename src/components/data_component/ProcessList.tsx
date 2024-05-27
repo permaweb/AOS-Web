@@ -10,7 +10,7 @@ import ProcessListItem, { EmptyProcessListItem } from "./ProcessListItem";
 type ProcessListProps = {
   currentId: string;
   currentPage: number;
-  mode: "loading" | "default";
+  mode: "loading" | "default" | "search results";
 };
 
 export default function ProcessList({
@@ -33,8 +33,6 @@ export default function ProcessList({
     setFilteredProcess(filtered);
   }, [processHistoryList, currentPage]);
 
-  if (processHistoryList.length <= 0) return <ProcessesBarEmptyState />;
-
   if (mode === "loading")
     return (
       <div className="flex flex-col flex-grow min-h-0 mb-4">
@@ -47,6 +45,9 @@ export default function ProcessList({
         </div>
       </div>
     );
+
+  if (processHistoryList.length <= 0 && mode !== "search results")
+    return <ProcessesBarEmptyState />;
 
   return (
     <div className="flex flex-col flex-grow min-h-0 mb-4">

@@ -139,7 +139,13 @@ export default function SidebarProcessPanel({
       <ProcessList
         currentId={processId || ""}
         currentPage={currentPage}
-        mode={isLoadingProcesses ? "loading" : "default"}
+        mode={
+          isLoadingProcesses
+            ? "loading"
+            : isSearchResult
+            ? "search results"
+            : "default"
+        }
       />
       <div className="px-5">
         <ProcessPagination
