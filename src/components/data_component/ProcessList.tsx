@@ -46,36 +46,36 @@ export default function ProcessList({
       </div>
     );
 
-  if (processHistoryList.length > 0)
-    return (
-      <div className="flex flex-col flex-grow min-h-0 mb-4">
-        <div className="flex flex-col flex-grow min-h-0">
-          {filteredProcess.length > 0 ? (
-            filteredProcess.map((process, id) => (
-              <ProcessListItem
-                key={id}
-                process={process}
-                active={currentId === process?.id}
-              />
-            ))
-          ) : (
-            <div className="p-5">
-              <div className="flex flex-col items-center gap-4 p-4 border-1 text-center border-gray-text-color rounded-xl border-dashed">
-                <EmptySearchIcon />
-                <div className="flex flex-col items-center gap-2">
-                  <span className="uppercase font-bold leading-none">
-                    No results
-                  </span>
-                  <span className="font-dm-sans">
-                    Looks like there’s no processes that match this query
-                  </span>
-                </div>
+  if (processHistoryList.length <= 0 && mode !== "search results")
+    return <ProcessesBarEmptyState />;
+
+  return (
+    <div className="flex flex-col flex-grow min-h-0 mb-4">
+      <div className="flex flex-col flex-grow min-h-0">
+        {filteredProcess.length > 0 ? (
+          filteredProcess.map((process, id) => (
+            <ProcessListItem
+              key={id}
+              process={process}
+              active={currentId === process?.id}
+            />
+          ))
+        ) : (
+          <div className="p-5">
+            <div className="flex flex-col items-center gap-4 p-4 border-1 text-center border-gray-text-color rounded-xl border-dashed">
+              <EmptySearchIcon />
+              <div className="flex flex-col items-center gap-2">
+                <span className="uppercase font-bold leading-none">
+                  No results
+                </span>
+                <span className="font-dm-sans">
+                  Looks like there’s no processes that match this query
+                </span>
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
-    );
-
-  return <ProcessesBarEmptyState />;
+    </div>
+  );
 }

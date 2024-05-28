@@ -28,6 +28,7 @@ export default function SidebarProcessPanel({
   const [isLoadingProcesses, setIsLoadingProcesses] = useState<boolean>(false); // New state for page navigation loading
 
   const [searchParam, setSearchParam] = useState<string | null>(null);
+  const [hasSearched, setHasSearched] = useState(false);
   const [throttledSearchParam, setThrottledSearchParam] = useState<
     string | null
   >(null);
@@ -35,7 +36,7 @@ export default function SidebarProcessPanel({
   const [isSearchResult, setIsSearchResult] = useState<boolean>(false);
 
   const inputElement = useRef<HTMLInputElement>(null);
-  const handleInputChange = () =>
+  const handleInputChange = () => {
     setSearchParam(
       inputElement.current
         ? inputElement.current.value.length >= 1
@@ -43,6 +44,9 @@ export default function SidebarProcessPanel({
           : null
         : null
     );
+
+    setHasSearched(true);
+  };
 
   const handleNextPage = async () => {
     setIsLoadingProcesses(true);
@@ -64,40 +68,42 @@ export default function SidebarProcessPanel({
 
   useEffect(() => {
     let cancel = false;
-    setIsSearching(true);
+    // Check if there has been a search input to begin searching
+    if (hasSearched) {
+      setIsSearching(true);
 
-    const timeout = setTimeout(async () => {
-      try {
-        if (searchParam) {
-          await findProcessHistory(publicKey!, 10, undefined, searchParam);
-
-          if (!cancel) {
-            setIsSearchResult(true);
+      const timeout = setTimeout(async () => {
+        try {
+          if (searchParam) {
+            await findProcessHistory(publicKey!, 10, undefined, searchParam);
+            if (!cancel) {
+              setIsSearchResult(true);
+            }
+          } else {
+            await findProcessHistory(publicKey!);
+            if (!cancel) {
+              setIsSearchResult(false);
+              setThrottledSearchParam(null);
+            }
           }
-        } else {
-          await findProcessHistory(publicKey!);
+        } finally {
           if (!cancel) {
-            setIsSearchResult(false);
-            setThrottledSearchParam(null);
+            setIsSearching(false);
+            setThrottledSearchParam(searchParam);
+            setCurrentPage(1);
           }
         }
-      } finally {
-        if (!cancel) {
-          setIsSearching(false);
-          setThrottledSearchParam(searchParam);
-          setCurrentPage(1);
-        }
-      }
-    }, 500);
+      }, 500);
 
-    return () => {
-      clearTimeout(timeout);
-      cancel = true;
-      if (!searchParam) {
-        setIsSearchResult(false);
-      }
-    };
-  }, [searchParam]);
+      return () => {
+        clearTimeout(timeout);
+        cancel = true;
+        if (!searchParam) {
+          setIsSearchResult(false);
+        }
+      };
+    }
+  }, [searchParam, hasSearched]);
 
   useEffect(() => {
     if (isNewProcess === true && publicKey) {
