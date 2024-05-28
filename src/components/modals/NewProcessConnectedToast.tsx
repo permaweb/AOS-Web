@@ -30,7 +30,7 @@ export default function NewProcessConnectedToast({
         <span>
           New Process was successfully connected, with the process ID:
         </span>
-        <div className="p-2 border border-dark-gray-color rounded-lg border-dashed font-bold tracking-wider font-roboto-mono">
+        <div className="p-2 border border-dark-gray-color rounded-lg border-dashed font-bold tracking-wider font-roboto-mono break-all">
           {savedID}
         </div>
         <span>Your terminal has been switched to this process.</span>
