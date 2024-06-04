@@ -2,7 +2,6 @@ import { CommandInputField } from ".";
 import PreDefinedCommands from "../PreDefinedCommands";
 import SmallButton from "../SmallButton";
 import StatusLoadingIcon from "../icons/StatusLoadingIcon";
-import NewProcessConnectedToast from "../modals/NewProcessConnectedToast";
 
 interface CommandInputFormProps {
   handleRunCommand: (e: React.FormEvent<HTMLFormElement>) => void;
@@ -42,7 +41,6 @@ export default function CommandInputForm({
         mode === "starter" ? "select-none pointer-events-none opacity-50" : ""
       }`}
     >
-      {processId && <NewProcessConnectedToast processId={processId} />}
       {sendingCommand && (
         <span className="absolute bottom-16 left-1/2 -translate-x-1/2 text-sm">
           Processing...

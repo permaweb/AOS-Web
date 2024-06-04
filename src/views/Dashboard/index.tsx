@@ -267,6 +267,7 @@ export default function Dashboard() {
                   setConnectModelOpen={setConnectModelOpen}
                   userCommand={userCommand}
                   userCommandResult={userCommandResult}
+                  processId={processId}
                 />
 
                 <CommandInputForm
@@ -328,6 +329,7 @@ export default function Dashboard() {
                   setConnectModelOpen={setConnectModelOpen}
                   userCommand={userCommand}
                   userCommandResult={userCommandResult}
+                  processId={processId}
                 />
                 <CommandInputForm
                   handleRunCommand={handleRunCommand}
