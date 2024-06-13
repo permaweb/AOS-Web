@@ -25,34 +25,46 @@
 
 /* Custom scrollbar styles */
 .scrollbar-style::-webkit-scrollbar {
-  width: 0.5rem; /* Adjust the width of the scrollbar */
+  width: 0.5rem;
 }
 
 .scrollbar-style::-webkit-scrollbar-track {
-  background-color: transparent; /* Track background */
+  background-color: transparent;
 }
 
 .scrollbar-style::-webkit-scrollbar-thumb {
-  background-color: rgba(
-    255,
-    255,
-    255,
-    0.3
-  ); /* Thumb color and initial opacity */
-  border-radius: 9999px; /* Roundness of the scrollbar thumb, similar to Tailwind's full rounded */
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 9999px;
 }
 
 .scrollbar-style::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(
-    255,
-    255,
-    255,
-    0.8
-  ); /* Thumb color and hover opacity */
+  background-color: rgba(255, 255, 255, 0.8);
 }
 
 .scrollbar-style::-webkit-scrollbar-thumb:active {
-  background-color: rgba(255, 255, 255, 1); /* Thumb color and active opacity */
+  background-color: rgba(255, 255, 255, 1);
+}
+
+/* Custom scrollbar styles */
+.xterm-viewport::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+.xterm-viewport::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.xterm-viewport::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 9999px;
+}
+
+.xterm-viewport::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.xterm-viewport::-webkit-scrollbar-thumb:active {
+  background-color: rgba(0, 0, 0, 1);
 }
 
 /* Media query to disable hover effect below md breakpoint */
