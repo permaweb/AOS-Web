@@ -1,3 +1,49 @@
+# AOS Web React Project
+
+## Overview
+This is the AOS Web React project, a web application built using React. The application has a variety of components, including data handling components, layout components, terminal components, modals, and views. This documentation provides an overview of the project's structure and key components.
+
+## Project Structure
+Here are some important directories to pay attention to in this project:
+
+```
+/src
+├── components
+│   ├── data_component
+│   │   └── ProcessList.tsx
+│   ├── layouts
+│   │   └── MainLayout.tsx
+│   ├── terminals
+│   │   └── Terminals
+│   ├── modals
+│   │   └── [Modals Components]
+│   └── views
+│       └── Dashboard
+│           └── index.tsx
+```
+
+## Components
+
+### Data Components
+- **Path:** `/src/components/data_component`
+- **Description:** This directory contains components that handle data. Notably, it includes `ProcessList.tsx`, which is responsible for displaying the list of processes.
+
+### Layout Components
+- **Path:** `/src/components/layouts/MainLayout.tsx`
+- **Description:** This file contains the overall layout of the application.
+
+### Terminal Components
+- **Path:** `/src/components/Terminals`
+- **Description:** This directory contains components related to terminal functionality.
+
+### Modals
+- **Path:** `/src/components/modals`
+- **Description:** This directory contains modal components, such as those used for creating new processes.
+
+### Views
+- **Path:** `/src/components/views/Dashboard/index.tsx`
+- **Description:** The main page of the application, which provides the primary user interface, is located in this file.
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
