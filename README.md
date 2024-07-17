@@ -4,7 +4,8 @@
 PLZ FORK THIS AND MAKE IT YOUR OWN. =]
 
 ## Overview
-This is the AOS Web React project, a web application built using React. The application has a variety of components, including data handling components, layout components, terminal components, modals, and views. This documentation provides an overview of the project's structure and key components.
+AOS Web app was created to make it easy to onboard into the AO ecosystem and have some handy features for example saving your AO processess to keep track of everything you got going on, or auto-complete of commonly used commands.
+Our intention was to create something fun to use and inspire others in terms of UX/UI of what's possible on the permaweb.
 
 ## Project Structure
 Here are some important directories to pay attention to in this project:
