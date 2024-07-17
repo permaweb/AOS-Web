@@ -1,6 +1,6 @@
 # AOS Web React Project
 
-!(https://github.com/user-attachments/assets/036215eb-883a-47c3-aa7a-212b2f20339f)
+![aosWebApp](https://github.com/user-attachments/assets/77af2542-4541-4cb1-b436-2f331f437940)
 PLZ FORK THIS AND MAKE IT YOUR OWN. =]
 
 ## Overview
