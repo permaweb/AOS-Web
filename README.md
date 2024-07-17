@@ -4,8 +4,13 @@
 PLZ FORK THIS AND MAKE IT YOUR OWN. =]
 
 ## Overview
-AOS Web app was created to make it easy to onboard into the AO ecosystem and have some handy features for example saving your AO processess to keep track of everything you got going on, or auto-complete of commonly used commands.
-Our intention was to create something fun to use and inspire others in terms of UX/UI of what's possible on the permaweb.
+Our intention with AOS Web was to create something fun to use and inspire others in terms of UX/UI of what's possible on the permaweb. Some handy features that are our personal favorites include:
+
+- Saving your AO processes to keep track of everything you've got going on
+- Auto-completing commonly used commands
+- Keeping track of what quests are available to complete
+
+Our goal was to create a tool that's both enjoyable to use and a source of inspiration for others exploring the potential of the permaweb.
 
 ## Project Structure
 Here are some important directories to pay attention to in this project:
