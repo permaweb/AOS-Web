@@ -49,7 +49,7 @@ export async function register(name: string, signer: any) {
 
 export async function evaluate(pid: string, command: string, signer: any) {
     const aos = connect();
-
+    console.log("signer", signer);
     const messageId = await aos.message({
         process: pid,
         signer: createDataItemSigner(signer),

@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect, ReactNode } from "react";
 import { evaluate, findMyPIDs, live, register } from "../helpers/aos";
+import { useApi } from "arweave-wallet-kit";
 
 export type ProcessProps = {
   selectedProcessHistory?: any;
@@ -51,6 +52,7 @@ const ConnectedProcessContext = createContext<ConnectedProcessContextType>({
 });
 
 const ConnectedProcessProvider = ({ children }: { children: ReactNode }) => {
+  const api = useApi();
   const [processHistoryList, setProcessHistoryList] = useState<
     ProcessHistoryItemProps[]
   >([]);
@@ -65,11 +67,10 @@ const ConnectedProcessProvider = ({ children }: { children: ReactNode }) => {
 
   const createProcess = async (name: string) => {
     console.log("Creating process with name: ", name);
-    const globalWallet: any = globalThis;
-    const signer = globalWallet.arweaveWallet;
+    const signer = api;
     // await signer.connect();
-
-    if (signer === undefined || signer === null || signer === "") {
+    console.log(signer)
+    if (signer === undefined || signer === null || !("signDataItem" in signer)) {
       console.error("Please connect your wallet to create a process");
       return;
     }
@@ -126,11 +127,11 @@ const ConnectedProcessProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const sendCommand = async (processId: string, command: string) => {
-    const globalWallet: any = globalThis;
-    const signer = globalWallet.arweaveWallet;
+
+    const signer = api;
     // await signer.connect();
 
-    if (signer === undefined || signer === null || signer === "") {
+    if (signer === undefined || signer === null || !('signDataItem' in signer)) {
       throw new Error("Please connect your wallet to send a command");
     }
 
